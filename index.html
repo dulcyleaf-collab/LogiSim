@@ -1,175 +1,763 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rota Inteligente — Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiSim - Plataforma Educacional de Logística</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .bg-industrial-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+<body class="min-h-screen flex flex-col custom-scrollbar">
 
-  <!-- Status Bar de Conexão (Rede / Offline) -->
-  <div id="status-bar" class="w-full py-1.5 px-4 text-xs font-semibold text-center flex items-center justify-center gap-2 bg-emerald-950 text-emerald-300 border-b border-emerald-800 transition-colors duration-300">
-    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-    <span id="status-text">Conectado ao Servidor — Modo Online</span>
-  </div>
-
-  <main class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-    <div class="w-full max-w-md space-y-6">
-      
-      <!-- Cabeçalho / Logo -->
-      <div class="text-center space-y-2">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/30 mb-2 shadow-lg shadow-blue-500/10">
-          <i class="fa-solid fa-truck-fast text-2xl"></i>
-        </div>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Rota Inteligente</h1>
-        <p class="text-sm text-slate-400">Sistema Integrado de Roteirização e Expedição</p>
-      </div>
-
-      <!-- Card do Formulário -->
-      <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-700/60 p-6 sm:p-8 shadow-2xl space-y-6">
-        
-        <!-- Seleção de Perfil (Tabs) -->
-        <div class="grid grid-cols-2 gap-1 p-1 bg-slate-900/80 rounded-xl border border-slate-700/50">
-          <button type="button" id="tab-expedicao" onclick="selectRole('expedicao')" class="py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm">
-            <i class="fa-solid fa-industry text-xs"></i>
-            Expedição
-          </button>
-          <button type="button" id="tab-motorista" onclick="selectRole('motorista')" class="py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
-            <i class="fa-solid fa-id-card text-xs"></i>
-            Motorista
-          </button>
-        </div>
-
-        <!-- Formulário de Autenticação -->
-        <form onsubmit="handleLogin(event)" class="space-y-4">
-          
-          <!-- Campo Usuário / Matrícula -->
-          <div class="space-y-1.5">
-            <label id="user-label" class="text-xs font-medium text-slate-300 block">Usuário ou E-mail</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <i class="fa-solid fa-user text-sm"></i>
-              </span>
-              <input type="text" id="username" required placeholder="Digite seu usuário" class="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <div class="bg-orange-500 text-slate-950 font-bold p-2 rounded-lg flex items-center justify-center">
+                <i data-lucide="boxes" class="w-6 h-6"></i>
             </div>
-          </div>
-
-          <!-- Campo Senha -->
-          <div class="space-y-1.5">
-            <label class="text-xs font-medium text-slate-300 block">Senha de Acesso</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <i class="fa-solid fa-lock text-sm"></i>
-              </span>
-              <input type="password" id="password" required placeholder="••••••••" class="w-full pl-10 pr-10 py-2.5 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors">
-              <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200">
-                <i id="eye-icon" class="fa-solid fa-eye text-sm"></i>
-              </button>
+            <div>
+                <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-2">
+                    LOGISIM <span class="text-xs bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full">v1.0 - APR477</span>
+                </h1>
+                <p class="text-xs text-slate-400">FIRJAN SENAI DUQUE DE CAXIAS | PROJETO INTEGRADOR</p>
             </div>
-          </div>
-
-          <!-- Opções Adicionais -->
-          <div class="flex items-center justify-between text-xs pt-1">
-            <label class="flex items-center gap-2 cursor-pointer text-slate-300">
-              <input type="checkbox" id="remember" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-800">
-              Lembrar acesso
-            </label>
-            <a href="#" onclick="alert('Entre em contato com o administrador do sistema para redefinir sua senha.')" class="text-blue-400 hover:text-blue-300 transition-colors">Esqueceu a senha?</a>
-          </div>
-
-          <!-- Botão Entrar -->
-          <button type="submit" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-medium text-sm rounded-xl shadow-lg shadow-blue-600/20 transition-all duration-200 flex items-center justify-center gap-2 mt-2">
-            <span>Acessar o Sistema</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </button>
-        </form>
-
-        <!-- Indicador de PWA Offline para Motorista -->
-        <div id="offline-note" class="hidden p-3 rounded-xl bg-slate-900/60 border border-slate-700/40 text-xs text-slate-400 flex items-start gap-2.5">
-          <i class="fa-solid fa-wifi text-blue-400 mt-0.5"></i>
-          <span><strong>Modo Offline Ativo:</strong> O perfil de motorista permite visualizar rotas baixadas e confirmar entregas mesmo sem sinal de internet.</span>
         </div>
 
-      </div>
+        <!-- System Controls & Profile Switcher -->
+        <div class="flex items-center gap-4">
+            <div class="flex items-center bg-slate-800 p-1 rounded-lg border border-slate-700">
+                <button id="role-student-btn" onclick="setRole('student')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-orange-500 text-slate-950">
+                    <i data-lucide="user" class="w-3.5 h-3.5 inline mr-1"></i> Aluno
+                </button>
+                <button id="role-instructor-btn" onclick="setRole('instructor')" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-all">
+                    <i data-lucide="award" class="w-3.5 h-3.5 inline mr-1"></i> Módulo A.L.
+                </button>
+            </div>
+            <div class="h-6 w-px bg-slate-700"></div>
+            <div class="text-right hidden sm:block">
+                <p id="user-display-name" class="text-sm font-semibold text-slate-200">Dulcylea Ferreira</p>
+                <p id="user-display-sub" class="text-xs text-slate-400">Turma APR477 - Matrícula #9854</p>
+            </div>
+        </div>
+    </header>
 
-      <!-- Rodapé -->
-      <p class="text-center text-xs text-slate-500">
-        Saga SENAI — Faculdade SENAI Fatesg
-      </p>
+    <div class="flex-1 flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-4 flex flex-col gap-2">
+            <div class="text-xs font-semibold text-slate-500 uppercase px-3 mb-2 tracking-wider">Módulos da Operação</div>
+            
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-orange-500 text-slate-950 font-semibold">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard General
+            </button>
+            
+            <button onclick="switchTab('wms')" id="nav-wms" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+                <i data-lucide="database" class="w-4 h-4"></i> Banco de Dados WMS
+            </button>
+            
+            <button onclick="switchTab('enderecamento')" id="nav-enderecamento" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+                <i data-lucide="grid" class="w-4 h-4"></i> 1. Endereçamento
+            </button>
+            
+            <button onclick="switchTab('picking')" id="nav-picking" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i> 2. Picking (Separação)
+            </button>
+            
+            <button onclick="switchTab('carregamento')" id="nav-carregamento" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+                <i data-lucide="truck" class="w-4 h-4"></i> 3. Carga & Roteirização
+            </button>
 
+            <div class="text-xs font-semibold text-slate-500 uppercase px-3 mt-6 mb-2 tracking-wider">Atividades & Gestão</div>
+
+            <button onclick="switchTab('al-modulo')" id="nav-al-modulo" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+                <i data-lucide="clipboard-check" class="w-4 h-4"></i> Atividades Logísticas (A.L.)
+            </button>
+
+            <div class="mt-auto pt-6 border-t border-slate-800 text-xs text-slate-500 px-3">
+                <p class="mt-1">© 2026 LogiSim</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 custom-scrollbar overflow-y-auto">
+
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Dashboard do Aprendiz</h2>
+                        <p class="text-sm text-slate-400">Visão consolidada de desempenho prático e métricas operacionais.</p>
+                    </div>
+                    <button onclick="resetData()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs flex items-center gap-1.5 border border-slate-700">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reiniciar Progresso
+                    </button>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-industrial-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 mb-2">
+                            <span class="text-xs font-semibold uppercase">Atividades Concluídas</span>
+                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <p id="kpi-completed" class="text-3xl font-bold text-white">3 / 3</p>
+                        <p class="text-xs text-emerald-400 mt-1">100% do ciclo completo</p>
+                    </div>
+
+                    <div class="bg-industrial-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 mb-2">
+                            <span class="text-xs font-semibold uppercase">Acuracidade Geral</span>
+                            <i data-lucide="target" class="w-5 h-5 text-orange-400"></i>
+                        </div>
+                        <p id="kpi-accuracy" class="text-3xl font-bold text-white">96.8%</p>
+                        <p class="text-xs text-orange-400 mt-1">Margem de erro mínima</p>
+                    </div>
+
+                    <div class="bg-industrial-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 mb-2">
+                            <span class="text-xs font-semibold uppercase">Tempo de Execução</span>
+                            <i data-lucide="clock" class="w-5 h-5 text-blue-400"></i>
+                        </div>
+                        <p id="kpi-time" class="text-3xl font-bold text-white">04:12</p>
+                        <p class="text-xs text-blue-400 mt-1">Tempo total das simulações</p>
+                    </div>
+
+                    <div class="bg-industrial-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center text-slate-400 mb-2">
+                            <span class="text-xs font-semibold uppercase">Nota A.L. Parcial</span>
+                            <i data-lucide="award" class="w-5 h-5 text-amber-400"></i>
+                        </div>
+                        <p id="kpi-score" class="text-3xl font-bold text-white">9.5 / 10</p>
+                        <p class="text-xs text-amber-400 mt-1">Aprovado na prática</p>
+                    </div>
+                </div>
+
+                <!-- Charts & Activity Logs -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-industrial-card p-5 rounded-xl lg:col-span-2">
+                        <h3 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-4 h-4 text-orange-500"></i> Desempenho por Etapa Operacional
+                        </h3>
+                        <div class="h-64">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-industrial-card p-5 rounded-xl">
+                        <h3 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                            <i data-lucide="history" class="w-4 h-4 text-orange-500"></i> Histórico Recente
+                        </h3>
+                        <div class="space-y-3 text-xs" id="activity-logs">
+                            <div class="p-2.5 rounded bg-slate-800 border-l-2 border-emerald-500">
+                                <p class="font-semibold text-slate-200">Endereçamento Efetuado</p>
+                                <p class="text-slate-400">Palete SKU-102 alocado em A-01-02 com sucesso.</p>
+                                <span class="text-[10px] text-slate-500">Hoje às 09:15</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-800 border-l-2 border-emerald-500">
+                                <p class="font-semibold text-slate-200">Picking Concluído</p>
+                                <p class="text-slate-400">Pedido #402 separado em 01 min 45 seg.</p>
+                                <span class="text-[10px] text-slate-500">Hoje às 09:22</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-800 border-l-2 border-blue-500">
+                                <p class="font-semibold text-slate-200">Rota Otimizada</p>
+                                <p class="text-slate-400">Caxias -> Piabetá -> RJ calculada (68.4 km).</p>
+                                <span class="text-[10px] text-slate-500">Hoje às 09:30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: BANCO DE DADOS WMS -->
+            <section id="tab-wms" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Banco de Dados de Produtos (WMS)</h2>
+                        <p class="text-sm text-slate-400">Cadastro de SKUs, especificações de estocagem e endereçamento físico.</p>
+                    </div>
+                </div>
+
+                <div class="bg-industrial-card rounded-xl overflow-hidden">
+                    <div class="p-4 border-b border-slate-800 flex flex-col sm:flex-row justify-between gap-4">
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="wms-search" onkeyup="filterWMS()" placeholder="Buscar por SKU, Descrição ou Endereço..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-orange-500">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900/80 text-slate-400 uppercase border-b border-slate-800">
+                                    <th class="p-3">Código SKU</th>
+                                    <th class="p-3">Descrição do Produto</th>
+                                    <th class="p-3">Categoria / Tipo</th>
+                                    <th class="p-3">Endereço Atual</th>
+                                    <th class="p-3">Qtd. Estoque</th>
+                                    <th class="p-3">Peso Un. (kg)</th>
+                                    <th class="p-3 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wms-table-body" class="divide-y divide-slate-800 text-slate-300">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SIMULADOR DE ENDEREÇAMENTO -->
+            <section id="tab-enderecamento" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white">Simulador 1: Endereçamento e Armazenagem</h2>
+                    <p class="text-sm text-slate-400">Receba a carga na doca e aloque o palete no endereço correto na estrutura Porta-Paletes (Rua-Nível-Apartamento).</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Doca de Recebimento -->
+                    <div class="bg-industrial-card p-5 rounded-xl space-y-4">
+                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                            <i data-lucide="package-check" class="w-5 h-5 text-orange-500"></i> Carga Pendente na Doca 01
+                        </h3>
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-2">
+                            <div class="flex justify-between"><span class="text-xs text-slate-400">SKU Pendente:</span><span id="end-sku" class="text-xs font-bold text-orange-400">SKU-102</span></div>
+                            <div class="flex justify-between"><span class="text-xs text-slate-400">Produto:</span><span id="end-desc" class="text-xs font-medium text-white">Óleo Lubrificante 15W40</span></div>
+                            <div class="flex justify-between"><span class="text-xs text-slate-400">Endereço Alvo:</span><span id="end-target" class="text-xs font-bold text-emerald-400">A-01-02</span></div>
+                        </div>
+
+                        <div class="p-3 bg-slate-900/50 border border-slate-800 rounded text-xs text-slate-400">
+                            <p class="font-semibold text-slate-300 mb-1">Instrução:</p>
+                            Clique na posição correta da estrutura ao lado correspondente ao endereço <strong>A-01-02</strong> (Rua A / Nível 01 / Apto 02).
+                        </div>
+
+                        <button onclick="drawRandomAddress()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded border border-slate-700 transition-all">
+                            Gerar Novo Palete Aleatório
+                        </button>
+                    </div>
+
+                    <!-- Porta Paletes Interactive Grid -->
+                    <div class="bg-industrial-card p-5 rounded-xl lg:col-span-2">
+                        <h3 class="text-base font-semibold text-white mb-4 flex items-center justify-between">
+                            <span>Estrutura Porta-Paletes (Rua A)</span>
+                            <span class="text-xs text-slate-400 font-normal">Níveis: 03 (Topo) a 01 (Chão)</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <!-- Nível 03 -->
+                            <div>
+                                <span class="text-xs font-semibold text-slate-500 uppercase">Nível 03</span>
+                                <div class="grid grid-cols-3 gap-3 mt-1">
+                                    <button onclick="storePallet('A-03-01')" id="cell-A-03-01" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-03-01</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-03-02')" id="cell-A-03-02" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-03-02</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-03-03')" id="cell-A-03-03" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-03-03</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Nível 02 -->
+                            <div>
+                                <span class="text-xs font-semibold text-slate-500 uppercase">Nível 02</span>
+                                <div class="grid grid-cols-3 gap-3 mt-1">
+                                    <button onclick="storePallet('A-02-01')" id="cell-A-02-01" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-02-01</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-02-02')" id="cell-A-02-02" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-02-02</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-02-03')" id="cell-A-02-03" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-02-03</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Nível 01 -->
+                            <div>
+                                <span class="text-xs font-semibold text-slate-500 uppercase">Nível 01 (Solo)</span>
+                                <div class="grid grid-cols-3 gap-3 mt-1">
+                                    <button onclick="storePallet('A-01-01')" id="cell-A-01-01" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-01-01</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-01-02')" id="cell-A-01-02" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-01-02</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                    <button onclick="storePallet('A-01-03')" id="cell-A-01-03" class="p-4 rounded border border-slate-700 bg-slate-900 hover:border-orange-500 text-center transition-all">
+                                        <span class="block text-xs font-bold text-slate-300">A-01-03</span>
+                                        <span class="text-[10px] text-slate-500">Vazio</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="end-feedback" class="mt-4 p-3 rounded text-xs hidden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SIMULADOR DE PICKING -->
+            <section id="tab-picking" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white">Simulador 2: Picking (Separação de Pedidos)</h2>
+                    <p class="text-sm text-slate-400">Colete os itens solicitados na Ordem de Saída mantendo o menor tempo e zero erros de conferência.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Ordem de Serviço (OS) -->
+                    <div class="bg-industrial-card p-5 rounded-xl space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                                <i data-lucide="file-text" class="w-5 h-5 text-orange-500"></i> Ordem de Picking #402
+                            </h3>
+                            <span id="picking-timer" class="text-xs font-mono font-bold bg-slate-900 px-2.5 py-1 rounded border border-slate-700 text-orange-400">00:00</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div class="p-3 bg-slate-900 rounded border border-slate-800">
+                                <p class="text-slate-400">Item 1: <strong class="text-white">Caixa de Papelão 30x30</strong></p>
+                                <p class="text-slate-400">Endereço: <strong class="text-orange-400">A-01-01</strong> | Qtd: <strong class="text-white">5 UN</strong></p>
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded border border-slate-800">
+                                <p class="text-slate-400">Item 2: <strong class="text-white">Fita Adesiva Industrial</strong></p>
+                                <p class="text-slate-400">Endereço: <strong class="text-orange-400">A-02-03</strong> | Qtd: <strong class="text-white">2 UN</strong></p>
+                            </div>
+                        </div>
+
+                        <button onclick="startPickingTimer()" id="btn-start-picking" class="w-full py-2 bg-orange-500 hover:bg-orange-600 text-slate-950 font-bold text-xs rounded transition-all">
+                            Iniciar Cronômetro de Picking
+                        </button>
+                    </div>
+
+                    <!-- Interface de Coleta -->
+                    <div class="bg-industrial-card p-5 rounded-xl lg:col-span-2 space-y-4">
+                        <h3 class="text-base font-semibold text-white">Bancada de Validação por Coletor/Bipagem</h3>
+
+                        <div class="space-y-3">
+                            <label class="text-xs text-slate-400 block">Digitar ou Bipar Código SKU / Endereço Coletado:</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="picking-input" placeholder="Ex: SKU-101 ou A-01-01" class="flex-1 bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500">
+                                <button onclick="validatePicking()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded transition-all">
+                                    Validar Coleta
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-800 pt-4">
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase mb-2">Itens no Carrinho de Separação</h4>
+                            <div id="picking-cart" class="space-y-2 text-xs">
+                                <p class="text-slate-500 italic">Nenhum item coletado ainda.</p>
+                            </div>
+                        </div>
+
+                        <div id="picking-result" class="p-3 rounded text-xs hidden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: CARREGAMENTO E ROTAS -->
+            <section id="tab-carregamento" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white">Simulador 3: Carregamento de Veículo & Roteirização</h2>
+                    <p class="text-sm text-slate-400">Distribua o peso na carroceria do caminhão e defina a rota com menor consumo de combustível.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Cubagem do Veículo -->
+                    <div class="bg-industrial-card p-5 rounded-xl space-y-4">
+                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                            <i data-lucide="truck" class="w-5 h-5 text-orange-500"></i> Distribuição de Carga no Baú
+                        </h3>
+
+                        <div class="bg-slate-900 p-4 rounded-lg border border-slate-800 space-y-3">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Capacidade Máxima:</span>
+                                <span class="font-bold text-white">3.500 kg</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                                <div id="truck-weight-bar" class="bg-orange-500 h-full w-0 transition-all duration-300"></div>
+                            </div>
+                            <div class="flex justify-between text-xs">
+                                <span class="text-slate-400">Carga Atual:</span>
+                                <span id="truck-weight-text" class="font-bold text-orange-400">0 kg (0%)</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="addCargo(800)" class="p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 rounded text-left text-xs transition-all">
+                                <span class="block font-bold text-white">+ Palete Bebidas</span>
+                                <span class="text-slate-400">800 kg</span>
+                            </button>
+                            <button onclick="addCargo(1200)" class="p-3 bg-slate-900 border border-slate-700 hover:border-orange-500 rounded text-left text-xs transition-all">
+                                <span class="block font-bold text-white">+ Palete Graxas</span>
+                                <span class="text-slate-400">1.200 kg</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Planejador de Rota -->
+                    <div class="bg-industrial-card p-5 rounded-xl space-y-4">
+                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-orange-500"></i> Planejador de Rota de Entrega
+                        </h3>
+
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-slate-900 rounded border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-white">Origem: SENAI Caxias</p>
+                                    <p class="text-slate-400">Ponto de Partida</p>
+                                </div>
+                                <i data-lucide="building-2" class="w-4 h-4 text-slate-500"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-900 rounded border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-white">Parada 1: Piabetá (Magé)</p>
+                                    <p class="text-slate-400">Entrega Cliente A (28.2 km)</p>
+                                </div>
+                                <i data-lucide="map-pin" class="w-4 h-4 text-orange-400"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-900 rounded border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-white">Parada 2: Centro (Rio de Janeiro)</p>
+                                    <p class="text-slate-400">Entrega Cliente B (40.2 km)</p>
+                                </div>
+                                <i data-lucide="map-pin" class="w-4 h-4 text-orange-400"></i>
+                            </div>
+                        </div>
+
+                        <button onclick="calculateRoute()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded transition-all">
+                            Calcular Rota Mais Eficiente
+                        </button>
+
+                        <div id="route-result" class="p-3 bg-slate-900 border border-slate-800 rounded text-xs hidden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: MÓDULO A.L. -->
+            <section id="tab-al-modulo" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <h2 class="text-2xl font-bold text-white">Atividades Logísticas (A.L.)</h2>
+                    <p class="text-sm text-slate-400">Painel de acompanhamento do desempenho individual e coletivo da turma nas atividades práticas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-industrial-card p-5 rounded-xl lg:col-span-2 space-y-4">
+                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                            <i data-lucide="users" class="w-5 h-5 text-orange-500"></i> Notas e Avaliação da Turma APR477
+                        </h3>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-900 text-slate-400 uppercase border-b border-slate-800">
+                                        <th class="p-3">Aluno(a)</th>
+                                        <th class="p-3">Endereçamento</th>
+                                        <th class="p-3">Picking</th>
+                                        <th class="p-3">Carga/Rotas</th>
+                                        <th class="p-3">Média A.L.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800 text-slate-300">
+                                    <tr>
+                                        <td class="p-3 font-semibold text-white">Dulcylea Fonseca Ferreira</td>
+                                        <td class="p-3 text-emerald-400">10.0</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 text-emerald-400">9.0</td>
+                                        <td class="p-3 font-bold text-orange-400">9.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-white">Ana Beatriz Barbosa</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 text-emerald-400">10.0</td>
+                                        <td class="p-3 text-emerald-400">9.0</td>
+                                        <td class="p-3 font-bold text-orange-400">9.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-white">Gabriella Alves Sampaio</td>
+                                        <td class="p-3 text-emerald-400">10.0</td>
+                                        <td class="p-3 text-emerald-400">9.0</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 font-bold text-orange-400">9.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-white">Pedro Lucas Gomes</td>
+                                        <td class="p-3 text-emerald-400">9.0</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 text-emerald-400">10.0</td>
+                                        <td class="p-3 font-bold text-orange-400">9.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold text-white">Sofia de Faria</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 text-emerald-400">9.5</td>
+                                        <td class="p-3 font-bold text-orange-400">9.5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-industrial-card p-5 rounded-xl space-y-4">
+                        <h3 class="text-base font-semibold text-white">Ações do Sistema</h3>
+                        <p class="text-xs text-slate-400">Gere relatórios das simulações da turma.</p>
+
+                        <button onclick="alert('Relatório da turma APR477 gerado com sucesso!')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded border border-slate-700 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i> Exportar Relatório A.L. (PDF)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-  </main>
 
-  <script>
-    let activeRole = 'expedicao';
+    <!-- JS Logic -->
+    <script>
+        // State Management & LocalStorage
+        let appData = JSON.parse(localStorage.getItem('logisim_data')) || {
+            role: 'student',
+            products: [
+                { sku: 'SKU-101', desc: 'Caixa de Papelão 30x30', cat: 'Embalagem', address: 'A-01-01', qty: 150, weight: 0.5, status: 'Ativo' },
+                { sku: 'SKU-102', desc: 'Óleo Lubrificante 15W40', cat: 'Fluidos', address: 'A-01-02', qty: 40, weight: 12.0, status: 'Ativo' },
+                { sku: 'SKU-103', desc: 'Fita Adesiva Industrial', cat: 'Insumos', address: 'A-02-03', qty: 300, weight: 0.2, status: 'Ativo' },
+                { sku: 'SKU-104', desc: 'Palete Padrão PBR', cat: 'Suporte', address: 'A-03-01', qty: 80, weight: 25.0, status: 'Ativo' }
+            ],
+            truckWeight: 0,
+            pickingSeconds: 0,
+            pickingInterval: null
+        };
 
-    function selectRole(role) {
-      activeRole = role;
-      const tabExpedicao = document.getElementById('tab-expedicao');
-      const tabMotorista = document.getElementById('tab-motorista');
-      const userLabel = document.getElementById('user-label');
-      const userInput = document.getElementById('username');
-      const offlineNote = document.getElementById('offline-note');
+        function saveData() {
+            localStorage.setItem('logisim_data', JSON.stringify(appData));
+        }
 
-      if (role === 'expedicao') {
-        tabExpedicao.className = 'py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm';
-        tabMotorista.className = 'py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200';
-        userLabel.innerText = 'Usuário ou E-mail';
-        userInput.placeholder = 'Digite seu usuário';
-        offlineNote.classList.add('hidden');
-      } else {
-        tabMotorista.className = 'py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm';
-        tabExpedicao.className = 'py-2.5 text-xs font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200';
-        userLabel.innerText = 'Matrícula do Motorista';
-        userInput.placeholder = 'Ex: MOT-1042';
-        offlineNote.classList.remove('hidden');
-      }
-    }
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-    function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const eyeIcon = document.getElementById('eye-icon');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.className = 'fa-solid fa-eye-slash text-sm';
-      } else {
-        passwordInput.type = 'password';
-        eyeIcon.className = 'fa-solid fa-eye text-sm';
-      }
-    }
+        // Chart Initialization
+        let perfChart;
+        function initChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            perfChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Endereçamento', 'Picking (Separação)', 'Carregamento', 'Roteirização'],
+                    datasets: [{
+                        label: 'Taxa de Acerto (%)',
+                        data: [100, 95, 98, 94],
+                        backgroundColor: '#f97316',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
 
-    // Redirecionamento correto conforme o perfil selecionado
-    function handleLogin(e) {
-      e.preventDefault();
-      if (activeRole === 'expedicao') {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'motorista.html';
-      }
-    }
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-orange-500', 'text-slate-950', 'font-semibold');
+                el.classList.add('text-slate-400');
+            });
 
-    // Monitoramento do estado de rede (Online / Offline)
-    function updateOnlineStatus() {
-      const statusBar = document.getElementById('status-bar');
-      const statusText = document.getElementById('status-text');
-      if (navigator.onLine) {
-        statusBar.className = 'w-full py-1.5 px-4 text-xs font-semibold text-center flex items-center justify-center gap-2 bg-emerald-950 text-emerald-300 border-b border-emerald-800 transition-colors duration-300';
-        statusText.innerText = 'Conectado ao Servidor — Modo Online';
-      } else {
-        statusBar.className = 'w-full py-1.5 px-4 text-xs font-semibold text-center flex items-center justify-center gap-2 bg-amber-950 text-amber-300 border-b border-amber-800 transition-colors duration-300';
-        statusText.innerText = 'Sem Conexão com a Internet — Modo Offline (Dados Salvos Localmente)';
-      }
-    }
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-orange-500', 'text-slate-950', 'font-semibold');
+                activeNav.classList.remove('text-slate-400');
+            }
+        }
 
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
-  </script>
+        // Role Switcher
+        function setRole(role) {
+            appData.role = role;
+            saveData();
+            const studentBtn = document.getElementById('role-student-btn');
+            const instructorBtn = document.getElementById('role-instructor-btn');
+            
+            if (role === 'student') {
+                studentBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-orange-500 text-slate-950";
+                instructorBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-all";
+                document.getElementById('user-display-name').innerText = "Dulcylea Ferreira";
+                document.getElementById('user-display-sub').innerText = "Turma APR477 - Matrícula #9854";
+            } else {
+                instructorBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-orange-500 text-slate-950";
+                studentBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-all";
+                document.getElementById('user-display-name').innerText = "Visão do Sistema A.L.";
+                document.getElementById('user-display-sub').innerText = "Gestão de Turmas";
+                switchTab('al-modulo');
+            }
+        }
+
+        // WMS Logic
+        function renderWMS() {
+            const tbody = document.getElementById('wms-table-body');
+            tbody.innerHTML = '';
+            appData.products.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50">
+                        <td class="p-3 font-bold text-orange-400">${p.sku}</td>
+                        <td class="p-3 font-medium text-white">${p.desc}</td>
+                        <td class="p-3 text-slate-400">${p.cat}</td>
+                        <td class="p-3 text-emerald-400 font-mono">${p.address}</td>
+                        <td class="p-3 text-slate-300">${p.qty} UN</td>
+                        <td class="p-3 text-slate-300">${p.weight} kg</td>
+                        <td class="p-3 text-center"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-semibold">${p.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterWMS() {
+            const query = document.getElementById('wms-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#wms-table-body tr');
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+            });
+        }
+
+        // Addressing Logic
+        function storePallet(cellId) {
+            const target = document.getElementById('end-target').innerText;
+            const feedback = document.getElementById('end-feedback');
+            
+            feedback.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-400', 'bg-red-500/20', 'text-red-400');
+            
+            if (cellId === target) {
+                feedback.classList.add('bg-emerald-500/20', 'text-emerald-400', 'border', 'border-emerald-500/30');
+                feedback.innerHTML = `<strong>Sucesso!</strong> Palete alocado corretamente no endereço ${cellId}.`;
+                document.getElementById(`cell-${cellId}`).classList.add('border-emerald-500', 'bg-emerald-950/30');
+            } else {
+                feedback.classList.add('bg-red-500/20', 'text-red-400', 'border', 'border-red-500/30');
+                feedback.innerHTML = `<strong>Erro de Endereçamento!</strong> Você tentou alocar em ${cellId}, mas o endereço correto na Ordem era ${target}.`;
+            }
+        }
+
+        function drawRandomAddress() {
+            const addresses = ['A-01-01', 'A-01-02', 'A-01-03', 'A-02-01', 'A-02-02', 'A-02-03', 'A-03-01', 'A-03-02', 'A-03-03'];
+            const randomAddr = addresses[Math.floor(Math.random() * addresses.length)];
+            document.getElementById('end-target').innerText = randomAddr;
+            document.getElementById('end-feedback').classList.add('hidden');
+        }
+
+        // Picking Logic
+        function startPickingTimer() {
+            if (appData.pickingInterval) clearInterval(appData.pickingInterval);
+            appData.pickingSeconds = 0;
+            document.getElementById('btn-start-picking').innerText = "Cronômetro Em Andamento...";
+            
+            appData.pickingInterval = setInterval(() => {
+                appData.pickingSeconds++;
+                const mins = String(Math.floor(appData.pickingSeconds / 60)).padStart(2, '0');
+                const secs = String(appData.pickingSeconds % 60).padStart(2, '0');
+                document.getElementById('picking-timer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function validatePicking() {
+            const val = document.getElementById('picking-input').value.trim().toUpperCase();
+            const result = document.getElementById('picking-result');
+            const cart = document.getElementById('picking-cart');
+
+            if (!val) return;
+
+            result.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-400', 'bg-red-500/20', 'text-red-400');
+
+            if (val === 'A-01-01' || val === 'SKU-101' || val === 'A-02-03' || val === 'SKU-103') {
+                result.classList.add('bg-emerald-500/20', 'text-emerald-400', 'border', 'border-emerald-500/30');
+                result.innerHTML = `Item <strong>${val}</strong> bipado e verificado com sucesso!`;
+                cart.innerHTML += `<div class="p-2 bg-slate-900 border border-emerald-500/30 rounded flex justify-between"><span>${val} - Coletado</span><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i></div>`;
+                lucide.createIcons();
+            } else {
+                result.classList.add('bg-red-500/20', 'text-red-400', 'border', 'border-red-500/30');
+                result.innerHTML = `Código <strong>${val}</strong> incorreto! Não consta na Ordem #402.`;
+            }
+            document.getElementById('picking-input').value = '';
+        }
+
+        // Truck Loading & Route Logic
+        function addCargo(weight) {
+            if (appData.truckWeight + weight > 3500) {
+                alert('Atenção: Capacidade Máxima do Veículo Excedida (3.500 kg)!');
+                return;
+            }
+            appData.truckWeight += weight;
+            const pct = Math.round((appData.truckWeight / 3500) * 100);
+            document.getElementById('truck-weight-bar').style.width = `${pct}%`;
+            document.getElementById('truck-weight-text').innerText = `${appData.truckWeight} kg (${pct}%)`;
+        }
+
+        function calculateRoute() {
+            const res = document.getElementById('route-result');
+            res.classList.remove('hidden');
+            res.innerHTML = `
+                <p class="font-bold text-emerald-400 mb-1">✓ Rota Otimizada com Sucesso!</p>
+                <p class="text-slate-300">Distância Total: <strong>68.4 km</strong></p>
+                <p class="text-slate-300">Tempo Estimado de Viagem: <strong>01h 15min</strong></p>
+                <p class="text-slate-400 mt-1 text-[11px]">Ordem Recomendada: SENAI Caxias → Piabetá (Entrega 1) → Centro RJ (Entrega 2).</p>
+            `;
+        }
+
+        function resetData() {
+            localStorage.removeItem('logisim_data');
+            location.reload();
+        }
+
+        // Window Load Initialization
+        window.onload = function() {
+            initChart();
+            renderWMS();
+        };
+    </script>
 </body>
 </html>
+
+```
