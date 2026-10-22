@@ -1,6 +1,6 @@
 # LogiSim – Simulação de Operações Logísticas
 
-Plataforma educacional desenvolvida como Projeto Integrador para o curso de **Aprendizagem em Assistente de Logística** (Turma APR477 - Firjan SENAI Duque de Caxias).
+Plataforma educacional desenvolvida como Projeto Integrador para o curso de **Aprendizagem em Assistente de Logística - Firjan SENAI Duque de Caxias**
 
 O **LogiSim** aproxima a teoria da prática logísta, permitindo vivenciar e tomar decisões em rotinas simuladas de:
 * **Banco de Dados WMS**
