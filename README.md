@@ -1,11 +1,19 @@
-# Rota Inteligente
+# LOGISIM – Simulação de Operações Logísticas
 
-O Rota Inteligente é um sistema integrado para roteirização, cubagem de carga e controle de entregas offline. 
-O sistema organiza o fluxo de expedição logística, centralizando restrições de recebimento dos clientes, otimizando o aproveitamento de carga nos veículos e permitindo o uso do aplicativo mobile em modo offline pelos motoristas, com sincronização automática de dados ao reconectar à rede.
+Plataforma educacional desenvolvida como Projeto Integrador para o curso de **Aprendizagem em Assistente de Logística** (Turma APR477 - Firjan SENAI Duque de Caxias).
 
-## Integrantes do Grupo
-* Ana Beatriz Paixão
+O **LogiSim** aproxima a teoria da prática logísta, permitindo vivenciar e tomar decisões em rotinas simuladas de:
+* **Banco de Dados WMS**
+* **Endereçamento e Armazenagem**
+* **Picking (Separação Cronometrada)**
+* **Carregamento & Roteirização de Veículos**
+* **Atividades Logísticas (Módulo A.L.)**
+
+---
+
+###  Integrantes do Grupo 
+* Ana Beatriz Barbosa de Oliveira Paixão
 * Dulcylea Fonseca Ferreira
-* Gabriella Alves
-* Pedro Lucas Gomes
+* Gabriella Alves Sampaio de Oliveira
+* Pedro Lucas Gomes Dias
 * Sofia de Faria
