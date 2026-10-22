@@ -5,9 +5,9 @@ Plataforma educacional desenvolvida como Projeto Integrador para o curso de **Ap
 O **LogiSim** aproxima a teoria da prática logísta, permitindo vivenciar e tomar decisões em rotinas simuladas de:
 * **Banco de Dados WMS**
 * **Endereçamento e Armazenagem**
-* **Picking (Separação Cronometrada)**
+* **Picking **
 * **Carregamento & Roteirização de Veículos**
-* **Atividades Logísticas (Módulo A.L.)**
+* **Atividades Logísticas - Módulo A.L.**
 
 ---
 
