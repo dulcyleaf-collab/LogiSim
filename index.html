@@ -14,8 +14,6 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <!-- jsPDF para Geração de Relatórios Reais em PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body {
@@ -412,7 +410,7 @@
                                 </button>
                             </div>
                             <div id="reader-picking" class="w-full bg-slate-950 rounded overflow-hidden min-h-[160px] flex items-center justify-center border border-dashed border-slate-700">
-                                <span class="text-xs text-slate-500 text-center p-4">Câmera desligada. Clique em "Ligar Câmera" para bipar itens da ordem.</span>
+                                <span class="text-xs text-slate-500 text-center p-4">Câmara desligada. Clique em "Ligar Câmera" para bipar itens da ordem.</span>
                             </div>
                         </div>
 
@@ -784,7 +782,7 @@
                     isEndCamActive = false;
                     btn.innerText = "Ligar Câmera";
                     btn.classList.replace("bg-red-500", "bg-orange-500");
-                    document.getElementById('reader-enderecamento').innerHTML = `<span class="text-[11px] text-slate-500 text-center p-4">Câmara desligada. Clique em "Ligar Câmera" para ler o QR Code do endereço.</span>`;
+                    document.getElementById('reader-enderecamento').innerHTML = `<span class="text-[11px] text-slate-500 text-center p-4">Câmara desligada. Clique em "Ligar Câmara" para ler o QR Code do endereço.</span>`;
                 });
             }
         }
