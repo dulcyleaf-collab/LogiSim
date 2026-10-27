@@ -816,6 +816,29 @@ tbody tr:hover {
   <div class="footer">LogiSim · Projeto Integrador · Firjan SENAI Duque de Caxias · Protótipo educacional</div>
 </div>
 
+<div id="login-screen" style="position:fixed;inset:0;z-index:9999;background:#0b1220;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <form id="login-form" style="width:100%;max-width:390px;background:#121d2e;color:#edf3fb;padding:28px;border-radius:16px;border:1px solid #2a3a50;" onsubmit="login(event)">
+    <h2 style="margin-top:0;">LogiSim</h2>
+    <p style="color:#9fb0c5;">Entre para acessar a plataforma</p>
+
+    <label for="login-role">Tipo de acesso</label>
+    <select id="login-role" required style="width:100%;padding:12px;margin:6px 0 12px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
+      <option value="student">Aluno</option>
+      <option value="instructor">Instrutor</option>
+    </select>
+
+    <label for="login-user">Matrícula ou usuário</label>
+    <input id="login-user" required autocomplete="username" placeholder="Digite seu usuário" style="width:100%;padding:12px;margin:6px 0 12px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
+
+    <label for="login-password">Senha</label>
+    <input id="login-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha" style="width:100%;padding:12px;margin:6px 0 16px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
+
+    <button type="submit" style="width:100%;">Entrar</button>
+    <p id="login-message" role="alert" style="color:#fca5a5;"></p>
+    <p style="font-size:12px;color:#9fb0c5;">Protótipo educacional para demonstração.</p>
+  </form>
+</div>
+
 <script>
 const STORAGE = {
   products: "logisim_products",
