@@ -1419,9 +1419,8 @@ function initialize() {
     <p class="muted">Clique em “Iniciar A.L.” para iniciar a simulação das operações logísticas.</p>
   `;
 
-  const student = prompt("Digite seu nome para registrar as atividades (opcional):");
-  if (student && student.trim()) {
-    localStorage.setItem(STORAGE.student, student.trim());
+  document.getElementById("login-screen").style.display = "flex";
+document.getElementById("role-toggle").onclick = logout;
   }
 }
 
