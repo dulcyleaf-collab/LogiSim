@@ -615,12 +615,65 @@ tbody tr:hover {
 
   <div class="head-actions">
     <span class="pill" id="role-label">Modo aluno</span>
-    <button class="secondary" id="role-toggle" onclick="toggleRole()">
-      Entrar no modo instrutor
-    </button>
-  </div>
-</header>
 
+function login(event) {
+  event.preventDefault();
+
+  const tipo = document.getElementById("login-role").value;
+  const usuario = document.getElementById("login-user").value.trim();
+  const senha = document.getElementById("login-password").value;
+  const mensagem = document.getElementById("login-message");
+
+  const acessoAluno =
+    tipo === "student" &&
+    usuario === "2026001" &&
+    senha === "aluno123";
+
+  const acessoInstrutor =
+    tipo === "instructor" &&
+    usuario === "instrutor" &&
+    senha === "ensino123";
+
+  if (!acessoAluno && !acessoInstrutor) {
+    mensagem.textContent = "Usuário, senha ou tipo de acesso incorreto.";
+    return;
+  }
+
+  role = acessoInstrutor ? "instructor" : "student";
+
+  localStorage.setItem(
+    "logisim_session",
+    JSON.stringify({
+      role,
+      name: acessoAluno ? "Aluno Demonstração" : "Instrutor"
+    })
+  );
+
+  localStorage.setItem(
+    STORAGE.student,
+    acessoAluno ? "Aluno Demonstração" : usuario
+  );
+
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("role-label").textContent =
+    role === "student" ? "Aluno: Demonstração" : "Instrutor";
+
+  document.getElementById("role-toggle").textContent = "Sair";
+  document.querySelectorAll(".instructor-only").forEach(el => {
+    el.classList.toggle("hidden", role !== "instructor");
+  });
+
+  showView(role === "instructor" ? "instructor" : "home");
+}
+
+function logout() {
+  localStorage.removeItem("logisim_session");
+  location.reload();
+}
+
+function toggleRole() {
+  logout();
+}
 <div class="wrap">
   <div class="layout">
     <aside class="sidebar">
