@@ -3,988 +3,386 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101827">
+<meta name="theme-color" content="#0b1220">
 <title>LogiSim | Simulação de Operações Logísticas</title>
-
 <style>
-
-
-:root {
-  --bg: #0b1220;
-  --panel: #121d2e;
-  --panel2: #18263a;
-  --line: #2a3a50;
-  --text: #edf3fb;
-  --muted: #9fb0c5;
-  --orange: #f97316;
-  --orange-dark: #ea580c;
-  --green: #22c55e;
-  --red: #ef4444;
-  --blue: #60a5fa;
-  --navy: #080f1c;
-  --shadow: 0 8px 24px rgba(0, 0, 0, .18);
-}
-
-}
-
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 15px/1.6 system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-button, input, select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 10px;
-  padding: 11px 16px;
-  font-weight: 700;
-  background: var(--orange);
-  color: #fff;
-  transition: background .2s, transform .2s, box-shadow .2s;
-}
-
-button:hover {
-  background: var(--orange-dark);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, .18);
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.secondary {
-  background: #fff;
-  color: #334155;
-  border: 1px solid #cbd5e1;
-}
-
-.secondary:hover {
-  background: #f1f5f9;
-  color: #172033;
-}
-
-.danger {
-  background: #dc2626;
-  color: #fff;
-}
-
-.danger:hover {
-  background: #b91c1c;
-}
-
-.good {
-  background: #15803d;
-  color: #fff;
-}
-
-.wrap {
-  width: 100%;
-  max-width: 1440px;
-  margin: auto;
-  padding: 26px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 17px 28px;
-  background: var(--navy);
-  color: #fff;
-  border-bottom: 3px solid var(--orange);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, .14);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.logo {
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
-  background: var(--orange);
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  font-size: 23px;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, .25);
-}
-
-.brand h1 {
-  font-size: 21px;
-  letter-spacing: -.4px;
-  margin: 0;
-}
-
-.brand p {
-  margin: 1px 0 0;
-  color: #cbd5e1;
-  font-size: 12px;
-}
-
-.head-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #475569;
-  border-radius: 99px;
-  padding: 6px 12px;
-  color: #e2e8f0;
-  font-size: 12px;
-  background: rgba(255, 255, 255, .05);
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: 24px;
-  margin-top: 8px;
-  align-items: start;
-}
-
-.sidebar, .panel, .card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-}
-
-.sidebar {
-  padding: 13px;
-  height: max-content;
-  position: sticky;
-  top: 100px;
-}
-
-.navbtn {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  color: #475569;
-  margin: 4px 0;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 12px;
-  font-size: 13px;
-  box-shadow: none;
-}
-
-.navbtn:hover {
-  background: #fff7ed;
-  color: #c2410c;
-  box-shadow: none;
-}
-
-.navbtn.active {
-  background: #fff1e7;
-  border-color: #fed7aa;
-  color: #c2410c;
-  box-shadow: inset 3px 0 0 var(--orange);
-}
-
-.sidebar .small {
-  padding: 13px 9px 5px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-main {
-  min-width: 0;
-}
-
-.hero {
-  padding: 28px;
-  border-radius: 18px;
-  background: linear-gradient(125deg, #101827 0%, #23354c 70%, #34445b 100%);
-  color: #fff;
-  border: 1px solid #26374d;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::after {
-  content: "";
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border: 28px solid rgba(249, 115, 22, .12);
-  border-radius: 50%;
-  right: -55px;
-  bottom: -95px;
-  pointer-events: none;
-}
-
-.hero h2 {
-  margin: 0 0 8px;
-  font-size: 27px;
-  line-height: 1.25;
-  letter-spacing: -.5px;
-}
-
-.hero p {
-  margin: 0;
-  color: #dbe5f1;
-  max-width: 780px;
-}
-
-.row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.between {
-  justify-content: space-between;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.grid2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.card {
-  padding: 20px;
-  transition: transform .2s, box-shadow .2s;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, .09);
-}
-
-.card h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.card p {
-  margin-bottom: 0;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.stat {
-  font-size: 30px;
-  font-weight: 850;
-  letter-spacing: -1px;
-  margin: 5px 0;
-  color: #172033;
-}
-
-.section-title {
-  margin: 27px 0 13px;
-  font-size: 19px;
-  letter-spacing: -.3px;
-}
-
-.progress {
-  height: 9px;
-  background: #e2e8f0;
-  border-radius: 99px;
-  overflow: hidden;
-  margin: 14px 0;
-}
-
-.progress span {
-  height: 100%;
-  display: block;
-  background: linear-gradient(90deg, #f97316, #fb923c);
-  width: 0;
-  transition: width .25s;
-  border-radius: 99px;
-}
-
-.step-list {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 17px 0;
-}
-
-.step {
-  padding: 7px 12px;
-  border-radius: 99px;
-  border: 1px solid #dbe3ee;
-  background: #fff;
-  font-size: 12px;
-  color: #64748b;
-}
-
-.step.active {
-  border-color: #fdba74;
-  background: #fff1e7;
-  color: #c2410c;
-  font-weight: 700;
-}
-
-.step.done {
-  border-color: #86efac;
-  background: #f0fdf4;
-  color: #166534;
-}
-
-label {
-  display: block;
-  color: #334155;
-  font-size: 13px;
-  font-weight: 650;
-  margin: 12px 0 6px;
-}
-
-input, select {
-  width: 100%;
-  padding: 11px 12px;
-  border-radius: 10px;
-  background: #fff;
-  color: var(--text);
-  border: 1px solid #cbd5e1;
-  outline: none;
-  transition: border .2s, box-shadow .2s;
-}
-
-input:focus, select:focus {
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
-}
-
-input::placeholder {
-  color: #94a3b8;
-}
-
-.field {
-  min-width: 150px;
-  flex: 1;
-}
-
-.formgrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 17px;
-}
-
-.feedback {
-  margin-top: 15px;
-  padding: 13px 15px;
-  border-radius: 11px;
-  border: 1px solid var(--line);
-  background: #f8fafc;
-}
-
-.feedback.success {
-  border-color: #86efac;
-  background: #f0fdf4;
-  color: #166534;
-}
-
-.feedback.error {
-  border-color: #fecaca;
-  background: #fef2f2;
-  color: #991b1b;
-}
-
-.hidden {
-  display: none !important;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-th, td {
-  text-align: left;
-  padding: 12px 10px;
-  border-bottom: 1px solid var(--line);
-  vertical-align: top;
-}
-
-th {
-  color: #475569;
-  font-weight: 750;
-  background: #f8fafc;
-  white-space: nowrap;
-}
-
-td {
-  color: #334155;
-}
-
-tbody tr:hover {
-  background: #f8fafc;
-}
-
-.tablewrap {
-  overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  margin-top: 12px;
-}
-
-.tag {
-  display: inline-block;
-  border-radius: 99px;
-  padding: 4px 9px;
-  font-size: 11px;
-  font-weight: 700;
-  background: #eff6ff;
-  color: #1d4ed8;
-  white-space: nowrap;
-}
-
-.tag.green {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.tag.red {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.notice {
-  padding: 13px 15px;
-  border-radius: 11px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
-  margin: 14px 0;
-  font-size: 13px;
-}
-
-.tiny {
-  font-size: 12px;
-}
-
-.footer {
-  margin: 28px 0 8px;
-  padding: 18px;
-  color: var(--muted);
-  font-size: 12px;
-  text-align: center;
-  border-top: 1px solid var(--line);
-}
-
-@media (max-width: 950px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 5px;
-  }
-
-  .sidebar .small {
-    grid-column: 1 / -1;
-  }
-
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 600px) {
-  .wrap {
-    padding: 13px;
-  }
-
-  header {
-    padding: 13px;
-  }
-
-  .brand h1 {
-    font-size: 18px;
-  }
-
-  .brand p {
-    font-size: 11px;
-  }
-
-  .head-actions {
-    width: 100%;
-  }
-
-  .hero {
-    padding: 21px;
-  }
-
-  .hero h2 {
-    font-size: 22px;
-  }
-
-  .grid, .grid2, .formgrid {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    grid-template-columns: 1fr;
-  }
-
-  .stat {
-    font-size: 26px;
-  }
-
-  .card {
-    padding: 16px;
-  }
-
-  .pill {
-    font-size: 11px;
-  }
-
-  .actions button {
-    flex: 1;
-  }
-}
+:root{--bg:#0b1220;--panel:#121d2e;--line:#2a3a50;--text:#edf3fb;--muted:#9fb0c5;--orange:#f97316;--green:#22c55e;--red:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 system-ui,Arial,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 24px;background:#080f1c;border-bottom:3px solid var(--orange)}
+header h1{margin:0;font-size:23px}
+header p{margin:0;color:var(--muted);font-size:12px}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 15px;font-weight:700;background:var(--orange);color:white}
+button:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#26364b}
+.danger{background:#b91c1c}
+.wrap{max-width:1400px;margin:auto;padding:22px}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:20px}
+.sidebar,.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.sidebar{height:max-content}
+.navbtn{display:block;width:100%;text-align:left;background:transparent;margin:4px 0;color:var(--text)}
+.navbtn.active{background:#29384b;border-left:4px solid var(--orange)}
+.hero{padding:24px;border-radius:15px;background:linear-gradient(120deg,#17263b,#253951);margin-bottom:18px}
+.hero h2{margin-top:0;font-size:25px}
+.hero p{color:#d1dbea}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card h3{margin-top:0}
+.stat{font-size:28px;font-weight:800;color:#fff}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.hidden{display:none!important}
+label{display:block;margin:10px 0 5px}
+input,select{width:100%;padding:11px;border:1px solid #475569;border-radius:8px;background:#0b1220;color:white}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.notice,.feedback{padding:13px;border-radius:9px;margin:12px 0;background:#1d3048;border:1px solid #38506c}
+.success{background:#123b2a;border-color:#26764c}
+.error{background:#461c25;border-color:#9f3343}
+table{width:100%;border-collapse:collapse;min-width:550px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+th{background:#202e41}
+.tablewrap{overflow-x:auto;margin-top:12px}
+.progress{height:9px;background:#26364b;border-radius:20px;overflow:hidden;margin:14px 0}
+.progress span{display:block;height:100%;width:0;background:var(--orange)}
+.badge{display:inline-block;padding:4px 9px;background:#26364b;border-radius:20px;font-size:12px}
+.footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+#login-screen{position:fixed;inset:0;z-index:99;background:#080f1c;display:flex;align-items:center;justify-content:center;padding:18px}
+.loginbox{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--line);padding:28px;border-radius:16px}
+.loginbox h2{margin-top:0}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wrap{padding:12px}header{padding:13px}.grid,.grid2{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr}.hero{padding:17px}.hero h2{font-size:22px}}
 </style>
 </head>
-
 <body>
+
 <header>
-  <div class="brand">
-    <div class="logo">L</div>
-    <div>
-      <h1>LogiSim</h1>
-      <p>Simulação de Operações Logísticas</p>
-    </div>
+  <div>
+    <h1>📦 LogiSim</h1>
+    <p>Simulação de Operações Logísticas</p>
   </div>
+  <div>
+    <span class="badge" id="role-label">Acesso não realizado</span>
+    <button id="logout-button" class="secondary hidden" type="button" onclick="logout()">Sair</button>
+  </div>
+</header>
 
-  <div class="head-actions">
-    <span class="pill" id="role-label">Modo aluno</span>
-
-function login(event) {
-  event.preventDefault();
-
-  const tipo = document.getElementById("login-role").value;
-  const usuario = document.getElementById("login-user").value.trim();
-  const senha = document.getElementById("login-password").value;
-  const mensagem = document.getElementById("login-message");
-
-  const acessoAluno =
-    tipo === "student" &&
-    usuario === "2026001" &&
-    senha === "aluno123";
-
-  const acessoInstrutor =
-    tipo === "instructor" &&
-    usuario === "instrutor" &&
-    senha === "ensino123";
-
-  if (!acessoAluno && !acessoInstrutor) {
-    mensagem.textContent = "Usuário, senha ou tipo de acesso incorreto.";
-    return;
-  }
-
-  role = acessoInstrutor ? "instructor" : "student";
-
-  localStorage.setItem(
-    "logisim_session",
-    JSON.stringify({
-      role,
-      name: acessoAluno ? "Aluno Demonstração" : "Instrutor"
-    })
-  );
-
-  localStorage.setItem(
-    STORAGE.student,
-    acessoAluno ? "Aluno Demonstração" : usuario
-  );
-
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("role-label").textContent =
-    role === "student" ? "Aluno: Demonstração" : "Instrutor";
-
-  document.getElementById("role-toggle").textContent = "Sair";
-  document.querySelectorAll(".instructor-only").forEach(el => {
-    el.classList.toggle("hidden", role !== "instructor");
-  });
-
-  showView(role === "instructor" ? "instructor" : "home");
-}
-
-function logout() {
-  localStorage.removeItem("logisim_session");
-  location.reload();
-}
-
-function toggleRole() {
-  logout();
-}
 <div class="wrap">
   <div class="layout">
-    <aside class="sidebar">
+    <aside class="sidebar hidden" id="sidebar">
       <button class="navbtn active" data-view="home" onclick="showView('home')">⌂ Visão geral</button>
-      <button class="navbtn" data-view="challenge" onclick="showView('challenge')">◎ A.L. — Atividades Logísticas</button>
+      <button class="navbtn" data-view="activity" onclick="showView('activity')">◎ Atividade logística</button>
       <button class="navbtn" data-view="products" onclick="showView('products')">▤ WMS / Produtos</button>
       <button class="navbtn" data-view="history" onclick="showView('history')">◷ Meu desempenho</button>
-      <button class="navbtn instructor-only hidden" data-view="instructor" onclick="showView('instructor')">▥ Painel do instrutor</button>
-      <div class="small">Protótipo educacional · dados de demonstração salvos neste navegador.</div>
+      <button class="navbtn hidden" id="instructor-link" data-view="instructor" onclick="showView('instructor')">▥ Painel do instrutor</button>
+      <p class="small muted">Protótipo educacional. Os dados ficam salvos neste navegador.</p>
     </aside>
 
-    <main>
-      <section id="view-home" class="view">
+    <main id="main-content" class="hidden">
+      <section class="view" id="view-home">
         <div class="hero">
           <h2>Da teoria à prática, em um só lugar.</h2>
-          <p>Pratique operações logísticas em um ambiente simulado. Execute as etapas, receba feedback automático e acompanhe seu desempenho.</p>
+          <p>Pratique recebimento, conferência, armazenagem, picking e expedição em uma simulação logística.</p>
           <div class="actions">
-            <button onclick="startChallenge()">Iniciar A.L.</button>
-            <button class="secondary" onclick="showView('products')">Consultar WMS</button>
+            <button onclick="startActivity()">Iniciar atividade</button>
+            <button class="secondary" onclick="showView('products')">Consultar estoque</button>
           </div>
         </div>
-
         <div class="grid">
-          <div class="card">
-            <div class="muted tiny">Pontuação da última tentativa</div>
-            <div class="stat" id="home-score">—</div>
-            <div class="muted tiny">A nota é calculada pelas ações realizadas.</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">A.L. concluídas</div>
-            <div class="stat" id="home-completed">0</div>
-            <div class="muted tiny">Registradas neste navegador.</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">Melhor resultado</div>
-            <div class="stat" id="home-best">—</div>
-            <div class="muted tiny">Melhor nota registrada.</div>
-          </div>
+          <div class="card"><div class="muted small">Última nota</div><div class="stat" id="home-score">—</div></div>
+          <div class="card"><div class="muted small">Atividades concluídas</div><div class="stat" id="home-count">0</div></div>
+          <div class="card"><div class="muted small">Melhor nota</div><div class="stat" id="home-best">—</div></div>
         </div>
-
-        <h3 class="section-title">Como funciona</h3>
+        <h3>Etapas da operação</h3>
         <div class="grid">
-          <div class="card"><h3>1. Recebimento</h3><p class="muted">Confira quantidades e documentos de entrada.</p></div>
-          <div class="card"><h3>2. Armazenagem e picking</h3><p class="muted">Escolha endereços e separe os itens do pedido.</p></div>
-          <div class="card"><h3>3. Expedição e rota</h3><p class="muted">Valide a documentação, respeite a capacidade e organize entregas.</p></div>
+          <div class="card"><h3>1. Recebimento</h3><p class="muted">Conferência de quantidades e documentos.</p></div>
+          <div class="card"><h3>2. Armazenagem e picking</h3><p class="muted">Endereçamento e separação dos itens.</p></div>
+          <div class="card"><h3>3. Expedição</h3><p class="muted">Conferência final e liberação do pedido.</p></div>
         </div>
-
-        <div class="notice"><strong>Para a banca:</strong> este é um protótipo funcional de demonstração. Os dados são fictícios e ficam no armazenamento local do navegador; não há servidor nem sincronização entre computadores.</div>
+        <div class="notice">Esta versão é um protótipo de demonstração. Os dados são locais e não são sincronizados entre computadores diferentes.</div>
       </section>
 
-      <section id="view-challenge" class="view hidden">
+      <section class="view hidden" id="view-activity">
         <div class="hero">
-          <div class="row between">
-            <div>
-              <h2>A.L. 01 — Pedido da Loja Central</h2>
-              <p>Você é responsável por receber, armazenar, separar e expedir um pedido. Cada etapa da A.L. é corrigida automaticamente.</p>
-            </div>
-            <span class="pill" id="challenge-status">Não iniciado</span>
-          </div>
+          <h2>A.L. 01 — Pedido da Loja Central</h2>
+          <p>Responda às questões das cinco etapas da operação logística. As respostas corretas permitem avançar.</p>
+          <span class="badge" id="activity-status">Aguardando início</span>
         </div>
-
-        <div class="row between">
-          <div>
-            <strong id="step-heading">Etapa 1 de 5 — Recebimento</strong>
-            <div class="muted tiny">Conclua as etapas para finalizar a atividade.</div>
-          </div>
-          <div class="pill">Nota: <strong id="live-score">100</strong>/100</div>
+        <div class="grid2">
+          <div class="card"><strong id="step-title">Etapa 1 de 5</strong><p class="muted small" id="step-description"></p></div>
+          <div class="card"><div class="muted small">Pontuação</div><div class="stat"><span id="score">100</span>/100</div></div>
         </div>
-
         <div class="progress"><span id="progressbar"></span></div>
-        <div class="step-list" id="step-list"></div>
-        <div class="panel" style="padding:20px" id="step-content"></div>
-        <div class="feedback hidden" id="step-feedback" aria-live="polite"></div>
-
-        <div class="actions">
-          <button class="secondary" id="back-step" onclick="previousStep()">Etapa anterior</button>
-          <button id="next-step" onclick="nextStep()">Validar e continuar</button>
-          <button class="secondary hidden" id="finish-btn" onclick="finishChallenge()">Finalizar A.L.</button>
+        <div class="panel">
+          <h3 id="question-title">Clique em iniciar para começar.</h3>
+          <div id="answer-area"></div>
+          <div id="feedback" class="feedback hidden" role="status"></div>
+          <div class="actions">
+            <button class="secondary" id="start-button" onclick="startActivity()">Iniciar / Reiniciar</button>
+            <button id="check-button" class="hidden" onclick="checkAnswer()">Validar resposta</button>
+            <button id="next-button" class="hidden" onclick="nextStep()">Próxima etapa</button>
+            <button id="finish-button" class="hidden" onclick="finishActivity()">Finalizar atividade</button>
+          </div>
         </div>
       </section>
 
-      <section id="view-products" class="view hidden">
+      <section class="view hidden" id="view-products">
         <div class="hero">
-          <h2>WMS — Cadastro de produtos</h2>
-          <p>Consulte os produtos e cadastre novos itens para a simulação. Os registros são salvos neste navegador.</p>
+          <h2>WMS — Cadastro e consulta de produtos</h2>
+          <p>Consulte o estoque simulado e adicione produtos para a demonstração.</p>
         </div>
-
-        <div class="panel" style="padding:18px;margin-bottom:16px">
-          <h3>Adicionar produto</h3>
-          <div class="formgrid">
-            <div><label for="p-sku">Código SKU</label><input id="p-sku" placeholder="Ex.: SKU-105"></div>
-            <div><label for="p-name">Descrição</label><input id="p-name" placeholder="Ex.: Caixa de papelão"></div>
-            <div><label for="p-qty">Quantidade</label><input id="p-qty" type="number" min="1" placeholder="100"></div>
-            <div><label for="p-weight">Peso unitário (kg)</label><input id="p-weight" type="number" min="0.01" step="0.01" placeholder="2.5"></div>
+        <div class="panel">
+          <h3>Cadastrar produto</h3>
+          <div class="grid2">
+            <div><label for="sku">Código SKU</label><input id="sku" placeholder="Ex.: SKU-104"></div>
+            <div><label for="product-name">Nome do produto</label><input id="product-name" placeholder="Ex.: Caixa de papel"></div>
+            <div><label for="quantity">Quantidade</label><input id="quantity" type="number" min="1" placeholder="10"></div>
+            <div><label for="weight">Peso unitário (kg)</label><input id="weight" type="number" min="0.01" step="0.01" placeholder="2.5"></div>
+            <div><label for="address">Endereço de armazenagem</label><input id="address" placeholder="A-01-03"></div>
           </div>
           <div class="actions"><button onclick="addProduct()">Cadastrar produto</button></div>
           <div id="product-feedback" class="feedback hidden"></div>
         </div>
-
-        <div class="panel" style="padding:18px">
-          <div class="row between">
-            <h3>Estoque simulado</h3>
-            <input style="max-width:260px" id="product-search" placeholder="Buscar SKU ou descrição" oninput="renderProducts()">
+        <div class="panel" style="margin-top:16px">
+          <div class="grid2">
+            <div><h3>Estoque simulado</h3></div>
+            <div><label for="search">Buscar produto</label><input id="search" placeholder="SKU ou nome" oninput="renderProducts()"></div>
           </div>
-          <div class="tablewrap">
-            <table>
-              <thead><tr><th>SKU</th><th>Produto</th><th>Quantidade</th><th>Peso unitário</th><th>Endereço</th></tr></thead>
-              <tbody id="product-table"></tbody>
-            </table>
-          </div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>SKU</th><th>Produto</th><th>Quantidade</th><th>Peso</th><th>Endereço</th></tr></thead>
+            <tbody id="product-table"></tbody>
+          </table></div>
         </div>
       </section>
 
-      <section id="view-history" class="view hidden">
-        <div class="hero">
-          <h2>Meu desempenho</h2>
-          <p>Veja os resultados das tentativas realizadas neste navegador.</p>
-        </div>
-
+      <section class="view hidden" id="view-history">
+        <div class="hero"><h2>Meu desempenho</h2><p>Resultados das atividades registradas neste navegador.</p></div>
         <div class="grid">
-          <div class="card">
-            <div class="muted tiny">Tentativas concluídas</div>
-            <div class="stat" id="hist-count">0</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">Média das notas</div>
-            <div class="stat" id="hist-average">—</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">Melhor nota</div>
-            <div class="stat" id="hist-best">—</div>
-          </div>
+          <div class="card"><div class="muted small">Tentativas concluídas</div><div class="stat" id="history-count">0</div></div>
+          <div class="card"><div class="muted small">Média das notas</div><div class="stat" id="history-average">—</div></div>
+          <div class="card"><div class="muted small">Melhor nota</div><div class="stat" id="history-best">—</div></div>
         </div>
+        <div class="panel">
+          <div class="actions"><button class="secondary" onclick="exportCSV()">Exportar resultados CSV</button></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Aluno</th><th>Data</th><th>Atividade</th><th>Nota</th><th>Erros</th><th>Status</th></tr></thead>
+            <tbody id="history-table"></tbody>
+          </table></div>
+        </div>
+      </section>
 
-        <div class="panel" style="padding:18px;margin-top:16px">
-          <div class="row between">
-            <h3>Histórico de atividades</h3>
+      <section class="view hidden" id="view-instructor">
+        <div class="hero"><h2>Painel do instrutor</h2><p>Resumo das atividades registradas neste navegador.</p></div>
+        <div class="notice">Atenção: os resultados aparecem apenas neste dispositivo. Para reunir resultados de vários alunos em computadores diferentes, é necessário um banco de dados com autenticação real.</div>
+        <div class="grid">
+          <div class="card"><div class="muted small">Tentativas registradas</div><div class="stat" id="in-count">0</div></div>
+          <div class="card"><div class="muted small">Média da turma neste dispositivo</div><div class="stat" id="in-average">—</div></div>
+          <div class="card"><div class="muted small">Aprovação</div><div class="stat" id="in-pass">—</div></div>
+        </div>
+        <div class="panel">
+          <div class="actions">
             <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+            <button class="danger" onclick="clearHistory()">Apagar histórico</button>
           </div>
-          <div class="tablewrap">
-            <table>
-              <thead><tr><th>Data</th><th>Atividade</th><th>Nota</th><th>Duração</th><th>Resultado</th></tr></thead>
-              <tbody id="history-table"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="view-instructor" class="view hidden">
-        <div class="hero">
-          <h2>Painel do instrutor</h2>
-          <p>Acompanhe as tentativas registradas neste navegador e exporte os resultados para análise.</p>
-        </div>
-
-        <div class="notice">
-          <strong>Limite da demonstração:</strong> este painel apresenta os registros locais do dispositivo atual. Para uma turma inteira acessando de computadores diferentes, será necessário conectar a plataforma a um banco de dados e implementar autenticação.
-        </div>
-
-        <div class="grid">
-          <div class="card">
-            <div class="muted tiny">Tentativas registradas</div>
-            <div class="stat" id="ins-count">0</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">Média da turma neste dispositivo</div>
-            <div class="stat" id="ins-average">—</div>
-          </div>
-          <div class="card">
-            <div class="muted tiny">Taxa de aprovação (nota ≥ 70)</div>
-            <div class="stat" id="ins-pass">—</div>
-          </div>
-        </div>
-
-        <div class="panel" style="padding:18px;margin-top:16px">
-          <div class="row between">
-            <h3>Resultados registrados</h3>
-            <div class="row">
-              <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
-              <button class="danger" onclick="clearHistory()">Apagar histórico</button>
-            </div>
-          </div>
-          <div class="tablewrap">
-            <table>
-              <thead><tr><th>Aluno</th><th>Data</th><th>Nota</th><th>Duração</th><th>Erros</th><th>Status</th></tr></thead>
-              <tbody id="instructor-table"></tbody>
-            </table>
-          </div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Aluno</th><th>Data</th><th>Nota</th><th>Erros</th><th>Status</th></tr></thead>
+            <tbody id="instructor-table"></tbody>
+          </table></div>
         </div>
       </section>
     </main>
   </div>
-
   <div class="footer">LogiSim · Projeto Integrador · Firjan SENAI Duque de Caxias · Protótipo educacional</div>
 </div>
 
-<div id="login-screen" style="position:fixed;inset:0;z-index:9999;background:#0b1220;display:flex;align-items:center;justify-content:center;padding:20px;">
-  <form id="login-form" style="width:100%;max-width:390px;background:#121d2e;color:#edf3fb;padding:28px;border-radius:16px;border:1px solid #2a3a50;" onsubmit="login(event)">
-    <h2 style="margin-top:0;">LogiSim</h2>
-    <p style="color:#9fb0c5;">Entre para acessar a plataforma</p>
-
+<div id="login-screen">
+  <form class="loginbox" id="login-form">
+    <h2>LogiSim</h2>
+    <p class="muted">Entre para acessar a plataforma de simulação logística.</p>
     <label for="login-role">Tipo de acesso</label>
-    <select id="login-role" required style="width:100%;padding:12px;margin:6px 0 12px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
+    <select id="login-role">
       <option value="student">Aluno</option>
       <option value="instructor">Instrutor</option>
     </select>
-
     <label for="login-user">Matrícula ou usuário</label>
-    <input id="login-user" required autocomplete="username" placeholder="Digite seu usuário" style="width:100%;padding:12px;margin:6px 0 12px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
-
+    <input id="login-user" required autocomplete="username" placeholder="Digite seu usuário">
     <label for="login-password">Senha</label>
-    <input id="login-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha" style="width:100%;padding:12px;margin:6px 0 16px;background:#0b1220;color:white;border:1px solid #34465c;border-radius:8px;">
-
-    <button type="submit" style="width:100%;">Entrar</button>
-    <p id="login-message" role="alert" style="color:#fca5a5;"></p>
-    <p style="font-size:12px;color:#9fb0c5;">Protótipo educacional para demonstração.</p>
+    <input id="login-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha">
+    <button type="submit" style="width:100%;margin-top:18px">Entrar</button>
+    <div id="login-message" class="feedback hidden" role="alert"></div>
+    <p class="muted small">Acesso de demonstração para apresentação do projeto.</p>
   </form>
 </div>
 
 <script>
-const STORAGE = {
+"use strict";
+
+const KEYS = {
   products: "logisim_products",
   history: "logisim_history",
-  student: "logisim_student"
+  student: "logisim_student",
+  session: "logisim_session"
 };
 
 const defaultProducts = [
-  { sku: "AGUA-001", name: "Água mineral — caixa com 12 unidades", qty: 50, weight: 12, address: "A-01-01" },
-  { sku: "PAP-002", name: "Papel A4 — pacote", qty: 30, weight: 2.5, address: "A-01-02" },
-  { sku: "LIMP-003", name: "Material de limpeza — caixa", qty: 20, weight: 8, address: "B-02-01" }
+  {sku:"AGUA-001",name:"Água mineral — caixa com 12 unidades",qty:50,weight:12,address:"A-01-01"},
+  {sku:"PAP-002",name:"Papel A4 — pacote",qty:30,weight:2.5,address:"A-01-02"},
+  {sku:"LIMP-003",name:"Material de limpeza — caixa",qty:20,weight:8,address:"B-02-01"}
 ];
 
-let products = load(STORAGE.products, defaultProducts);
-let historyData = load(STORAGE.history, []);
-let currentStep = 0;
-let attemptStarted = false;
-let attemptFinished = false;
-let score = 100;
-let errors = 0;
-let startedAt = null;
-let role = "student";
-let validatedSteps = [];
-
-const steps = [
-  {
-    title: "Recebimento",
-    description: "Confira o documento e a quantidade recebida.",
-    question: "O pedido informa 50 caixas de água mineral. Quantas caixas devem ser registradas no recebimento?",
-    type: "number",
-    answer: 50,
-    hint: "Compare a quantidade física com a quantidade descrita no documento."
-  },
-  {
-    title: "Conferência",
-    description: "Identifique se a quantidade recebida está correta.",
-    question: "Foram solicitadas 50 caixas e chegaram 48. Quantas caixas estão faltando?",
-    type: "number",
-    answer: 2,
-    hint: "Subtraia a quantidade recebida da quantidade solicitada."
-  },
-  {
-    title: "Armazenagem",
-    description: "Escolha o endereço indicado para o produto.",
-    question: "Qual endereço deve ser usado para armazenar o produto?",
-    type: "select",
-    options: [
-      { value: "", label: "Selecione um endereço" },
-      { value: "A-01-01", label: "A-01-01 — endereço correto" },
-      { value: "EXP-01", label: "EXP-01 — área de expedição" },
-      { value: "DOC-01", label: "DOC-01 — área administrativa" }
-    ],
-    answer: "A-01-01",
-    hint: "Utilize o endereço de armazenagem indicado no cadastro do item."
-  },
-  {
-    title: "Picking e separação",
-    description: "Separe os itens solicitados para o pedido.",
-    question: "O pedido exige 12 caixas e o estoque possui 20. Quantas caixas devem ser separadas?",
-    type: "number",
-    answer: 12,
-    hint: "Separe apenas a quantidade solicitada pelo pedido."
-  },
-  {
-    title: "Expedição",
-    description: "Valide a quantidade antes de finalizar o envio.",
-    question: "Qual é a ação correta antes de liberar o pedido para transporte?",
-    type: "select",
-    options: [
-      { value: "", label: "Selecione uma opção" },
-      { value: "conferir", label: "Conferir pedido e documentação" },
-      { value: "enviar", label: "Enviar sem conferir" },
-      { value: "ignorar", label: "Ignorar divergências" }
-    ],
-    answer: "conferir",
-    hint: "A expedição deve confirmar os itens e a documentação antes da liberação."
-  }
-];
-
-function load(key, fallback) {
+function loadData(key, fallback) {
   try {
     const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : JSON.parse(JSON.stringify(fallback));
-  } catch (error) {
+  } catch (e) {
     return JSON.parse(JSON.stringify(fallback));
   }
 }
 
+let products = loadData(KEYS.products, defaultProducts);
+let historyData = loadData(KEYS.history, []);
+let currentUser = "";
+let role = "student";
+let currentStep = 0;
+let score = 100;
+let errors = 0;
+let startedAt = 0;
+let activityStarted = false;
+let activityFinished = false;
+let answeredSteps = [];
+
+const steps = [
+  {
+    title:"Recebimento",
+    description:"Confira o documento e a quantidade recebida.",
+    question:"O documento informa o recebimento de 50 caixas. Qual quantidade deve ser registrada?",
+    type:"number",
+    answer:50,
+    hint:"Registre a quantidade efetivamente conferida."
+  },
+  {
+    title:"Conferência",
+    description:"Identifique a divergência entre o pedido e a entrega.",
+    question:"Foram solicitadas 50 caixas e chegaram 48. Quantas caixas estão faltando?",
+    type:"number",
+    answer:2,
+    hint:"Subtraia a quantidade recebida da quantidade solicitada."
+  },
+  {
+    title:"Armazenagem",
+    description:"Escolha o endereço de armazenagem indicado.",
+    question:"Qual endereço está cadastrado para o produto Água mineral?",
+    type:"select",
+    options:[
+      {value:"",label:"Selecione uma opção"},
+      {value:"A-01-01",label:"A-01-01"},
+      {value:"EXP-01",label:"EXP-01 — expedição"},
+      {value:"ADM-01",label:"ADM-01 — administrativo"}
+    ],
+    answer:"A-01-01",
+    hint:"Consulte o endereço no cadastro do estoque."
+  },
+  {
+    title:"Picking e separação",
+    description:"Separe somente a quantidade solicitada.",
+    question:"O pedido solicita 12 caixas e o estoque possui 20. Quantas caixas devem ser separadas?",
+    type:"number",
+    answer:12,
+    hint:"A separação deve respeitar a quantidade do pedido."
+  },
+  {
+    title:"Expedição",
+    description:"Valide a operação antes de liberar o pedido.",
+    question:"O que deve ser feito antes de liberar o pedido para transporte?",
+    type:"select",
+    options:[
+      {value:"",label:"Selecione uma opção"},
+      {value:"conferir",label:"Conferir os itens e a documentação"},
+      {value:"enviar",label:"Enviar sem conferir"},
+      {value:"ignorar",label:"Ignorar divergências"}
+    ],
+    answer:"conferir",
+    hint:"A conferência final reduz erros de expedição."
+  }
+];
+
 function saveData() {
-  localStorage.setItem(STORAGE.products, JSON.stringify(products));
-  localStorage.setItem(STORAGE.history, JSON.stringify(historyData));
+  localStorage.setItem(KEYS.products, JSON.stringify(products));
+  localStorage.setItem(KEYS.history, JSON.stringify(historyData));
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function showMessage(id, message, type) {
+  const el = document.getElementById(id);
+  el.textContent = message;
+  el.className = "feedback " + type;
+  el.classList.remove("hidden");
+}
+
+document.getElementById("login-form").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const selectedRole = document.getElementById("login-role").value;
+  const username = document.getElementById("login-user").value.trim();
+  const password = document.getElementById("login-password").value;
+
+  const studentOK = selectedRole === "student" &&
+    username === "2026001" && password === "aluno123";
+
+  const instructorOK = selectedRole === "instructor" &&
+    username.toLowerCase() === "instrutor" && password === "ensino123";
+
+  if (!studentOK && !instructorOK) {
+    showMessage("login-message", "Usuário, senha ou tipo de acesso incorreto.", "error");
+    return;
+  }
+
+  role = instructorOK ? "instructor" : "student";
+  currentUser = studentOK ? "Aluno Demonstração" : "Instrutor";
+
+  localStorage.setItem(KEYS.student, currentUser);
+  localStorage.setItem(KEYS.session, JSON.stringify({role, name:currentUser}));
+
+  document.getElementById("login-screen").classList.add("hidden");
+  document.getElementById("sidebar").classList.remove("hidden");
+  document.getElementById("main-content").classList.remove("hidden");
+  document.getElementById("logout-button").classList.remove("hidden");
+  document.getElementById("role-label").textContent =
+    role === "student" ? "Aluno: " + currentUser : "Instrutor";
+
+  document.getElementById("instructor-link").classList.toggle("hidden", role !== "instructor");
+
+  showView(role === "instructor" ? "instructor" : "home");
+  renderAll();
+});
+
+function logout() {
+  localStorage.removeItem(KEYS.session);
+  currentUser = "";
+  document.getElementById("login-form").reset();
+  document.getElementById("login-message").classList.add("hidden");
+  document.getElementById("login-screen").classList.remove("hidden");
+  document.getElementById("sidebar").classList.add("hidden");
+  document.getElementById("main-content").classList.add("hidden");
+  document.getElementById("logout-button").classList.add("hidden");
+  document.getElementById("role-label").textContent = "Acesso não realizado";
 }
 
 function showView(name) {
+  if (name === "instructor" && role !== "instructor") {
+    name = "home";
+  }
+
   document.querySelectorAll(".view").forEach(view => {
     view.classList.toggle("hidden", view.id !== "view-" + name);
   });
@@ -998,258 +396,195 @@ function showView(name) {
   if (name === "history") renderHistory();
   if (name === "instructor") renderInstructor();
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function toggleRole() {
-  role = role === "student" ? "instructor" : "student";
-
-  document.getElementById("role-label").textContent =
-    role === "student" ? "Modo aluno" : "Modo instrutor";
-
-  document.getElementById("role-toggle").textContent =
-    role === "student" ? "Entrar no modo instrutor" : "Voltar ao modo aluno";
-
-  document.querySelectorAll(".instructor-only").forEach(element => {
-    element.classList.toggle("hidden", role !== "instructor");
-  });
-
-  if (role === "instructor") showView("instructor");
-  else showView("home");
-}
-
-function startChallenge() {
+function startActivity() {
   currentStep = 0;
-  attemptStarted = true;
-  attemptFinished = false;
   score = 100;
   errors = 0;
-  validatedSteps = [];
   startedAt = Date.now();
+  activityStarted = true;
+  activityFinished = false;
+  answeredSteps = [];
 
-  document.getElementById("challenge-status").textContent = "Em andamento";
-  document.getElementById("live-score").textContent = score;
-
-  showView("challenge");
+  document.getElementById("activity-status").textContent = "Em andamento";
+  document.getElementById("start-button").textContent = "Reiniciar atividade";
   renderStep();
+  showView("activity");
 }
 
 function renderStep() {
   const step = steps[currentStep];
-  if (!step) return;
 
-  document.getElementById("step-heading").textContent =
-    `Etapa ${currentStep + 1} de ${steps.length} — ${step.title}`;
-
+  document.getElementById("step-title").textContent =
+    "Etapa " + (currentStep + 1) + " de " + steps.length + " — " + step.title;
+  document.getElementById("step-description").textContent = step.description;
+  document.getElementById("question-title").textContent = step.question;
+  document.getElementById("score").textContent = score;
   document.getElementById("progressbar").style.width =
-    `${(currentStep / steps.length) * 100}%`;
-
-  document.getElementById("step-list").innerHTML = steps.map((item, index) => {
-    let className = "step";
-    if (index === currentStep) className += " active";
-    if (validatedSteps.includes(index)) className += " done";
-    return `<span class="${className}">${index + 1}. ${escapeHTML(item.title)}</span>`;
-  }).join("");
+    (answeredSteps.length / steps.length * 100) + "%";
 
   let control = "";
-
   if (step.type === "number") {
-    control = `<label for="step-answer">Sua resposta</label>
-      <input id="step-answer" type="number" min="0" placeholder="Digite sua resposta">`;
+    control = '<label for="answer">Sua resposta</label><input id="answer" type="number" min="0" placeholder="Digite sua resposta">';
   } else {
-    control = `<label for="step-answer">Sua resposta</label>
-      <select id="step-answer">${step.options.map(option =>
-        `<option value="${escapeHTML(option.value)}">${escapeHTML(option.label)}</option>`
-      ).join("")}</select>`;
+    control = '<label for="answer">Sua resposta</label><select id="answer">' +
+      step.options.map(option => '<option value="' + escapeHTML(option.value) + '">' +
+      escapeHTML(option.label) + '</option>').join("") + '</select>';
   }
 
-  document.getElementById("step-content").innerHTML = `
-    <h3>${escapeHTML(step.title)}</h3>
-    <p class="muted">${escapeHTML(step.description)}</p>
-    <div class="notice">${escapeHTML(step.question)}</div>
-    ${control}
-    <p class="muted tiny">Dica: ${escapeHTML(step.hint)}</p>
-  `;
+  document.getElementById("answer-area").innerHTML =
+    control + '<p class="muted small">Dica: ' + escapeHTML(step.hint) + '</p>';
 
-  document.getElementById("step-feedback").classList.add("hidden");
-  document.getElementById("back-step").disabled = currentStep === 0;
-
-  document.getElementById("next-step").classList.toggle(
-    "hidden", validatedSteps.includes(currentStep)
-  );
-
-  document.getElementById("finish-btn").classList.toggle(
-    "hidden", currentStep !== steps.length - 1 || !validatedSteps.includes(currentStep)
-  );
+  document.getElementById("feedback").classList.add("hidden");
+  document.getElementById("check-button").classList.remove("hidden");
+  document.getElementById("next-button").classList.add("hidden");
+  document.getElementById("finish-button").classList.add("hidden");
 }
 
-function nextStep() {
-  if (!attemptStarted || attemptFinished) {
-    showFeedback("step-feedback", "Inicie uma nova atividade antes de continuar.", "error");
+function checkAnswer() {
+  if (!activityStarted || activityFinished) {
+    showMessage("feedback", "Clique em Iniciar / Reiniciar antes de responder.", "error");
     return;
   }
 
-  if (validatedSteps.includes(currentStep)) {
-    if (currentStep < steps.length - 1) {
-      currentStep++;
-      renderStep();
-    }
+  const field = document.getElementById("answer");
+  if (!field || field.value === "") {
+    showMessage("feedback", "Preencha a resposta antes de validar.", "error");
     return;
   }
 
   const step = steps[currentStep];
-  const field = document.getElementById("step-answer");
-
-  if (!field || field.value === "") {
-    showFeedback("step-feedback", "Preencha a resposta antes de validar.", "error");
-    return;
-  }
-
   const answer = step.type === "number" ? Number(field.value) : field.value;
-  const correct = answer === step.answer;
 
-  if (correct) {
-    validatedSteps.push(currentStep);
-    showFeedback("step-feedback", "Resposta correta! Você pode avançar para a próxima etapa.", "success");
-  } else {
+  if (answer !== step.answer) {
     errors++;
     score = Math.max(0, score - 10);
-    document.getElementById("live-score").textContent = score;
-    showFeedback("step-feedback", "Resposta incorreta. Revise a orientação e tente novamente. A pontuação foi reduzida em 10 pontos.", "error");
+    document.getElementById("score").textContent = score;
+    showMessage("feedback", "Resposta incorreta. Leia a dica e tente novamente. Foram descontados 10 pontos.", "error");
     return;
   }
 
-  renderStep();
+  if (!answeredSteps.includes(currentStep)) {
+    answeredSteps.push(currentStep);
+  }
+
+  document.getElementById("check-button").classList.add("hidden");
 
   if (currentStep === steps.length - 1) {
-    document.getElementById("finish-btn").classList.remove("hidden");
-    document.getElementById("next-step").classList.add("hidden");
-    showFeedback("step-feedback", "Última etapa validada. Clique em “Finalizar A.L.” para registrar o resultado.", "success");
+    document.getElementById("finish-button").classList.remove("hidden");
+    showMessage("feedback", "Resposta correta! Você concluiu todas as etapas. Clique em Finalizar atividade.", "success");
   } else {
-    document.getElementById("next-step").classList.remove("hidden");
+    document.getElementById("next-button").classList.remove("hidden");
+    showMessage("feedback", "Resposta correta! Pode avançar para a próxima etapa.", "success");
   }
+
+  document.getElementById("progressbar").style.width =
+    (answeredSteps.length / steps.length * 100) + "%";
 }
 
-function previousStep() {
-  if (currentStep > 0) {
-    currentStep--;
+function nextStep() {
+  if (currentStep < steps.length - 1) {
+    currentStep++;
     renderStep();
   }
 }
 
-function finishChallenge() {
-  if (!attemptStarted || attemptFinished) return;
-
-  if (validatedSteps.length !== steps.length) {
-    showFeedback("step-feedback", "Conclua todas as etapas antes de finalizar.", "error");
+function finishActivity() {
+  if (!activityStarted || activityFinished || answeredSteps.length !== steps.length) {
+    showMessage("feedback", "Conclua todas as etapas antes de finalizar.", "error");
     return;
   }
 
-  attemptFinished = true;
-  attemptStarted = false;
+  activityFinished = true;
+  activityStarted = false;
 
-  const duration = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
-  const minutes = Math.floor(duration / 60);
-  const seconds = duration % 60;
-
+  const seconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
   const result = {
-    student: localStorage.getItem(STORAGE.student) || "Aluno",
-    activity: "A.L. 01 — Pedido da Loja Central",
-    date: new Date().toISOString(),
-    score,
-    duration: `${minutes}min ${seconds}s`,
-    errors,
-    status: score >= 70 ? "Aprovado" : "Revisar"
+    student:currentUser || localStorage.getItem(KEYS.student) || "Aluno",
+    date:new Date().toISOString(),
+    activity:"A.L. 01 — Pedido da Loja Central",
+    score:score,
+    errors:errors,
+    duration:Math.floor(seconds / 60) + "min " + (seconds % 60) + "s",
+    status:score >= 70 ? "Aprovado" : "Revisar"
   };
 
   historyData.push(result);
   saveData();
 
-  document.getElementById("challenge-status").textContent = "Concluída";
+  document.getElementById("activity-status").textContent = "Concluída";
+  document.getElementById("question-title").textContent = "Atividade concluída!";
+  document.getElementById("answer-area").innerHTML =
+    "<p>Sua nota final: <strong>" + score + "/100</strong></p>" +
+    "<p>Erros registrados: <strong>" + errors + "</strong></p>" +
+    "<p>Tempo utilizado: <strong>" + escapeHTML(result.duration) + "</strong></p>" +
+    '<p class="badge">' + escapeHTML(result.status) + "</p>";
+
+  document.getElementById("check-button").classList.add("hidden");
+  document.getElementById("next-button").classList.add("hidden");
+  document.getElementById("finish-button").classList.add("hidden");
   document.getElementById("progressbar").style.width = "100%";
-
-  document.getElementById("step-content").innerHTML = `
-    <h3>Atividade concluída!</h3>
-    <p>Sua pontuação final foi <strong>${score}/100</strong>.</p>
-    <p>Erros registrados: <strong>${errors}</strong>.</p>
-    <p>Tempo utilizado: <strong>${escapeHTML(result.duration)}</strong>.</p>
-    <span class="tag ${score >= 70 ? "green" : "red"}">${escapeHTML(result.status)}</span>
-    <div class="actions">
-      <button onclick="startChallenge()">Tentar novamente</button>
-      <button class="secondary" onclick="showView('history')">Ver meu desempenho</button>
-    </div>
-  `;
-
-  document.getElementById("step-list").innerHTML = "";
-  document.getElementById("step-heading").textContent = "Atividade finalizada";
-  document.getElementById("next-step").classList.add("hidden");
-  document.getElementById("finish-btn").classList.add("hidden");
-  document.getElementById("back-step").classList.add("hidden");
-
-  renderHome();
-  renderHistory();
-  renderInstructor();
+  showMessage("feedback", "Resultado registrado neste navegador.", "success");
+  renderAll();
 }
 
 function addProduct() {
-  const sku = document.getElementById("p-sku").value.trim();
-  const name = document.getElementById("p-name").value.trim();
-  const qty = Number(document.getElementById("p-qty").value);
-  const weight = Number(document.getElementById("p-weight").value);
+  const sku = document.getElementById("sku").value.trim();
+  const name = document.getElementById("product-name").value.trim();
+  const qty = Number(document.getElementById("quantity").value);
+  const weight = Number(document.getElementById("weight").value);
+  const address = document.getElementById("address").value.trim();
 
   if (!sku || !name || !Number.isFinite(qty) || qty <= 0 ||
-      !Number.isFinite(weight) || weight <= 0) {
-    showFeedback("product-feedback", "Preencha todos os campos com valores válidos.", "error");
+      !Number.isFinite(weight) || weight <= 0 || !address) {
+    showMessage("product-feedback", "Preencha todos os campos com valores válidos.", "error");
     return;
   }
 
-  if (products.some(product => product.sku.toLowerCase() === sku.toLowerCase())) {
-    showFeedback("product-feedback", "Já existe um produto cadastrado com esse SKU.", "error");
+  if (products.some(item => item.sku.toLowerCase() === sku.toLowerCase())) {
+    showMessage("product-feedback", "Já existe um produto com esse SKU.", "error");
     return;
   }
 
-  products.push({
-    sku,
-    name,
-    qty,
-    weight,
-    address: "A-01-03"
-  });
-
+  products.push({sku,name,qty,weight,address});
   saveData();
 
-  ["p-sku", "p-name", "p-qty", "p-weight"].forEach(id => {
+  ["sku","product-name","quantity","weight","address"].forEach(id => {
     document.getElementById(id).value = "";
   });
 
-  showFeedback("product-feedback", "Produto cadastrado com sucesso!", "success");
+  showMessage("product-feedback", "Produto cadastrado com sucesso!", "success");
   renderProducts();
 }
 
 function renderProducts() {
-  const search = (document.getElementById("product-search")?.value || "").toLowerCase();
-
-  const filtered = products.filter(product =>
-    product.sku.toLowerCase().includes(search) ||
-    product.name.toLowerCase().includes(search)
+  const search = (document.getElementById("search")?.value || "").toLowerCase();
+  const filtered = products.filter(item =>
+    item.sku.toLowerCase().includes(search) ||
+    item.name.toLowerCase().includes(search)
   );
 
   const tbody = document.getElementById("product-table");
-
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="5">Nenhum produto encontrado.</td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="5">Nenhum produto encontrado.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = filtered.map(product => `
-    <tr>
-      <td><strong>${escapeHTML(product.sku)}</strong></td>
-      <td>${escapeHTML(product.name)}</td>
-      <td>${Number(product.qty)}</td>
-      <td>${Number(product.weight).toLocaleString("pt-BR")} kg</td>
-      <td><span class="tag">${escapeHTML(product.address || "Não definido")}</span></td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = filtered.map(item =>
+    "<tr><td>" + escapeHTML(item.sku) + "</td>" +
+    "<td>" + escapeHTML(item.name) + "</td>" +
+    "<td>" + Number(item.qty) + "</td>" +
+    "<td>" + Number(item.weight).toLocaleString("pt-BR") + " kg</td>" +
+    "<td>" + escapeHTML(item.address) + "</td></tr>"
+  ).join("");
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" :
+    date.toLocaleString("pt-BR", {dateStyle:"short",timeStyle:"short"});
 }
 
 function renderHome() {
@@ -1258,107 +593,92 @@ function renderHome() {
   const last = count ? historyData[count - 1] : null;
 
   document.getElementById("home-score").textContent =
-    last ? `${last.score}/100` : "—";
-
-  document.getElementById("home-completed").textContent = count;
+    last ? last.score + "/100" : "—";
+  document.getElementById("home-count").textContent = count;
   document.getElementById("home-best").textContent =
-    best === null ? "—" : `${best}/100`;
+    best === null ? "—" : best + "/100";
 }
 
 function renderHistory() {
   const count = historyData.length;
   const average = count
-    ? historyData.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / count
+    ? historyData.reduce((sum,item) => sum + Number(item.score || 0),0) / count
     : null;
-  const best = count
-    ? Math.max(...historyData.map(item => Number(item.score) || 0))
-    : null;
+  const best = count ? Math.max(...historyData.map(item => Number(item.score) || 0)) : null;
 
-  document.getElementById("hist-count").textContent = count;
-  document.getElementById("hist-average").textContent =
-    average === null ? "—" : `${average.toFixed(1).replace(".", ",")}`;
-  document.getElementById("hist-best").textContent =
-    best === null ? "—" : `${best}/100`;
+  document.getElementById("history-count").textContent = count;
+  document.getElementById("history-average").textContent =
+    average === null ? "—" : average.toFixed(1).replace(".",",");
+  document.getElementById("history-best").textContent =
+    best === null ? "—" : best + "/100";
 
   const tbody = document.getElementById("history-table");
-
   if (!count) {
-    tbody.innerHTML = `<tr><td colspan="5">Nenhuma atividade concluída ainda.</td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="6">Nenhuma atividade concluída.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = [...historyData].reverse().map(item => `
-    <tr>
-      <td>${formatDate(item.date)}</td>
-      <td>${escapeHTML(item.activity)}</td>
-      <td><strong>${Number(item.score)}/100</strong></td>
-      <td>${escapeHTML(item.duration)}</td>
-      <td><span class="tag ${item.score >= 70 ? "green" : "red"}">${escapeHTML(item.status)}</span></td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = [...historyData].reverse().map(item =>
+    "<tr><td>" + escapeHTML(item.student) + "</td>" +
+    "<td>" + formatDate(item.date) + "</td>" +
+    "<td>" + escapeHTML(item.activity) + "</td>" +
+    "<td>" + Number(item.score) + "/100</td>" +
+    "<td>" + Number(item.errors || 0) + "</td>" +
+    "<td>" + escapeHTML(item.status) + "</td></tr>"
+  ).join("");
 }
 
 function renderInstructor() {
   const count = historyData.length;
   const average = count
-    ? historyData.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / count
+    ? historyData.reduce((sum,item) => sum + Number(item.score || 0),0) / count
     : null;
-  const approved = count
+  const pass = count
     ? historyData.filter(item => Number(item.score) >= 70).length / count * 100
     : null;
 
-  document.getElementById("ins-count").textContent = count;
-  document.getElementById("ins-average").textContent =
-    average === null ? "—" : average.toFixed(1).replace(".", ",");
-  document.getElementById("ins-pass").textContent =
-    approved === null ? "—" : `${approved.toFixed(0)}%`;
+  document.getElementById("in-count").textContent = count;
+  document.getElementById("in-average").textContent =
+    average === null ? "—" : average.toFixed(1).replace(".",",");
+  document.getElementById("in-pass").textContent =
+    pass === null ? "—" : pass.toFixed(0) + "%";
 
   const tbody = document.getElementById("instructor-table");
-
   if (!count) {
-    tbody.innerHTML = `<tr><td colspan="6">Nenhuma tentativa registrada neste navegador.</td></tr>`;
+    tbody.innerHTML = '<tr><td colspan="5">Nenhuma tentativa registrada neste navegador.</td></tr>';
     return;
   }
 
-  tbody.innerHTML = [...historyData].reverse().map(item => `
-    <tr>
-      <td>${escapeHTML(item.student || "Aluno")}</td>
-      <td>${formatDate(item.date)}</td>
-      <td>${Number(item.score)}/100</td>
-      <td>${escapeHTML(item.duration)}</td>
-      <td>${Number(item.errors) || 0}</td>
-      <td><span class="tag ${item.score >= 70 ? "green" : "red"}">${escapeHTML(item.status)}</span></td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = [...historyData].reverse().map(item =>
+    "<tr><td>" + escapeHTML(item.student) + "</td>" +
+    "<td>" + formatDate(item.date) + "</td>" +
+    "<td>" + Number(item.score) + "/100</td>" +
+    "<td>" + Number(item.errors || 0) + "</td>" +
+    "<td>" + escapeHTML(item.status) + "</td></tr>"
+  ).join("");
 }
 
 function exportCSV() {
   if (!historyData.length) {
-    alert("Ainda não há resultados para exportar.");
+    alert("Ainda não existem resultados para exportar.");
     return;
   }
 
   const rows = [
-    ["Aluno", "Atividade", "Data", "Nota", "Duração", "Erros", "Status"],
+    ["Aluno","Data","Atividade","Nota","Erros","Duração","Status"],
     ...historyData.map(item => [
-      item.student || "Aluno",
-      item.activity,
-      formatDate(item.date),
-      item.score,
-      item.duration,
-      item.errors,
-      item.status
+      item.student,formatDate(item.date),item.activity,
+      item.score,item.errors,item.duration,item.status
     ])
   ];
 
   const csv = "\uFEFF" + rows.map(row =>
-    row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(";")
+    row.map(value => '"' + String(value ?? "").replace(/"/g,'""') + '"').join(";")
   ).join("\r\n");
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-
   link.href = url;
   link.download = "relatorio-logisim.csv";
   document.body.appendChild(link);
@@ -1368,62 +688,20 @@ function exportCSV() {
 }
 
 function clearHistory() {
-  if (!confirm("Tem certeza de que deseja apagar todo o histórico deste navegador?")) return;
-
+  if (!confirm("Deseja realmente apagar o histórico deste navegador?")) return;
   historyData = [];
   saveData();
-  renderHome();
-  renderHistory();
-  renderInstructor();
-
-  alert("Histórico apagado.");
+  renderAll();
 }
 
-function showFeedback(id, message, type) {
-  const element = document.getElementById(id);
-  element.textContent = message;
-  element.className = `feedback ${type}`;
-  element.classList.remove("hidden");
-}
-
-function formatDate(value) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-
-  return date.toLocaleString("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short"
-  });
-}
-
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]);
-}
-
-function initialize() {
+function renderAll() {
   renderHome();
   renderProducts();
   renderHistory();
   renderInstructor();
-
-  document.getElementById("step-list").innerHTML = "";
-  document.getElementById("step-content").innerHTML = `
-    <h3>Pronto para começar?</h3>
-    <p class="muted">Clique em “Iniciar A.L.” para iniciar a simulação das operações logísticas.</p>
-  `;
-
-  document.getElementById("login-screen").style.display = "flex";
-document.getElementById("role-toggle").onclick = logout;
-  }
 }
 
-initialize();
+renderAll();
 </script>
 </body>
 </html>
