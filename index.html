@@ -1,232 +1,811 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
 <title>LogiSim | Simulação de Operações Logísticas</title>
+
 <style>
 :root {
-  --bg:#0b1220;
-  --panel:#121d2e;
-  --panel2:#18263a;
-  --line:#2a3a50;
-  --text:#edf3fb;
-  --muted:#9fb0c5;
-  --orange:#f97316;
-  --green:#22c55e;
-  --red:#ef4444;
-  --blue:#60a5fa;
+  --bg: #f3f6fb;
+  --panel: #ffffff;
+  --panel2: #f8fafc;
+  --line: #e2e8f0;
+  --text: #172033;
+  --muted: #64748b;
+  --orange: #f97316;
+  --orange-dark: #ea580c;
+  --green: #16a34a;
+  --red: #dc2626;
+  --blue: #2563eb;
+  --navy: #101827;
+  --shadow: 0 8px 24px rgba(15, 23, 42, .06);
 }
-* { box-sizing:border-box; }
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Arial, sans-serif;
 }
-button,input,select { font:inherit; }
+
+button, input, select {
+  font: inherit;
+}
+
 button {
-  cursor:pointer;
-  border:0;
-  border-radius:9px;
-  padding:10px 14px;
-  font-weight:700;
-  background:var(--orange);
-  color:#111827;
+  cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 700;
+  background: var(--orange);
+  color: #fff;
+  transition: background .2s, transform .2s, box-shadow .2s;
 }
-button:hover { filter:brightness(1.08); }
-button:disabled { opacity:.45; cursor:not-allowed; }
+
+button:hover {
+  background: var(--orange-dark);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, .18);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .secondary {
-  background:#24354b;
-  color:var(--text);
-  border:1px solid var(--line);
+  background: #fff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
 }
-.danger { background:#7f1d1d; color:#fff; }
-.good { background:#14532d; color:#dcfce7; }
-.wrap { max-width:1200px; margin:auto; padding:22px; }
+
+.secondary:hover {
+  background: #f1f5f9;
+  color: #172033;
+}
+
+.danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.danger:hover {
+  background: #b91c1c;
+}
+
+.good {
+  background: #15803d;
+  color: #fff;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+  padding: 26px;
+}
+
 header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-  padding:18px 22px;
-  border-bottom:1px solid var(--line);
-  background:#0e1726;
-  position:sticky;
-  top:0;
-  z-index:3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 17px 28px;
+  background: var(--navy);
+  color: #fff;
+  border-bottom: 3px solid var(--orange);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, .14);
 }
-.brand { display:flex; align-items:center; gap:12px; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
 .logo {
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  background:var(--orange);
-  color:#111827;
-  display:grid;
-  place-items:center;
-  font-weight:900;
-  font-size:20px;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: var(--orange);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 23px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, .25);
 }
-.brand h1 { font-size:20px; margin:0; }
-.brand p { margin:0; color:var(--muted); font-size:12px; }
-.head-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+.brand h1 {
+  font-size: 21px;
+  letter-spacing: -.4px;
+  margin: 0;
+}
+
+.brand p {
+  margin: 1px 0 0;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.head-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .pill {
-  border:1px solid var(--line);
-  border-radius:99px;
-  padding:6px 10px;
-  color:var(--muted);
-  font-size:12px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #475569;
+  border-radius: 99px;
+  padding: 6px 12px;
+  color: #e2e8f0;
+  font-size: 12px;
+  background: rgba(255, 255, 255, .05);
 }
+
 .layout {
-  display:grid;
-  grid-template-columns:235px 1fr;
-  gap:20px;
-  margin-top:22px;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+  align-items: start;
 }
-.sidebar,.panel,.card {
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:15px;
+
+.sidebar, .panel, .card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
 }
+
 .sidebar {
-  padding:12px;
-  height:max-content;
-  position:sticky;
-  top:100px;
+  padding: 13px;
+  height: max-content;
+  position: sticky;
+  top: 100px;
 }
+
 .navbtn {
-  display:flex;
-  gap:10px;
-  align-items:center;
-  width:100%;
-  text-align:left;
-  background:transparent;
-  color:var(--muted);
-  margin:3px 0;
-  border:1px solid transparent;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #475569;
+  margin: 4px 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+  box-shadow: none;
 }
+
+.navbtn:hover {
+  background: #fff7ed;
+  color: #c2410c;
+  box-shadow: none;
+}
+
 .navbtn.active {
-  background:#332519;
-  border-color:#9a4b1b;
-  color:#ffb47f;
+  background: #fff1e7;
+  border-color: #fed7aa;
+  color: #c2410c;
+  box-shadow: inset 3px 0 0 var(--orange);
 }
+
 .sidebar .small {
-  padding:10px;
-  color:var(--muted);
-  font-size:12px;
+  padding: 13px 9px 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
 }
-main { min-width:0; }
+
+main {
+  min-width: 0;
+}
+
 .hero {
-  padding:22px;
-  border-radius:16px;
-  background:linear-gradient(120deg,#17283d,#302217);
-  border:1px solid #4a3a2d;
-  margin-bottom:18px;
+  padding: 28px;
+  border-radius: 18px;
+  background: linear-gradient(125deg, #101827 0%, #23354c 70%, #34445b 100%);
+  color: #fff;
+  border: 1px solid #26374d;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
 }
-.hero h2 { margin:0 0 6px; font-size:26px; }
-.hero p { margin:0; color:#c4d0df; max-width:780px; }
-.row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.between { justify-content:space-between; }
+
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 28px solid rgba(249, 115, 22, .12);
+  border-radius: 50%;
+  right: -55px;
+  bottom: -95px;
+  pointer-events: none;
+}
+
+.hero h2 {
+  margin: 0 0 8px;
+  font-size: 27px;
+  line-height: 1.25;
+  letter-spacing: -.5px;
+}
+
+.hero p {
+  margin: 0;
+  color: #dbe5f1;
+  max-width: 780px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.between {
+  justify-content: space-between;
+}
+
 .grid {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
+
 .grid2 {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
-.card { padding:17px; }
-.card h3 { margin:0 0 7px; font-size:16px; }
-.muted { color:var(--muted); }
-.stat { font-size:27px; font-weight:800; margin:3px 0; }
-.section-title { margin:22px 0 10px; font-size:18px; }
+
+.card {
+  padding: 20px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, .09);
+}
+
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.card p {
+  margin-bottom: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.stat {
+  font-size: 30px;
+  font-weight: 850;
+  letter-spacing: -1px;
+  margin: 5px 0;
+  color: #172033;
+}
+
+.section-title {
+  margin: 27px 0 13px;
+  font-size: 19px;
+  letter-spacing: -.3px;
+}
+
 .progress {
-  height:8px;
-  background:#25364b;
-  border-radius:99px;
-  overflow:hidden;
-  margin:12px 0;
+  height: 9px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 14px 0;
 }
+
 .progress span {
-  height:100%;
-  display:block;
-  background:var(--orange);
-  width:0;
-  transition:width .2s;
+  height: 100%;
+  display: block;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  width: 0;
+  transition: width .25s;
+  border-radius: 99px;
 }
-.step-list { display:flex; gap:7px; flex-wrap:wrap; margin:16px 0; }
+
+.step-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 17px 0;
+}
+
 .step {
-  padding:7px 10px;
-  border-radius:99px;
-  border:1px solid var(--line);
-  font-size:12px;
-  color:var(--muted);
+  padding: 7px 12px;
+  border-radius: 99px;
+  border: 1px solid #dbe3ee;
+  background: #fff;
+  font-size: 12px;
+  color: #64748b;
 }
-.step.active { border-color:var(--orange); background:#382719; color:#ffd2b0; }
-.step.done { border-color:#166534; background:#123321; color:#bbf7d0; }
+
+.step.active {
+  border-color: #fdba74;
+  background: #fff1e7;
+  color: #c2410c;
+  font-weight: 700;
+}
+
+.step.done {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
 label {
-  display:block;
-  color:#c9d5e4;
-  font-size:13px;
-  margin:10px 0 5px;
+  display: block;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 650;
+  margin: 12px 0 6px;
 }
-input,select {
-  width:100%;
-  padding:10px 11px;
-  border-radius:8px;
-  background:#0b1422;
-  color:var(--text);
-  border:1px solid #34465c;
-  outline:none;
+
+input, select {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid #cbd5e1;
+  outline: none;
+  transition: border .2s, box-shadow .2s;
 }
-input:focus,select:focus { border-color:var(--orange); }
-.field { min-width:150px; flex:1; }
+
+input:focus, select:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, .12);
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+.field {
+  min-width: 150px;
+  flex: 1;
+}
+
 .formgrid {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
-.actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:16px; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 17px;
+}
+
 .feedback {
-  margin-top:14px;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  background:#0d1726;
+  margin-top: 15px;
+  padding: 13px 15px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: #f8fafc;
 }
-.feedback.success { border-color:#166534; background:#10271b; }
-.feedback.error { border-color:#991b1b; background:#2a1518; }
-.hidden { display:none!important; }
-table { width:100%; border-collapse:collapse; font-size:13px; }
-th,td {
-  text-align:left;
-  padding:11px 9px;
-  border-bottom:1px solid var(--line);
-  vertical-align:top;
+
+.feedback.success {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
 }
-th { color:#b9c7d8; font-weight:700; }
-td { color:#e0e8f2; }
-.tablewrap { overflow-x:auto; }
+
+.feedback.error {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.hidden {
+  display: none !important;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+th {
+  color: #475569;
+  font-weight: 750;
+  background: #f8fafc;
+  white-space: nowrap;
+}
+
+td {
+  color: #334155;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+.tablewrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  margin-top: 12px;
+}
+
 .tag {
-  display:inline-block;
-  border-radius:99px;
-  padding:3px 8px;
-  font-size:11px;
-  background:#24354b;
-  color:#dbeafe;
+  display: inline-block;
+  border-radius: 99px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #1d4ed8;
+  white-space: nowrap;
 }
-.tag.green { background:#123321; color:#bbf7d0; }
-.tag.red { background:#3b171b; color:#fecaca; }
+
+.tag.green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tag.red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .notice {
-  padding:12px;
-  border-radius:10px;
-  background:#142338;
-  border:1px solid #29435f;
-  color:#c8d8eb;
-  margin:12px 0;
+  padding: 13px 15px;
+  border-radius: 11px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  margin: 14px 0;
+  font-size: 13px;
 }
-.tiny { font-size:12px
+
+.tiny {
+  font-size: 12px;
+}
+
+.footer {
+  margin: 28px 0 8px;
+  padding: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 950px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .sidebar .small {
+    grid-column: 1 / -1;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .wrap {
+    padding: 13px;
+  }
+
+  header {
+    padding: 13px;
+  }
+
+  .brand h1 {
+    font-size: 18px;
+  }
+
+  .brand p {
+    font-size: 11px;
+  }
+
+  .head-actions {
+    width: 100%;
+  }
+
+  .hero {
+    padding: 21px;
+  }
+
+  .hero h2 {
+    font-size: 22px;
+  }
+
+  .grid, .grid2, .formgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    font-size: 26px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .pill {
+    font-size: 11px;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">L</div>
+    <div>
+      <h1>LogiSim</h1>
+      <p>Simulação de Operações Logísticas</p>
+    </div>
+  </div>
+
+  <div class="head-actions">
+    <span class="pill" id="role-label">Modo aluno</span>
+    <button class="secondary" id="role-toggle" onclick="toggleRole()">
+      Entrar no modo instrutor
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <aside class="sidebar">
+      <button class="navbtn active" data-view="home" onclick="showView('home')">⌂ Visão geral</button>
+      <button class="navbtn" data-view="challenge" onclick="showView('challenge')">◎ A.L. — Atividades Logísticas</button>
+      <button class="navbtn" data-view="products" onclick="showView('products')">▤ WMS / Produtos</button>
+      <button class="navbtn" data-view="history" onclick="showView('history')">◷ Meu desempenho</button>
+      <button class="navbtn instructor-only hidden" data-view="instructor" onclick="showView('instructor')">▥ Painel do instrutor</button>
+      <div class="small">Protótipo educacional · dados de demonstração salvos neste navegador.</div>
+    </aside>
+
+    <main>
+      <section id="view-home" class="view">
+        <div class="hero">
+          <h2>Da teoria à prática, em um só lugar.</h2>
+          <p>Pratique operações logísticas em um ambiente simulado. Execute as etapas, receba feedback automático e acompanhe seu desempenho.</p>
+          <div class="actions">
+            <button onclick="startChallenge()">Iniciar A.L.</button>
+            <button class="secondary" onclick="showView('products')">Consultar WMS</button>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="muted tiny">Pontuação da última tentativa</div>
+            <div class="stat" id="home-score">—</div>
+            <div class="muted tiny">A nota é calculada pelas ações realizadas.</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">A.L. concluídas</div>
+            <div class="stat" id="home-completed">0</div>
+            <div class="muted tiny">Registradas neste navegador.</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">Melhor resultado</div>
+            <div class="stat" id="home-best">—</div>
+            <div class="muted tiny">Melhor nota registrada.</div>
+          </div>
+        </div>
+
+        <h3 class="section-title">Como funciona</h3>
+        <div class="grid">
+          <div class="card"><h3>1. Recebimento</h3><p class="muted">Confira quantidades e documentos de entrada.</p></div>
+          <div class="card"><h3>2. Armazenagem e picking</h3><p class="muted">Escolha endereços e separe os itens do pedido.</p></div>
+          <div class="card"><h3>3. Expedição e rota</h3><p class="muted">Valide a documentação, respeite a capacidade e organize entregas.</p></div>
+        </div>
+
+        <div class="notice"><strong>Para a banca:</strong> este é um protótipo funcional de demonstração. Os dados são fictícios e ficam no armazenamento local do navegador; não há servidor nem sincronização entre computadores.</div>
+      </section>
+
+      <section id="view-challenge" class="view hidden">
+        <div class="hero">
+          <div class="row between">
+            <div>
+              <h2>A.L. 01 — Pedido da Loja Central</h2>
+              <p>Você é responsável por receber, armazenar, separar e expedir um pedido. Cada etapa da A.L. é corrigida automaticamente.</p>
+            </div>
+            <span class="pill" id="challenge-status">Não iniciado</span>
+          </div>
+        </div>
+
+        <div class="row between">
+          <div>
+            <strong id="step-heading">Etapa 1 de 5 — Recebimento</strong>
+            <div class="muted tiny">Conclua as etapas para finalizar a atividade.</div>
+          </div>
+          <div class="pill">Nota: <strong id="live-score">100</strong>/100</div>
+        </div>
+
+        <div class="progress"><span id="progressbar"></span></div>
+        <div class="step-list" id="step-list"></div>
+        <div class="panel" style="padding:20px" id="step-content"></div>
+        <div class="feedback hidden" id="step-feedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="secondary" id="back-step" onclick="previousStep()">Etapa anterior</button>
+          <button id="next-step" onclick="nextStep()">Validar e continuar</button>
+          <button class="secondary hidden" id="finish-btn" onclick="finishChallenge()">Finalizar A.L.</button>
+        </div>
+      </section>
+
+      <section id="view-products" class="view hidden">
+        <div class="hero">
+          <h2>WMS — Cadastro de produtos</h2>
+          <p>Consulte os produtos e cadastre novos itens para a simulação. Os registros são salvos neste navegador.</p>
+        </div>
+
+        <div class="panel" style="padding:18px;margin-bottom:16px">
+          <h3>Adicionar produto</h3>
+          <div class="formgrid">
+            <div><label for="p-sku">Código SKU</label><input id="p-sku" placeholder="Ex.: SKU-105"></div>
+            <div><label for="p-name">Descrição</label><input id="p-name" placeholder="Ex.: Caixa de papelão"></div>
+            <div><label for="p-qty">Quantidade</label><input id="p-qty" type="number" min="1" placeholder="100"></div>
+            <div><label for="p-weight">Peso unitário (kg)</label><input id="p-weight" type="number" min="0.01" step="0.01" placeholder="2.5"></div>
+          </div>
+          <div class="actions"><button onclick="addProduct()">Cadastrar produto</button></div>
+          <div id="product-feedback" class="feedback hidden"></div>
+        </div>
+
+        <div class="panel" style="padding:18px">
+          <div class="row between">
+            <h3>Estoque simulado</h3>
+            <input style="max-width:260px" id="product-search" placeholder="Buscar SKU ou descrição" oninput="renderProducts()">
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>SKU</th><th>Produto</th><th>Quantidade</th><th>Peso unitário</th><th>Endereço</th></tr></thead>
+              <tbody id="product-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-history" class="view hidden">
+        <div class="hero">
+          <h2>Meu desempenho</h2>
+          <p>Veja os resultados das tentativas realizadas neste navegador.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="muted tiny">Tentativas concluídas</div>
+            <div class="stat" id="hist-count">0</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">Média das notas</div>
+            <div class="stat" id="hist-average">—</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">Melhor nota</div>
+            <div class="stat" id="hist-best">—</div>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:18px;margin-top:16px">
+          <div class="row between">
+            <h3>Histórico de atividades</h3>
+            <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Data</th><th>Atividade</th><th>Nota</th><th>Duração</th><th>Resultado</th></tr></thead>
+              <tbody id="history-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-instructor" class="view hidden">
+        <div class="hero">
+          <h2>Painel do instrutor</h2>
+          <p>Acompanhe as tentativas registradas neste navegador e exporte os resultados para análise.</p>
+        </div>
+
+        <div class="notice">
+          <strong>Limite da demonstração:</strong> este painel apresenta os registros locais do dispositivo atual. Para uma turma inteira acessando de computadores diferentes, será necessário conectar a plataforma a um banco de dados e implementar autenticação.
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="muted tiny">Tentativas registradas</div>
+            <div class="stat" id="ins-count">0</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">Média da turma neste dispositivo</div>
+            <div class="stat" id="ins-average">—</div>
+          </div>
+          <div class="card">
+            <div class="muted tiny">Taxa de aprovação (nota ≥ 70)</div>
+            <div class="stat" id="ins-pass">—</div>
+          </div>
+        </div>
+
+        <div class="panel" style="padding:18px;margin-top:16px">
+          <div class="row between">
+            <h3>Resultados registrados</h3>
+            <div class="row">
+              <button class="secondary" onclick="exportCSV()">Exportar CSV</button>
+              <button class="danger" onclick="clearHistory()">Apagar histórico</button>
+            </div>
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Aluno</th><th>Data</th><th>Nota</th><th>Duração</th><th>Erros</th><th>Status</th></tr></thead>
+              <tbody id="instructor-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="footer">LogiSim · Projeto Integrador · Firjan SENAI Duque de Caxias · Protótipo educacional</div>
+</div>
