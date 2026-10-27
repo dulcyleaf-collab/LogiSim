@@ -809,3 +809,541 @@ tbody tr:hover {
 
   <div class="footer">LogiSim · Projeto Integrador · Firjan SENAI Duque de Caxias · Protótipo educacional</div>
 </div>
+
+<script>
+const STORAGE = {
+  products: "logisim_products",
+  history: "logisim_history",
+  student: "logisim_student"
+};
+
+const defaultProducts = [
+  { sku: "AGUA-001", name: "Água mineral — caixa com 12 unidades", qty: 50, weight: 12, address: "A-01-01" },
+  { sku: "PAP-002", name: "Papel A4 — pacote", qty: 30, weight: 2.5, address: "A-01-02" },
+  { sku: "LIMP-003", name: "Material de limpeza — caixa", qty: 20, weight: 8, address: "B-02-01" }
+];
+
+let products = load(STORAGE.products, defaultProducts);
+let historyData = load(STORAGE.history, []);
+let currentStep = 0;
+let attemptStarted = false;
+let attemptFinished = false;
+let score = 100;
+let errors = 0;
+let startedAt = null;
+let role = "student";
+let validatedSteps = [];
+
+const steps = [
+  {
+    title: "Recebimento",
+    description: "Confira o documento e a quantidade recebida.",
+    question: "O pedido informa 50 caixas de água mineral. Quantas caixas devem ser registradas no recebimento?",
+    type: "number",
+    answer: 50,
+    hint: "Compare a quantidade física com a quantidade descrita no documento."
+  },
+  {
+    title: "Conferência",
+    description: "Identifique se a quantidade recebida está correta.",
+    question: "Foram solicitadas 50 caixas e chegaram 48. Quantas caixas estão faltando?",
+    type: "number",
+    answer: 2,
+    hint: "Subtraia a quantidade recebida da quantidade solicitada."
+  },
+  {
+    title: "Armazenagem",
+    description: "Escolha o endereço indicado para o produto.",
+    question: "Qual endereço deve ser usado para armazenar o produto?",
+    type: "select",
+    options: [
+      { value: "", label: "Selecione um endereço" },
+      { value: "A-01-01", label: "A-01-01 — endereço correto" },
+      { value: "EXP-01", label: "EXP-01 — área de expedição" },
+      { value: "DOC-01", label: "DOC-01 — área administrativa" }
+    ],
+    answer: "A-01-01",
+    hint: "Utilize o endereço de armazenagem indicado no cadastro do item."
+  },
+  {
+    title: "Picking e separação",
+    description: "Separe os itens solicitados para o pedido.",
+    question: "O pedido exige 12 caixas e o estoque possui 20. Quantas caixas devem ser separadas?",
+    type: "number",
+    answer: 12,
+    hint: "Separe apenas a quantidade solicitada pelo pedido."
+  },
+  {
+    title: "Expedição",
+    description: "Valide a quantidade antes de finalizar o envio.",
+    question: "Qual é a ação correta antes de liberar o pedido para transporte?",
+    type: "select",
+    options: [
+      { value: "", label: "Selecione uma opção" },
+      { value: "conferir", label: "Conferir pedido e documentação" },
+      { value: "enviar", label: "Enviar sem conferir" },
+      { value: "ignorar", label: "Ignorar divergências" }
+    ],
+    answer: "conferir",
+    hint: "A expedição deve confirmar os itens e a documentação antes da liberação."
+  }
+];
+
+function load(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : JSON.parse(JSON.stringify(fallback));
+  } catch (error) {
+    return JSON.parse(JSON.stringify(fallback));
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE.products, JSON.stringify(products));
+  localStorage.setItem(STORAGE.history, JSON.stringify(historyData));
+}
+
+function showView(name) {
+  document.querySelectorAll(".view").forEach(view => {
+    view.classList.toggle("hidden", view.id !== "view-" + name);
+  });
+
+  document.querySelectorAll(".navbtn").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === name);
+  });
+
+  if (name === "home") renderHome();
+  if (name === "products") renderProducts();
+  if (name === "history") renderHistory();
+  if (name === "instructor") renderInstructor();
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function toggleRole() {
+  role = role === "student" ? "instructor" : "student";
+
+  document.getElementById("role-label").textContent =
+    role === "student" ? "Modo aluno" : "Modo instrutor";
+
+  document.getElementById("role-toggle").textContent =
+    role === "student" ? "Entrar no modo instrutor" : "Voltar ao modo aluno";
+
+  document.querySelectorAll(".instructor-only").forEach(element => {
+    element.classList.toggle("hidden", role !== "instructor");
+  });
+
+  if (role === "instructor") showView("instructor");
+  else showView("home");
+}
+
+function startChallenge() {
+  currentStep = 0;
+  attemptStarted = true;
+  attemptFinished = false;
+  score = 100;
+  errors = 0;
+  validatedSteps = [];
+  startedAt = Date.now();
+
+  document.getElementById("challenge-status").textContent = "Em andamento";
+  document.getElementById("live-score").textContent = score;
+
+  showView("challenge");
+  renderStep();
+}
+
+function renderStep() {
+  const step = steps[currentStep];
+  if (!step) return;
+
+  document.getElementById("step-heading").textContent =
+    `Etapa ${currentStep + 1} de ${steps.length} — ${step.title}`;
+
+  document.getElementById("progressbar").style.width =
+    `${(currentStep / steps.length) * 100}%`;
+
+  document.getElementById("step-list").innerHTML = steps.map((item, index) => {
+    let className = "step";
+    if (index === currentStep) className += " active";
+    if (validatedSteps.includes(index)) className += " done";
+    return `<span class="${className}">${index + 1}. ${escapeHTML(item.title)}</span>`;
+  }).join("");
+
+  let control = "";
+
+  if (step.type === "number") {
+    control = `<label for="step-answer">Sua resposta</label>
+      <input id="step-answer" type="number" min="0" placeholder="Digite sua resposta">`;
+  } else {
+    control = `<label for="step-answer">Sua resposta</label>
+      <select id="step-answer">${step.options.map(option =>
+        `<option value="${escapeHTML(option.value)}">${escapeHTML(option.label)}</option>`
+      ).join("")}</select>`;
+  }
+
+  document.getElementById("step-content").innerHTML = `
+    <h3>${escapeHTML(step.title)}</h3>
+    <p class="muted">${escapeHTML(step.description)}</p>
+    <div class="notice">${escapeHTML(step.question)}</div>
+    ${control}
+    <p class="muted tiny">Dica: ${escapeHTML(step.hint)}</p>
+  `;
+
+  document.getElementById("step-feedback").classList.add("hidden");
+  document.getElementById("back-step").disabled = currentStep === 0;
+
+  document.getElementById("next-step").classList.toggle(
+    "hidden", validatedSteps.includes(currentStep)
+  );
+
+  document.getElementById("finish-btn").classList.toggle(
+    "hidden", currentStep !== steps.length - 1 || !validatedSteps.includes(currentStep)
+  );
+}
+
+function nextStep() {
+  if (!attemptStarted || attemptFinished) {
+    showFeedback("step-feedback", "Inicie uma nova atividade antes de continuar.", "error");
+    return;
+  }
+
+  if (validatedSteps.includes(currentStep)) {
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      renderStep();
+    }
+    return;
+  }
+
+  const step = steps[currentStep];
+  const field = document.getElementById("step-answer");
+
+  if (!field || field.value === "") {
+    showFeedback("step-feedback", "Preencha a resposta antes de validar.", "error");
+    return;
+  }
+
+  const answer = step.type === "number" ? Number(field.value) : field.value;
+  const correct = answer === step.answer;
+
+  if (correct) {
+    validatedSteps.push(currentStep);
+    showFeedback("step-feedback", "Resposta correta! Você pode avançar para a próxima etapa.", "success");
+  } else {
+    errors++;
+    score = Math.max(0, score - 10);
+    document.getElementById("live-score").textContent = score;
+    showFeedback("step-feedback", "Resposta incorreta. Revise a orientação e tente novamente. A pontuação foi reduzida em 10 pontos.", "error");
+    return;
+  }
+
+  renderStep();
+
+  if (currentStep === steps.length - 1) {
+    document.getElementById("finish-btn").classList.remove("hidden");
+    document.getElementById("next-step").classList.add("hidden");
+    showFeedback("step-feedback", "Última etapa validada. Clique em “Finalizar A.L.” para registrar o resultado.", "success");
+  } else {
+    document.getElementById("next-step").classList.remove("hidden");
+  }
+}
+
+function previousStep() {
+  if (currentStep > 0) {
+    currentStep--;
+    renderStep();
+  }
+}
+
+function finishChallenge() {
+  if (!attemptStarted || attemptFinished) return;
+
+  if (validatedSteps.length !== steps.length) {
+    showFeedback("step-feedback", "Conclua todas as etapas antes de finalizar.", "error");
+    return;
+  }
+
+  attemptFinished = true;
+  attemptStarted = false;
+
+  const duration = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+  const minutes = Math.floor(duration / 60);
+  const seconds = duration % 60;
+
+  const result = {
+    student: localStorage.getItem(STORAGE.student) || "Aluno",
+    activity: "A.L. 01 — Pedido da Loja Central",
+    date: new Date().toISOString(),
+    score,
+    duration: `${minutes}min ${seconds}s`,
+    errors,
+    status: score >= 70 ? "Aprovado" : "Revisar"
+  };
+
+  historyData.push(result);
+  saveData();
+
+  document.getElementById("challenge-status").textContent = "Concluída";
+  document.getElementById("progressbar").style.width = "100%";
+
+  document.getElementById("step-content").innerHTML = `
+    <h3>Atividade concluída!</h3>
+    <p>Sua pontuação final foi <strong>${score}/100</strong>.</p>
+    <p>Erros registrados: <strong>${errors}</strong>.</p>
+    <p>Tempo utilizado: <strong>${escapeHTML(result.duration)}</strong>.</p>
+    <span class="tag ${score >= 70 ? "green" : "red"}">${escapeHTML(result.status)}</span>
+    <div class="actions">
+      <button onclick="startChallenge()">Tentar novamente</button>
+      <button class="secondary" onclick="showView('history')">Ver meu desempenho</button>
+    </div>
+  `;
+
+  document.getElementById("step-list").innerHTML = "";
+  document.getElementById("step-heading").textContent = "Atividade finalizada";
+  document.getElementById("next-step").classList.add("hidden");
+  document.getElementById("finish-btn").classList.add("hidden");
+  document.getElementById("back-step").classList.add("hidden");
+
+  renderHome();
+  renderHistory();
+  renderInstructor();
+}
+
+function addProduct() {
+  const sku = document.getElementById("p-sku").value.trim();
+  const name = document.getElementById("p-name").value.trim();
+  const qty = Number(document.getElementById("p-qty").value);
+  const weight = Number(document.getElementById("p-weight").value);
+
+  if (!sku || !name || !Number.isFinite(qty) || qty <= 0 ||
+      !Number.isFinite(weight) || weight <= 0) {
+    showFeedback("product-feedback", "Preencha todos os campos com valores válidos.", "error");
+    return;
+  }
+
+  if (products.some(product => product.sku.toLowerCase() === sku.toLowerCase())) {
+    showFeedback("product-feedback", "Já existe um produto cadastrado com esse SKU.", "error");
+    return;
+  }
+
+  products.push({
+    sku,
+    name,
+    qty,
+    weight,
+    address: "A-01-03"
+  });
+
+  saveData();
+
+  ["p-sku", "p-name", "p-qty", "p-weight"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  showFeedback("product-feedback", "Produto cadastrado com sucesso!", "success");
+  renderProducts();
+}
+
+function renderProducts() {
+  const search = (document.getElementById("product-search")?.value || "").toLowerCase();
+
+  const filtered = products.filter(product =>
+    product.sku.toLowerCase().includes(search) ||
+    product.name.toLowerCase().includes(search)
+  );
+
+  const tbody = document.getElementById("product-table");
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5">Nenhum produto encontrado.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(product => `
+    <tr>
+      <td><strong>${escapeHTML(product.sku)}</strong></td>
+      <td>${escapeHTML(product.name)}</td>
+      <td>${Number(product.qty)}</td>
+      <td>${Number(product.weight).toLocaleString("pt-BR")} kg</td>
+      <td><span class="tag">${escapeHTML(product.address || "Não definido")}</span></td>
+    </tr>
+  `).join("");
+}
+
+function renderHome() {
+  const count = historyData.length;
+  const best = count ? Math.max(...historyData.map(item => Number(item.score) || 0)) : null;
+  const last = count ? historyData[count - 1] : null;
+
+  document.getElementById("home-score").textContent =
+    last ? `${last.score}/100` : "—";
+
+  document.getElementById("home-completed").textContent = count;
+  document.getElementById("home-best").textContent =
+    best === null ? "—" : `${best}/100`;
+}
+
+function renderHistory() {
+  const count = historyData.length;
+  const average = count
+    ? historyData.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / count
+    : null;
+  const best = count
+    ? Math.max(...historyData.map(item => Number(item.score) || 0))
+    : null;
+
+  document.getElementById("hist-count").textContent = count;
+  document.getElementById("hist-average").textContent =
+    average === null ? "—" : `${average.toFixed(1).replace(".", ",")}`;
+  document.getElementById("hist-best").textContent =
+    best === null ? "—" : `${best}/100`;
+
+  const tbody = document.getElementById("history-table");
+
+  if (!count) {
+    tbody.innerHTML = `<tr><td colspan="5">Nenhuma atividade concluída ainda.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = [...historyData].reverse().map(item => `
+    <tr>
+      <td>${formatDate(item.date)}</td>
+      <td>${escapeHTML(item.activity)}</td>
+      <td><strong>${Number(item.score)}/100</strong></td>
+      <td>${escapeHTML(item.duration)}</td>
+      <td><span class="tag ${item.score >= 70 ? "green" : "red"}">${escapeHTML(item.status)}</span></td>
+    </tr>
+  `).join("");
+}
+
+function renderInstructor() {
+  const count = historyData.length;
+  const average = count
+    ? historyData.reduce((sum, item) => sum + (Number(item.score) || 0), 0) / count
+    : null;
+  const approved = count
+    ? historyData.filter(item => Number(item.score) >= 70).length / count * 100
+    : null;
+
+  document.getElementById("ins-count").textContent = count;
+  document.getElementById("ins-average").textContent =
+    average === null ? "—" : average.toFixed(1).replace(".", ",");
+  document.getElementById("ins-pass").textContent =
+    approved === null ? "—" : `${approved.toFixed(0)}%`;
+
+  const tbody = document.getElementById("instructor-table");
+
+  if (!count) {
+    tbody.innerHTML = `<tr><td colspan="6">Nenhuma tentativa registrada neste navegador.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = [...historyData].reverse().map(item => `
+    <tr>
+      <td>${escapeHTML(item.student || "Aluno")}</td>
+      <td>${formatDate(item.date)}</td>
+      <td>${Number(item.score)}/100</td>
+      <td>${escapeHTML(item.duration)}</td>
+      <td>${Number(item.errors) || 0}</td>
+      <td><span class="tag ${item.score >= 70 ? "green" : "red"}">${escapeHTML(item.status)}</span></td>
+    </tr>
+  `).join("");
+}
+
+function exportCSV() {
+  if (!historyData.length) {
+    alert("Ainda não há resultados para exportar.");
+    return;
+  }
+
+  const rows = [
+    ["Aluno", "Atividade", "Data", "Nota", "Duração", "Erros", "Status"],
+    ...historyData.map(item => [
+      item.student || "Aluno",
+      item.activity,
+      formatDate(item.date),
+      item.score,
+      item.duration,
+      item.errors,
+      item.status
+    ])
+  ];
+
+  const csv = "\uFEFF" + rows.map(row =>
+    row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(";")
+  ).join("\r\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "relatorio-logisim.csv";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function clearHistory() {
+  if (!confirm("Tem certeza de que deseja apagar todo o histórico deste navegador?")) return;
+
+  historyData = [];
+  saveData();
+  renderHome();
+  renderHistory();
+  renderInstructor();
+
+  alert("Histórico apagado.");
+}
+
+function showFeedback(id, message, type) {
+  const element = document.getElementById(id);
+  element.textContent = message;
+  element.className = `feedback ${type}`;
+  element.classList.remove("hidden");
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleString("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short"
+  });
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function initialize() {
+  renderHome();
+  renderProducts();
+  renderHistory();
+  renderInstructor();
+
+  document.getElementById("step-list").innerHTML = "";
+  document.getElementById("step-content").innerHTML = `
+    <h3>Pronto para começar?</h3>
+    <p class="muted">Clique em “Iniciar A.L.” para iniciar a simulação das operações logísticas.</p>
+  `;
+
+  const student = prompt("Digite seu nome para registrar as atividades (opcional):");
+  if (student && student.trim()) {
+    localStorage.setItem(STORAGE.student, student.trim());
+  }
+}
+
+initialize();
+</script>
+</body>
+</html>
