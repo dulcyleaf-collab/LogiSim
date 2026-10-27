@@ -252,6 +252,117 @@ td { color:#e0e8f2; }
   .hero { padding:17px; }
   .stat { font-size:24px; }
 }
+  
+/* LOGISIM — atualização visual */
+:root {
+  --logi-orange: #f97316;
+  --logi-bg: #0b1220;
+  --logi-card: #162235;
+  --logi-border: #2d4058;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at top left, #182a43 0%, transparent 48%),
+    var(--logi-bg);
+  line-height: 1.55;
+}
+
+header {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+}
+
+aside {
+  background: linear-gradient(180deg, #111c2e, #0b1220);
+}
+
+.bg-industrial-card {
+  background: linear-gradient(145deg, #19283d, #121d2e);
+  border: 1px solid var(--logi-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.bg-industrial-card:hover {
+  border-color: #465d79;
+}
+
+button {
+  cursor: pointer;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--logi-orange);
+  outline-offset: 3px;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+table th {
+  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+}
+
+table tbody tr {
+  transition: background 0.2s ease;
+}
+
+table tbody tr:hover {
+  background: rgba(148, 163, 184, 0.06);
+}
+
+#reader-picking video,
+#reader-enderecamento video {
+  border-radius: 12px;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  header {
+    padding: 14px !important;
+  }
+
+  main {
+    padding: 16px !important;
+  }
+
+  .bg-industrial-card {
+    border-radius: 12px;
+  }
+
+  button {
+    min-height: 40px;
+  }
+
+  table {
+    min-width: 560px;
+  }
+}
+
 </style>
 </head>
 <body>
