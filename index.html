@@ -4,246 +4,872 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LogiSim | Sistema de Operações Logísticas</title>
+<title>LogiSim | Simulação de Operações Logísticas</title>
+
 <style>
-:root{--bg:#101827;--panel:#192438;--panel2:#202e44;--blue:#3b82f6;--text:#f1f5f9;--muted:#a8b4c7;--green:#22c55e;--red:#ef4444;--border:#344258}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;background:var(--blue);color:white;font-weight:bold}
-button:hover{filter:brightness(1.12)}
-button.secondary{background:#344258}
-button.danger{background:#b91c1c}
-input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:#111c2e;color:white;margin:6px 0 14px}
-label{display:block;color:var(--muted);font-size:13px}
-h1,h2,h3{margin-top:0}
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.hidden{display:none!important}
-.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at top,#263e61,#101827 65%)}
-.login-card{width:100%;max-width:430px;background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:30px;box-shadow:0 20px 60px #0005}
-.logo{width:54px;height:54px;border-radius:14px;background:var(--blue);display:grid;place-items:center;font-size:26px;font-weight:bold;margin-bottom:18px}
-.login-card h1{margin-bottom:5px}
-.login-card button{width:100%}
-#login-message{color:#fca5a5;font-size:13px;min-height:20px}
-.app{min-height:100vh}
-header{background:var(--panel);border-bottom:1px solid var(--border);padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.brand{font-size:22px;font-weight:bold}
-.brand span{color:#60a5fa}
-.user-info{display:flex;align-items:center;gap:12px}
-.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 70px)}
-aside{background:#141f31;border-right:1px solid var(--border);padding:18px}
-.nav-button{display:block;width:100%;text-align:left;margin-bottom:8px;background:transparent;color:var(--muted)}
-.nav-button.active,.nav-button:hover{background:var(--panel2);color:white}
-main{padding:26px;min-width:0}
-.page{display:none}
-.page.active{display:block}
-.page-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:19px;margin-bottom:16px;min-width:0}
-.stat{font-size:29px;font-weight:bold;margin:12px 0 4px}
-.stat-label{color:var(--muted);font-size:13px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:550px}
-th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px}
-th{color:var(--muted);font-weight:normal}
-.badge{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px;background:#334155}
-.badge.green{background:#14532d;color:#bbf7d0}
-.badge.orange{background:#713f12;color:#fde68a}
-.badge.red{background:#7f1d1d;color:#fecaca}
-.progress{height:9px;background:#344258;border-radius:10px;overflow:hidden;margin:12px 0}
-.progress div{height:100%;background:var(--green);width:0;transition:width .2s}
-.step{padding:14px;border:1px solid var(--border);border-radius:9px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.step.done{border-color:#166534;background:#102c25}
-.notice{padding:13px;border-radius:8px;background:#172d49;border:1px solid #2d4b70;margin-bottom:16px;color:#dbeafe}
-.empty{text-align:center;padding:25px;color:var(--muted)}
-footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
-@media(max-width:800px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;padding:10px}.nav-button{white-space:nowrap;width:auto;margin:0}.grid{grid-template-columns:1fr 1fr}main{padding:17px}}
-@media(max-width:500px){.grid,.form-grid{grid-template-columns:1fr}.login-card{padding:22px}header{padding:13px}main{padding:13px}.user-info{width:100%;justify-content:space-between}}
+:root {
+  --bg: #071426;
+  --panel: #10233d;
+  --panel2: #183553;
+  --orange: #f28c28;
+  --orange-hover: #ff9f43;
+  --text: #f4f7fb;
+  --muted: #a9bbd0;
+  --border: #2b4563;
+  --green: #28c76f;
+  --red: #ff6262;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button, input, select, textarea { font: inherit; }
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--orange);
+  color: #111827;
+}
+
+.btn-primary:hover { background: var(--orange-hover); }
+
+.btn-secondary {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background: #562b35;
+  color: #ffd8dc;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 7px;
+  background: #09192d;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--orange);
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+h1, h2, h3 { margin-top: 0; }
+p { line-height: 1.5; }
+
+.muted { color: var(--muted); }
+.orange { color: var(--orange); }
+
+.hidden { display: none !important; }
+
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at top right, #183553 0, transparent 40%),
+    var(--bg);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 20px 60px #0005;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 25px;
+}
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: var(--orange);
+  color: #102033;
+  font-size: 25px;
+  font-weight: 900;
+  border-radius: 13px;
+}
+
+.brand h1 {
+  font-size: 25px;
+  margin: 0 0 4px;
+}
+
+.brand small { color: var(--muted); }
+
+.login-card .btn-primary { width: 100%; }
+
+.demo-note {
+  background: #09192d;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px;
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.app { min-height: 100vh; }
+
+.topbar {
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px 25px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar .brand { margin: 0; }
+.topbar .brand-icon { width: 42px; height: 42px; }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+  min-height: calc(100vh - 75px);
+}
+
+.sidebar {
+  padding: 20px 13px;
+  background: #0a1a2e;
+  border-right: 1px solid var(--border);
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--muted);
+  margin-bottom: 7px;
+  border-radius: 8px;
+}
+
+.nav-btn:hover, .nav-btn.active {
+  background: var(--panel2);
+  color: var(--orange);
+}
+
+main {
+  padding: 28px;
+  min-width: 0;
+  max-width: 1500px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 7px;
+  font-size: 28px;
+}
+
+.page-description {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 20px;
+  margin-bottom: 18px;
+  min-width: 0;
+}
+
+.stat-label { color: var(--muted); font-size: 13px; }
+
+.stat-number {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.stat-icon {
+  color: var(--orange);
+  font-size: 24px;
+}
+
+.card h3 { margin-bottom: 14px; }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.step {
+  background: #0a1a2e;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 17px;
+}
+
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--panel2);
+  color: var(--orange);
+  border-radius: 50%;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.step.done .step-number {
+  background: var(--green);
+  color: #062414;
+}
+
+.step p { color: var(--muted); font-size: 13px; }
+
+.step-status {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 15px;
+}
+
+.full-width { grid-column: 1 / -1; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 650px;
+}
+
+th, td {
+  padding: 13px 11px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th { color: var(--orange); font-weight: bold; }
+td { color: var(--text); }
+
+.badge {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 20px;
+  background: var(--panel2);
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.badge.success { background: #123f30; color: #8cf0b9; }
+.badge.pending { background: #4a351e; color: #ffd09a; }
+
+.notice {
+  padding: 14px;
+  border-radius: 9px;
+  background: #352b1d;
+  border: 1px solid #74512a;
+  color: #ffe0b7;
+  margin-bottom: 18px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.empty {
+  padding: 25px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  padding: 15px 20px;
+  border-radius: 10px;
+  background: var(--green);
+  color: #082417;
+  font-weight: bold;
+  box-shadow: 0 8px 25px #0005;
+  max-width: calc(100% - 40px);
+}
+
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .topbar { padding: 12px; flex-wrap: wrap; }
+  .topbar .brand h1 { font-size: 20px; }
+  .user-info { width: 100%; justify-content: space-between; }
+  .layout { grid-template-columns: 1fr; }
+  .sidebar {
+    display: flex;
+    overflow-x: auto;
+    gap: 5px;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-btn {
+    width: auto;
+    flex: 0 0 auto;
+    margin: 0;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 10px;
+  }
+  main { padding: 17px 12px; }
+  .page-title { font-size: 24px; }
+  .grid { gap: 10px; }
+  .card { padding: 15px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: auto; }
+}
 </style>
 </head>
+
 <body>
 
-<section id="login-screen" class="login-screen">
+<section id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="logo">L</div>
-    <h1>Logi<span style="color:#60a5fa">Sim</span></h1>
-    <p class="muted">Sistema de Simulação de Operações Logísticas</p>
-    <hr style="border-color:#344258;margin:22px 0">
-    <form id="login-form">
-      <label for="username">Usuário</label>
-      <input id="username" autocomplete="username" placeholder="Digite seu usuário" required>
-      <label for="password">Senha</label>
-      <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required>
-      <p id="login-message"></p>
-      <button type="submit">Entrar no sistema</button>
+    <div class="brand">
+      <div class="brand-icon">LS</div>
+      <div>
+        <h1>LogiSim</h1>
+        <small>Simulação de Operações Logísticas</small>
+      </div>
+    </div>
+
+    <p class="muted">
+      Entre na plataforma para registrar e acompanhar as etapas da operação logística.
+    </p>
+
+    <form id="loginForm">
+      <label>
+        Usuário
+        <input id="username" autocomplete="username" placeholder="Digite seu usuário" required>
+      </label>
+
+      <label>
+        Senha
+        <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required>
+      </label>
+
+      <button type="submit" class="btn-primary">Entrar na plataforma</button>
+      <p id="loginError" style="color:#ff8585;font-size:13px"></p>
     </form>
-    <p class="small muted" style="margin-top:20px">Projeto Integrador · Assistente de Logística</p>
+
+    <div class="demo-note">
+      <strong>Projeto LogiSim</strong><br>
+      Curso: Assistente de Logística<br>
+      Turma: APR477<br>
+      Instrutora: Quezia
+    </div>
   </div>
 </section>
 
 <div id="app" class="app hidden">
-  <header>
-    <div class="brand">Logi<span>Sim</span></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">LS</div>
+      <div>
+        <h1>LogiSim</h1>
+        <small>Operações logísticas simuladas</small>
+      </div>
+    </div>
+
     <div class="user-info">
       <div>
-        <strong id="header-name">Usuário</strong><br>
-        <span id="header-role" class="muted small">Perfil</span>
+        <strong id="userName">Usuário</strong>
+        <small id="userRole">Aluno</small>
       </div>
-      <button class="secondary" id="logout-button">Sair</button>
+      <button class="btn-secondary" onclick="logout()">Sair</button>
     </div>
   </header>
 
   <div class="layout">
-    <aside>
-      <button class="nav-button active" data-page="dashboard">⌂ Visão geral</button>
-      <button class="nav-button" data-page="activity">☑ Operação logística</button>
-      <button class="nav-button" data-page="products">▤ Estoque de produtos</button>
-      <button class="nav-button" data-page="history">◷ Histórico</button>
-      <button class="nav-button hidden" id="instructor-nav" data-page="instructor">▦ Painel da instrutora</button>
+    <aside class="sidebar">
+      <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard',this)">▦ Visão geral</button>
+      <button class="nav-btn" data-page="activity" onclick="showPage('activity',this)">✓ Etapas logísticas</button>
+      <button class="nav-btn" data-page="addresses" onclick="showPage('addresses',this)">⌖ Endereçamento</button>
+      <button class="nav-btn" data-page="products" onclick="showPage('products',this)">▤ Produtos</button>
+      <button class="nav-btn" data-page="history" onclick="showPage('history',this)">◷ Histórico</button>
+      <button class="nav-btn instructor-only hidden" data-page="instructor" onclick="showPage('instructor',this)">♙ Painel da instrutora</button>
     </aside>
 
     <main>
-      <section class="page active" id="page-dashboard">
-        <div class="page-heading">
-          <div>
-            <h1>Visão geral</h1>
-            <p class="muted">Bem-vindo(a) ao LogiSim, <strong id="welcome-name"></strong>.</p>
-          </div>
-        </div>
-        <div class="notice">Este ambiente simula etapas de uma operação logística para fins educacionais.</div>
+      <section id="page-dashboard" class="page">
+        <h2 class="page-title">Visão geral</h2>
+        <p class="page-description">Acompanhe o andamento das atividades da operação logística.</p>
+
         <div class="grid">
-          <div class="card"><div class="stat-label">Produtos cadastrados</div><div class="stat" id="stat-products">0</div><div class="muted small">Itens registrados no estoque</div></div>
-          <div class="card"><div class="stat-label">Unidades em estoque</div><div class="stat" id="stat-units">0</div><div class="muted small">Quantidade total cadastrada</div></div>
-          <div class="card"><div class="stat-label">Etapas concluídas</div><div class="stat" id="stat-steps">0/5</div><div class="muted small">Sua atividade logística</div></div>
-        </div>
-        <div class="card">
-          <h2>Como funciona</h2>
-          <p class="muted">O sistema acompanha o fluxo de recebimento, conferência, armazenagem, separação de pedidos e expedição.</p>
-          <button id="go-activity">Iniciar ou continuar atividade</button>
-        </div>
-        <div class="card">
-          <h2>Fluxo da operação</h2>
-          <div class="grid" style="margin-bottom:0">
-            <div><strong>01. Recebimento</strong><p class="muted small">Entrada das mercadorias.</p></div>
-            <div><strong>02. Conferência</strong><p class="muted small">Verificação das quantidades.</p></div>
-            <div><strong>03. Armazenagem</strong><p class="muted small">Definição da localização.</p></div>
-            <div><strong>04. Separação</strong><p class="muted small">Picking dos produtos.</p></div>
-            <div><strong>05. Expedição</strong><p class="muted small">Conferência final da carga.</p></div>
+          <div class="card">
+            <div class="stat-label">Produtos cadastrados</div>
+            <div class="stat-number" id="statProducts">0</div>
+            <div class="stat-icon">▤</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Endereços registrados</div>
+            <div class="stat-number" id="statAddresses">0</div>
+            <div class="stat-icon">⌖</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Etapas concluídas por mim</div>
+            <div class="stat-number" id="statSteps">0/3</div>
+            <div class="stat-icon">✓</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Registros no histórico</div>
+            <div class="stat-number" id="statHistory">0</div>
+            <div class="stat-icon">◷</div>
           </div>
         </div>
-      </section>
 
-      <section class="page" id="page-activity">
-        <div class="page-heading">
-          <div><h1>Operação logística</h1><p class="muted">Simulação de recebimento até a expedição.</p></div>
-          <button class="secondary" id="reset-activity">Reiniciar atividade</button>
-        </div>
         <div class="card">
-          <h2>Pedido de demonstração</h2>
-          <div class="grid">
-            <div><div class="stat-label">Produto</div><strong>Caixas de água</strong></div>
-            <div><div class="stat-label">Quantidade solicitada</div><strong>50 caixas</strong></div>
-            <div><div class="stat-label">Quantidade conferida</div><strong>48 caixas</strong></div>
-          </div>
-          <div class="notice">Atenção: foram solicitadas 50 caixas, mas a conferência inicial identificou 48. Registre a divergência antes de prosseguir.</div>
-          <div class="progress"><div id="activity-progress"></div></div>
-          <p class="muted small" id="progress-label">0 de 5 etapas concluídas</p>
-          <div id="steps-list"></div>
-        </div>
-        <div class="card">
-          <h3>Registro da atividade</h3>
-          <p class="muted">Ao concluir cada etapa, o sistema registra a ação no histórico do usuário conectado.</p>
-          <p id="activity-feedback" class="muted">Comece pela etapa de recebimento.</p>
-        </div>
-      </section>
-
-      <section class="page" id="page-products">
-        <div class="page-heading"><div><h1>Estoque de produtos</h1><p class="muted">Cadastro e consulta de mercadorias.</p></div></div>
-        <div class="card">
-          <h2>Cadastrar produto</h2>
-          <form id="product-form">
-            <div class="form-grid">
-              <div><label for="product-code">Código</label><input id="product-code" required placeholder="Ex.: PRD001"></div>
-              <div><label for="product-name">Nome do produto</label><input id="product-name" required placeholder="Ex.: Caixa de água"></div>
-              <div><label for="product-category">Categoria</label><select id="product-category"><option>Alimentos e bebidas</option><option>Limpeza</option><option>Material de escritório</option><option>Outros</option></select></div>
-              <div><label for="product-quantity">Quantidade</label><input id="product-quantity" type="number" min="0" required value="1"></div>
-              <div><label for="product-location">Localização</label><input id="product-location" placeholder="Ex.: A-01-01" required></div>
-              <div><label for="product-weight">Peso por unidade (kg)</label><input id="product-weight" type="number" min="0" step="0.01" value="1"></div>
+          <h3>Fluxo da operação</h3>
+          <div class="steps">
+            <div class="step" id="dashStep0">
+              <span class="step-number">1</span>
+              <h3>Recebimento</h3>
+              <p>Registrar a chegada do produto e a quantidade recebida.</p>
+              <span class="step-status" id="dashStatus0">Pendente</span>
             </div>
-            <button type="submit">Cadastrar produto</button>
+            <div class="step" id="dashStep1">
+              <span class="step-number">2</span>
+              <h3>Conferência</h3>
+              <p>Verificar se o produto e a quantidade estão corretos.</p>
+              <span class="step-status" id="dashStatus1">Pendente</span>
+            </div>
+            <div class="step" id="dashStep2">
+              <span class="step-number">3</span>
+              <h3>Endereçamento</h3>
+              <p>Escolher e registrar onde o produto será armazenado.</p>
+              <span class="step-status" id="dashStatus2">Pendente</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" onclick="showPage('activity')">Acessar etapas</button>
+            <button class="btn-secondary" onclick="showPage('addresses')">Registrar endereço</button>
+          </div>
+        </div>
+
+        <div class="notice">
+          <strong>Atenção:</strong> o endereçamento é preenchido pelo próprio aluno.
+          É necessário concluir o recebimento e a conferência antes de registrar o endereço.
+        </div>
+      </section>
+
+      <section id="page-activity" class="page hidden">
+        <h2 class="page-title">Etapas logísticas</h2>
+        <p class="page-description">Execute cada etapa na sequência para simular o processo de armazenagem.</p>
+
+        <div class="card">
+          <h3>1. Recebimento</h3>
+          <p class="muted">Selecione o produto e registre a quantidade que chegou ao setor.</p>
+          <form id="receivingForm">
+            <div class="form-grid">
+              <label>
+                Produto
+                <select id="receivingProduct" required></select>
+              </label>
+              <label>
+                Quantidade recebida
+                <input id="receivingQty" type="number" min="1" step="1" placeholder="Ex.: 50" required>
+              </label>
+            </div>
+            <button class="btn-primary" type="submit">Registrar recebimento</button>
+          </form>
+          <p id="receivingStatus" class="muted"></p>
+        </div>
+
+        <div class="card">
+          <h3>2. Conferência</h3>
+          <p class="muted">Compare a quantidade recebida com a quantidade prevista no cadastro.</p>
+          <form id="conferenceForm">
+            <div class="form-grid">
+              <label>
+                Produto recebido
+                <select id="conferenceProduct" required></select>
+              </label>
+              <label>
+                Quantidade conferida
+                <input id="conferenceQty" type="number" min="1" step="1" placeholder="Informe a quantidade conferida" required>
+              </label>
+            </div>
+            <label>
+              Observações da conferência
+              <textarea id="conferenceNotes" rows="2" placeholder="Ex.: embalagem íntegra, quantidade conferida..."></textarea>
+            </label>
+            <button class="btn-primary" type="submit">Registrar conferência</button>
+          </form>
+          <p id="conferenceStatus" class="muted"></p>
+        </div>
+
+        <div class="card">
+          <h3>3. Endereçamento de armazenagem</h3>
+          <p class="muted">Após concluir as duas primeiras etapas, acesse o formulário e escolha o endereço do produto.</p>
+          <button class="btn-primary" onclick="showPage('addresses')">Preencher endereço de armazenagem</button>
+        </div>
+      </section>
+
+      <section id="page-addresses" class="page hidden">
+        <h2 class="page-title">Endereçamento</h2>
+        <p class="page-description">O aluno deve definir e preencher a localização física do produto no estoque.</p>
+
+        <div id="addressLock" class="notice">
+          Conclua primeiro o recebimento e a conferência para liberar o formulário de endereçamento.
+        </div>
+
+        <div class="card">
+          <h3>Registrar localização física</h3>
+          <form id="addressForm">
+            <div class="form-grid">
+              <label>
+                Produto
+                <select id="addressProduct" required></select>
+              </label>
+              <label>
+                Quantidade a armazenar
+                <input id="addressQty" type="number" min="1" step="1" required placeholder="Ex.: 50">
+              </label>
+              <label>
+                Rua / Corredor
+                <input id="addressStreet" required placeholder="Ex.: Rua A">
+              </label>
+              <label>
+                Estante
+                <input id="addressShelf" required placeholder="Ex.: Estante 02">
+              </label>
+              <label>
+                Prateleira / Nível
+                <input id="addressRack" required placeholder="Ex.: Nível 03">
+              </label>
+              <label>
+                Posição
+                <input id="addressPosition" required placeholder="Ex.: Posição 04">
+              </label>
+              <label class="full-width">
+                Observações
+                <textarea id="addressNotes" rows="2" placeholder="Informações adicionais, se necessário"></textarea>
+              </label>
+            </div>
+            <div class="actions">
+              <button id="saveAddressBtn" class="btn-primary" type="submit">Salvar endereçamento</button>
+              <button class="btn-secondary" type="reset">Limpar formulário</button>
+            </div>
           </form>
         </div>
+
         <div class="card">
-          <div class="page-heading"><div><h2>Produtos registrados</h2></div></div>
-          <label for="product-search">Buscar por nome, código ou localização</label>
-          <input id="product-search" placeholder="Digite para pesquisar...">
-          <div class="table-wrap"><table><thead><tr><th>Código</th><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Localização</th><th>Ação</th></tr></thead><tbody id="products-table"></tbody></table></div>
+          <h3>Endereços registrados</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Quantidade</th>
+                  <th>Localização</th>
+                  <th>Responsável</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="addressTable"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <section class="page" id="page-history">
-        <div class="page-heading"><div><h1>Meu histórico</h1><p class="muted">Ações registradas na sessão de demonstração.</p></div><button id="export-history">Exportar CSV</button></div>
+      <section id="page-products" class="page hidden">
+        <h2 class="page-title">Produtos</h2>
+        <p class="page-description">Consulte os produtos e suas informações de armazenagem.</p>
+
+        <div class="card instructor-only hidden" id="newProductCard">
+          <h3>Cadastrar produto</h3>
+          <form id="productForm">
+            <div class="form-grid">
+              <label>
+                Código
+                <input id="productCode" required placeholder="Ex.: PRD001">
+              </label>
+              <label>
+                Nome do produto
+                <input id="productName" required placeholder="Ex.: Caixa de água">
+              </label>
+              <label>
+                Categoria
+                <input id="productCategory" required placeholder="Ex.: Bebidas">
+              </label>
+              <label>
+                Quantidade prevista
+                <input id="productQty" type="number" min="1" step="1" required placeholder="Ex.: 50">
+              </label>
+              <label>
+                Peso por unidade (kg)
+                <input id="productWeight" type="number" min="0" step="0.01" placeholder="Ex.: 12">
+              </label>
+              <label>
+                Dimensões
+                <input id="productDimensions" placeholder="Ex.: 40 x 30 x 25 cm">
+              </label>
+            </div>
+            <button class="btn-primary" type="submit">Cadastrar produto</button>
+          </form>
+        </div>
+
         <div class="card">
-          <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Usuário</th><th>Ação</th><th>Detalhes</th></tr></thead><tbody id="history-table"></tbody></table></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Produto</th>
+                  <th>Categoria</th>
+                  <th>Quantidade prevista</th>
+                  <th>Peso (kg)</th>
+                  <th>Endereço</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="productTable"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <section class="page" id="page-instructor">
-        <div class="page-heading"><div><h1>Painel da instrutora</h1><p class="muted">Acompanhamento demonstrativo das atividades registradas neste navegador.</p></div><button id="export-all">Exportar registros</button></div>
+      <section id="page-history" class="page hidden">
+        <h2 class="page-title">Histórico de operações</h2>
+        <p class="page-description">Consulte os registros de recebimento, conferência e endereçamento.</p>
+
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data e hora</th>
+                  <th>Usuário</th>
+                  <th>Operação</th>
+                  <th>Detalhes</th>
+                </tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-instructor" class="page hidden">
+        <h2 class="page-title">Painel da instrutora</h2>
+        <p class="page-description">Acompanhe os registros e o andamento das atividades no navegador utilizado.</p>
+
         <div class="grid">
-          <div class="card"><div class="stat-label">Registros de atividades</div><div class="stat" id="instructor-total">0</div></div>
-          <div class="card"><div class="stat-label">Alunos com registros</div><div class="stat" id="instructor-students">0</div></div>
-          <div class="card"><div class="stat-label">Produtos cadastrados</div><div class="stat" id="instructor-products">0</div></div>
+          <div class="card">
+            <div class="stat-label">Produtos cadastrados</div>
+            <div class="stat-number" id="teacherProducts">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Endereçamentos</div>
+            <div class="stat-number" id="teacherAddresses">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Registros de atividades</div>
+            <div class="stat-number" id="teacherHistory">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Alunos cadastrados</div>
+            <div class="stat-number">5</div>
+          </div>
         </div>
+
         <div class="card">
-          <h2>Atividades dos alunos</h2>
-          <p class="muted small">Os dados exibidos são os registros disponíveis neste navegador.</p>
-          <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Aluno</th><th>Ação</th><th>Detalhes</th></tr></thead><tbody id="all-history-table"></tbody></table></div>
+          <h3>Endereçamentos realizados pelos alunos</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Aluno</th>
+                  <th>Produto</th>
+                  <th>Quantidade</th>
+                  <th>Localização</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="teacherAddressTable"></tbody>
+            </table>
+          </div>
         </div>
+
         <div class="card">
-          <h3>Controles da demonstração</h3>
-          <p class="muted">Use esta opção apenas se quiser apagar os registros locais do projeto neste navegador.</p>
-          <button class="danger" id="clear-history">Limpar histórico local</button>
+          <h3>Atividades recentes</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data e hora</th>
+                  <th>Usuário</th>
+                  <th>Operação</th>
+                  <th>Detalhes</th>
+                </tr>
+              </thead>
+              <tbody id="teacherHistoryTable"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <footer>LogiSim · Projeto Integrador · Curso Assistente de Logística</footer>
+      <div class="footer">
+        LogiSim • Projeto Integrador • Assistente de Logística • Turma APR477
+      </div>
     </main>
   </div>
 </div>
 
+<div id="toast" class="toast hidden"></div>
+
 <script>
-"use strict";
-
-const USERS = {
-  ana: {password:"Ana@2026", name:"Ana Beatriz Barbosa de Oliveira Paixão", role:"aluno"},
-  dulcylea: {password:"Dulcy@2026", name:"Dulcylea Fonseca Ferreira", role:"aluno"},
-  gabriella: {password:"Gabi@2026", name:"Gabriella Alves Sampaio de Oliveira", role:"aluno"},
-  pedro: {password:"Pedro@2026", name:"Pedro Lucas Dias", role:"aluno"},
-  sofia: {password:"Sofia@2026", name:"Sofia de Faria", role:"aluno"},
-  quezia: {password:"Quezia@2026", name:"Quezia", role:"instrutora"}
-};
-
-const KEYS = {
-  products:"logisim_products",
-  history:"logisim_history",
-  progress:"logisim_progress",
-  session:"logisim_session"
-};
-
-const STEPS = [
-  {title:"1. Recebimento",description:"Registrar a chegada das 50 caixas solicitadas.",detail:"Recebimento iniciado: pedido de 50 caixas de água."},
-  {title:"2. Conferência",description:"Identificar e registrar a divergência entre 50 solicitadas e 48 recebidas.",detail:"Divergência registrada: 50 solicitadas e 48 recebidas."},
-  {title:"3. Armazenagem",description:"Definir o endereço de armazenagem A-01-01.",detail:"Endereço de armazenagem definido: A-01-01."},
-  {title:"4. Separação de pedidos",description:"Separar 12 caixas para atender ao pedido demonstrativo.",detail:"Picking concluído: 12 caixas separadas."},
-  {title:"5. Expedição",description:"Realizar a conferência final e registrar a conclusão.",detail:"Conferência final concluída: operação demonstrativa finalizada."}
+const USERS = [
+  {
+    username: "ana",
+    password: "Ana@2026",
+    name: "Ana Beatriz Barbosa de Oliveira Paixão",
+    role: "student"
+  },
+  {
+    username: "dulcylea",
+    password: "Dulcy@2026",
+    name: "Dulcylea Fonseca Ferreira",
+    role: "student"
+  },
+  {
+    username: "gabriella",
+    password: "Gabi@2026",
+    name: "Gabriella Alves Sampaio de Oliveira",
+    role: "student"
+  },
+  {
+    username: "pedro",
+    password: "Pedro@2026",
+    name: "Pedro Lucas Dias",
+    role: "student"
+  },
+  {
+    username: "sofia",
+    password: "Sofia@2026",
+    name: "Sofia de Faria",
+    role: "student"
+  },
+  {
+    username: "quezia",
+    password: "Quezia@2026",
+    name: "Instrutora Quezia",
+    role: "instructor"
+  }
 ];
 
-let currentUser = null;
+const KEYS = {
+  products: "logisim_products_v1",
+  addresses: "logisim_addresses_v1",
+  history: "logisim_history_v1",
+  progress: "logisim_progress_v1"
+};
 
-function readData(key, fallback) {
+let currentUser = null;
+let toastTimer = null;
+
+function read(key, fallback = []) {
   try {
     const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : fallback;
@@ -251,283 +877,520 @@ function readData(key, fallback) {
     return fallback;
   }
 }
-function saveData(key, value) {
+
+function write(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
+
 function getProducts() {
-  return readData(KEYS.products, [
-    {code:"PRD001",name:"Caixa de água",category:"Alimentos e bebidas",quantity:50,location:"A-01-01",weight:12},
-    {code:"PRD002",name:"Caixa de papel A4",category:"Material de escritório",quantity:20,location:"B-02-01",weight:2.5},
-    {code:"PRD003",name:"Detergente",category:"Limpeza",quantity:35,location:"C-01-02",weight:0.5}
-  ]);
+  return read(KEYS.products, []);
 }
-function ensureProducts() {
-  if (localStorage.getItem(KEYS.products) === null) {
-    saveData(KEYS.products, getProducts());
-  }
+
+function getAddresses() {
+  return read(KEYS.addresses, []);
 }
+
 function getHistory() {
-  return readData(KEYS.history, []);
+  return read(KEYS.history, []);
 }
+
 function getProgress() {
-  return readData(KEYS.progress, {});
+  const all = read(KEYS.progress, {});
+  if (!currentUser) return {};
+  return all[currentUser.username] || {};
 }
-function userProgress() {
-  const all = getProgress();
-  return currentUser ? (all[currentUser.username] || []) : [];
+
+function updateProgress(step, data = {}) {
+  const all = read(KEYS.progress, {});
+  const userProgress = all[currentUser.username] || {};
+  userProgress[step] = {
+    done: true,
+    at: new Date().toISOString(),
+    ...data
+  };
+  all[currentUser.username] = userProgress;
+  write(KEYS.progress, all);
 }
-function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[char]);
-}
+
 function logAction(action, details) {
-  if (!currentUser) return;
   const history = getHistory();
   history.unshift({
-    date:new Date().toLocaleString("pt-BR"),
-    username:currentUser.username,
-    name:currentUser.name,
-    role:currentUser.role,
+    id: Date.now() + Math.random(),
+    at: new Date().toISOString(),
+    username: currentUser.username,
+    userName: currentUser.name,
     action,
     details
   });
-  saveData(KEYS.history, history);
-  renderHistory();
-  renderInstructor();
+  write(KEYS.history, history);
 }
-function showPage(page) {
-  document.querySelectorAll(".page").forEach(element => element.classList.remove("active"));
-  const target = document.getElementById("page-" + page);
-  if (target) target.classList.add("active");
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === page);
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function formatDate(value) {
+  if (!value) return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleString("pt-BR");
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add("hidden"), 3200);
+}
+
+function getProductName(id) {
+  const product = getProducts().find(item => item.id === id);
+  return product ? product.name : "Produto não encontrado";
+}
+
+function getProductAddress(productId) {
+  const address = getAddresses().find(item => item.productId === productId);
+  if (!address) return "Não endereçado";
+  return [
+    address.street,
+    address.shelf,
+    address.rack,
+    address.position
+  ].filter(Boolean).join(" / ");
+}
+
+function seedProducts() {
+  if (localStorage.getItem(KEYS.products) !== null) return;
+
+  write(KEYS.products, [
+    {
+      id: "prd-agua-001",
+      code: "PRD001",
+      name: "Caixa de água",
+      category: "Bebidas",
+      qty: 50,
+      weight: 12,
+      dimensions: "40 x 30 x 25 cm",
+      createdAt: new Date().toISOString()
+    }
+  ]);
+}
+
+function login(event) {
+  event.preventDefault();
+
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const user = USERS.find(item =>
+    item.username === username && item.password === password
+  );
+
+  if (!user) {
+    document.getElementById("loginError").textContent =
+      "Usuário ou senha incorretos. Confira os dados e tente novamente.";
+    return;
+  }
+
+  currentUser = user;
+  document.getElementById("loginError").textContent = "";
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("userName").textContent = user.name;
+  document.getElementById("userRole").textContent =
+    user.role === "instructor" ? "Instrutora" : "Aluno";
+
+  document.querySelectorAll(".instructor-only").forEach(element => {
+    element.classList.toggle("hidden", user.role !== "instructor");
   });
+
+  renderAll();
+  showPage("dashboard");
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("loginForm").reset();
+}
+
+function showPage(page, button) {
+  if (page === "instructor" && currentUser?.role !== "instructor") {
+    page = "dashboard";
+  }
+
+  document.querySelectorAll(".page").forEach(element => {
+    element.classList.add("hidden");
+  });
+
+  const selectedPage = document.getElementById("page-" + page);
+  if (selectedPage) selectedPage.classList.remove("hidden");
+
+  document.querySelectorAll(".nav-btn").forEach(element => {
+    element.classList.toggle("active", element.dataset.page === page);
+  });
+
+  if (page === "addresses") renderAddresses();
   if (page === "products") renderProducts();
   if (page === "history") renderHistory();
   if (page === "instructor") renderInstructor();
-  if (page === "dashboard") renderDashboard();
 }
-function login(username, password) {
-  const key = username.trim().toLowerCase();
-  const account = USERS[key];
-  if (!account || account.password !== password) return false;
 
-  currentUser = {...account, username:key};
-  sessionStorage.setItem(KEYS.session, key);
-  document.getElementById("login-screen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("header-name").textContent = currentUser.name;
-  document.getElementById("header-role").textContent =
-    currentUser.role === "instrutora" ? "Instrutora" : "Aluno";
-  document.getElementById("welcome-name").textContent = currentUser.name;
-  document.getElementById("instructor-nav").classList.toggle("hidden", currentUser.role !== "instrutora");
-  document.getElementById("login-message").textContent = "";
-  renderAll();
-  showPage("dashboard");
-  return true;
-}
-function logout() {
-  currentUser = null;
-  sessionStorage.removeItem(KEYS.session);
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("login-screen").classList.remove("hidden");
-  document.getElementById("password").value = "";
-  document.getElementById("username").focus();
-}
-document.getElementById("login-form").addEventListener("submit", event => {
-  event.preventDefault();
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  if (!login(username, password)) {
-    document.getElementById("login-message").textContent = "Usuário ou senha incorretos. Confira os dados e tente novamente.";
-  }
-});
-document.getElementById("logout-button").addEventListener("click", logout);
+function fillProductSelect(selectId, selectedId = "") {
+  const select = document.getElementById(selectId);
+  const products = getProducts();
 
-document.querySelectorAll(".nav-button").forEach(button => {
-  button.addEventListener("click", () => showPage(button.dataset.page));
-});
-document.getElementById("go-activity").addEventListener("click", () => showPage("activity"));
+  select.innerHTML = '<option value="">Selecione um produto</option>' +
+    products.map(product =>
+      `<option value="${escapeHTML(product.id)}" ${product.id === selectedId ? "selected" : ""}>
+        ${escapeHTML(product.code)} — ${escapeHTML(product.name)}
+      </option>`
+    ).join("");
+}
+
+function refreshSelects() {
+  ["receivingProduct", "conferenceProduct", "addressProduct"].forEach(id => {
+    const select = document.getElementById(id);
+    const previousValue = select.value;
+    fillProductSelect(id, previousValue);
+  });
+}
 
 function renderDashboard() {
   const products = getProducts();
-  const progress = userProgress();
-  document.getElementById("stat-products").textContent = products.length;
-  document.getElementById("stat-units").textContent = products.reduce((sum,p) => sum + Number(p.quantity || 0),0);
-  document.getElementById("stat-steps").textContent = progress.length + "/5";
-  renderActivity();
-}
-function renderActivity() {
-  if (!currentUser) return;
-  const progress = userProgress();
-  document.getElementById("activity-progress").style.width = (progress.length / STEPS.length * 100) + "%";
-  document.getElementById("progress-label").textContent = progress.length + " de 5 etapas concluídas";
-  document.getElementById("steps-list").innerHTML = STEPS.map((step,index) => {
-    const done = progress.includes(index);
-    return `<div class="step ${done ? "done" : ""}">
-      <div><strong>${escapeHTML(step.title)}</strong><p class="muted small" style="margin-bottom:0">${escapeHTML(step.description)}</p></div>
-      ${done ? '<span class="badge green">Concluída</span>' : `<button data-step="${index}">Concluir</button>`}
-    </div>`;
-  }).join("");
-  document.querySelectorAll("[data-step]").forEach(button => {
-    button.addEventListener("click", () => completeStep(Number(button.dataset.step)));
-  });
-  document.getElementById("activity-feedback").textContent =
-    progress.length === 5 ? "Parabéns! Você concluiu todas as etapas da simulação." :
-    "Próxima etapa: " + STEPS[progress.length].title + ".";
-}
-function completeStep(index) {
-  if (!currentUser || index < 0 || index >= STEPS.length) return;
-  const all = getProgress();
-  const progress = all[currentUser.username] || [];
-  if (progress.includes(index)) return;
-  if (index !== progress.length) {
-    document.getElementById("activity-feedback").textContent = "Conclua as etapas na ordem indicada.";
-    return;
-  }
-  progress.push(index);
-  all[currentUser.username] = progress;
-  saveData(KEYS.progress, all);
-  logAction("Etapa concluída", STEPS[index].detail);
-  renderActivity();
-  renderDashboard();
-}
-document.getElementById("reset-activity").addEventListener("click", () => {
-  if (!currentUser) return;
-  const all = getProgress();
-  all[currentUser.username] = [];
-  saveData(KEYS.progress, all);
-  logAction("Atividade reiniciada", "A simulação foi reiniciada pelo usuário.");
-  renderActivity();
-  renderDashboard();
-});
+  const addresses = getAddresses();
+  const history = getHistory();
+  const progress = getProgress();
 
-document.getElementById("product-form").addEventListener("submit", event => {
-  event.preventDefault();
-  const product = {
-    code:document.getElementById("product-code").value.trim(),
-    name:document.getElementById("product-name").value.trim(),
-    category:document.getElementById("product-category").value,
-    quantity:Number(document.getElementById("product-quantity").value),
-    location:document.getElementById("product-location").value.trim(),
-    weight:Number(document.getElementById("product-weight").value || 0)
-  };
-  if (!product.code || !product.name || !product.location) return;
-  const products = getProducts();
-  if (products.some(p => p.code.toLowerCase() === product.code.toLowerCase())) {
-    alert("Já existe um produto com esse código.");
-    return;
-  }
-  products.push(product);
-  saveData(KEYS.products, products);
-  logAction("Produto cadastrado", `${product.name} (${product.code}), quantidade: ${product.quantity}.`);
-  event.target.reset();
-  document.getElementById("product-quantity").value = 1;
-  document.getElementById("product-weight").value = 1;
-  renderProducts();
-  renderDashboard();
-});
-document.getElementById("product-search").addEventListener("input", renderProducts);
+  document.getElementById("statProducts").textContent = products.length;
+  document.getElementById("statAddresses").textContent = addresses.length;
+  document.getElementById("statHistory").textContent =
+    history.filter(item => item.username === currentUser.username).length;
+
+  const steps = ["receiving", "conference", "address"];
+  const completed = steps.filter(step => progress[step]?.done).length;
+  document.getElementById("statSteps").textContent = completed + "/3";
+
+  steps.forEach((step, index) => {
+    const done = Boolean(progress[step]?.done);
+    document.getElementById("dashStep" + index).classList.toggle("done", done);
+    document.getElementById("dashStatus" + index).textContent =
+      done ? "Concluída ✓" : "Pendente";
+  });
+}
+
+function renderAddresses() {
+  const progress = getProgress();
+  const unlocked = Boolean(progress.receiving?.done && progress.conference?.done);
+
+  document.getElementById("addressLock").classList.toggle("hidden", unlocked);
+  document.getElementById("saveAddressBtn").disabled = !unlocked;
+
+  const addressForm = document.getElementById("addressForm");
+  [...addressForm.elements].forEach(element => {
+    if (element.id !== "saveAddressBtn" && element.type !== "reset") {
+      element.disabled = !unlocked;
+    }
+  });
+
+  fillProductSelect("addressProduct");
+
+  const addresses = getAddresses();
+  document.getElementById("addressTable").innerHTML = addresses.length
+    ? addresses.map(address => `
+      <tr>
+        <td>${escapeHTML(getProductName(address.productId))}</td>
+        <td>${escapeHTML(address.qty)}</td>
+        <td>${escapeHTML(getAddressLabel(address))}</td>
+        <td>${escapeHTML(address.userName)}</td>
+        <td>${escapeHTML(formatDate(address.at))}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="5" class="empty">Nenhum endereçamento registrado.</td></tr>';
+}
+
+function getAddressLabel(address) {
+  return [
+    address.street,
+    address.shelf,
+    address.rack,
+    address.position
+  ].filter(Boolean).join(" / ");
+}
 
 function renderProducts() {
-  const query = (document.getElementById("product-search").value || "").toLowerCase();
-  const products = getProducts().filter(p =>
-    [p.code,p.name,p.category,p.location].some(v => String(v).toLowerCase().includes(query))
-  );
-  const body = document.getElementById("products-table");
-  if (!products.length) {
-    body.innerHTML = '<tr><td colspan="6" class="empty">Nenhum produto encontrado.</td></tr>';
-    return;
-  }
-  body.innerHTML = products.map(p => `<tr>
-    <td>${escapeHTML(p.code)}</td><td>${escapeHTML(p.name)}</td>
-    <td>${escapeHTML(p.category)}</td><td>${escapeHTML(p.quantity)}</td>
-    <td>${escapeHTML(p.location)}</td>
-    <td><button class="danger" data-delete="${escapeHTML(p.code)}">Excluir</button></td>
-  </tr>`).join("");
-  body.querySelectorAll("[data-delete]").forEach(button => {
-    button.addEventListener("click", () => deleteProduct(button.dataset.delete));
-  });
-}
-function deleteProduct(code) {
-  if (!confirm("Deseja excluir este produto do estoque?")) return;
-  const products = getProducts().filter(p => p.code !== code);
-  saveData(KEYS.products, products);
-  logAction("Produto excluído", "Código do produto: " + code);
-  renderProducts();
-  renderDashboard();
+  const products = getProducts();
+  document.getElementById("productTable").innerHTML = products.length
+    ? products.map(product => {
+      const address = getAddresses().find(item => item.productId === product.id);
+      return `
+        <tr>
+          <td>${escapeHTML(product.code)}</td>
+          <td>${escapeHTML(product.name)}</td>
+          <td>${escapeHTML(product.category)}</td>
+          <td>${escapeHTML(product.qty)}</td>
+          <td>${escapeHTML(product.weight || "—")}</td>
+          <td>${escapeHTML(getProductAddress(product.id))}</td>
+          <td><span class="badge ${address ? "success" : "pending"}">${address ? "Endereçado" : "Pendente"}</span></td>
+        </tr>
+      `;
+    }).join("")
+    : '<tr><td colspan="7" class="empty">Nenhum produto cadastrado.</td></tr>';
+
+  refreshSelects();
 }
 
 function renderHistory() {
-  if (!currentUser) return;
-  const history = getHistory().filter(item => item.username === currentUser.username);
-  const body = document.getElementById("history-table");
-  body.innerHTML = history.length ? history.map(item => `<tr>
-    <td>${escapeHTML(item.date)}</td><td>${escapeHTML(item.name)}</td>
-    <td>${escapeHTML(item.action)}</td><td>${escapeHTML(item.details)}</td>
-  </tr>`).join("") : '<tr><td colspan="4" class="empty">Nenhuma atividade registrada ainda.</td></tr>';
+  let history = getHistory();
+
+  if (currentUser.role !== "instructor") {
+    history = history.filter(item => item.username === currentUser.username);
+  }
+
+  document.getElementById("historyTable").innerHTML = history.length
+    ? history.map(item => `
+      <tr>
+        <td>${escapeHTML(formatDate(item.at))}</td>
+        <td>${escapeHTML(item.userName)}</td>
+        <td>${escapeHTML(item.action)}</td>
+        <td>${escapeHTML(item.details)}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="4" class="empty">Nenhum registro no histórico.</td></tr>';
 }
+
 function renderInstructor() {
-  if (!currentUser || currentUser.role !== "instrutora") return;
+  if (currentUser.role !== "instructor") return;
+
+  const products = getProducts();
+  const addresses = getAddresses();
   const history = getHistory();
-  const students = new Set(history.filter(item => item.role === "aluno").map(item => item.username));
-  document.getElementById("instructor-total").textContent = history.length;
-  document.getElementById("instructor-students").textContent = students.size;
-  document.getElementById("instructor-products").textContent = getProducts().length;
-  const body = document.getElementById("all-history-table");
-  body.innerHTML = history.length ? history.map(item => `<tr>
-    <td>${escapeHTML(item.date)}</td><td>${escapeHTML(item.name)}</td>
-    <td>${escapeHTML(item.action)}</td><td>${escapeHTML(item.details)}</td>
-  </tr>`).join("") : '<tr><td colspan="4" class="empty">Ainda não existem registros neste navegador.</td></tr>';
+
+  document.getElementById("teacherProducts").textContent = products.length;
+  document.getElementById("teacherAddresses").textContent = addresses.length;
+  document.getElementById("teacherHistory").textContent = history.length;
+
+  document.getElementById("teacherAddressTable").innerHTML = addresses.length
+    ? addresses.map(address => `
+      <tr>
+        <td>${escapeHTML(address.userName)}</td>
+        <td>${escapeHTML(getProductName(address.productId))}</td>
+        <td>${escapeHTML(address.qty)}</td>
+        <td>${escapeHTML(getAddressLabel(address))}</td>
+        <td>${escapeHTML(formatDate(address.at))}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="5" class="empty">Nenhum endereçamento realizado.</td></tr>';
+
+  document.getElementById("teacherHistoryTable").innerHTML = history.length
+    ? history.map(item => `
+      <tr>
+        <td>${escapeHTML(formatDate(item.at))}</td>
+        <td>${escapeHTML(item.userName)}</td>
+        <td>${escapeHTML(item.action)}</td>
+        <td>${escapeHTML(item.details)}</td>
+      </tr>
+    `).join("")
+    : '<tr><td colspan="4" class="empty">Nenhuma atividade registrada.</td></tr>';
 }
+
 function renderAll() {
+  seedProducts();
+  refreshSelects();
   renderDashboard();
+  renderAddresses();
   renderProducts();
   renderHistory();
-  if (currentUser.role === "instrutora") renderInstructor();
+  if (currentUser.role === "instructor") renderInstructor();
 }
 
-function downloadCSV(filename, rows) {
-  const csv = rows.map(row => row.map(value =>
-    '"' + String(value ?? "").replace(/"/g,'""') + '"'
-  ).join(";")).join("\r\n");
-  const blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-function exportHistory(all) {
-  if (!currentUser) return;
-  let history = getHistory();
-  if (!all) history = history.filter(item => item.username === currentUser.username);
-  const rows = [["Data e hora","Usuário","Nome","Perfil","Ação","Detalhes"]];
-  history.forEach(item => rows.push([item.date,item.username,item.name,item.role,item.action,item.details]));
-  downloadCSV(all ? "logisim-registros-gerais.csv" : "logisim-meu-historico.csv", rows);
-}
-document.getElementById("export-history").addEventListener("click", () => exportHistory(false));
-document.getElementById("export-all").addEventListener("click", () => {
-  if (currentUser && currentUser.role === "instrutora") exportHistory(true);
-});
-document.getElementById("clear-history").addEventListener("click", () => {
-  if (!currentUser || currentUser.role !== "instrutora") return;
-  if (!confirm("Tem certeza que deseja apagar o histórico deste navegador?")) return;
-  saveData(KEYS.history, []);
-  saveData(KEYS.progress, {});
+document.getElementById("loginForm").addEventListener("submit", login);
+
+document.getElementById("receivingForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const productId = document.getElementById("receivingProduct").value;
+  const qty = Number(document.getElementById("receivingQty").value);
+  const product = getProducts().find(item => item.id === productId);
+
+  if (!product || !Number.isInteger(qty) || qty <= 0) {
+    showToast("Selecione um produto e informe uma quantidade válida.");
+    return;
+  }
+
+  updateProgress("receiving", { productId, qty });
+  logAction("Recebimento", `${product.name}: ${qty} unidade(s) recebida(s).`);
+
+  document.getElementById("receivingStatus").textContent =
+    `Recebimento registrado: ${product.name}, quantidade ${qty}.`;
+
   renderAll();
-  alert("Histórico local apagado.");
+  showToast("Recebimento registrado com sucesso!");
 });
 
-ensureProducts();
-const savedUsername = sessionStorage.getItem(KEYS.session);
-if (savedUsername && USERS[savedUsername]) {
-  login(savedUsername, USERS[savedUsername].password);
-}
+document.getElementById("conferenceForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const productId = document.getElementById("conferenceProduct").value;
+  const qty = Number(document.getElementById("conferenceQty").value);
+  const notes = document.getElementById("conferenceNotes").value.trim();
+  const product = getProducts().find(item => item.id === productId);
+  const progress = getProgress();
+
+  if (!progress.receiving?.done) {
+    showToast("Registre o recebimento antes da conferência.");
+    return;
+  }
+
+  if (progress.receiving.productId !== productId) {
+    showToast("Selecione o mesmo produto registrado no recebimento.");
+    return;
+  }
+
+  if (!product || !Number.isInteger(qty) || qty <= 0) {
+    showToast("Informe uma quantidade válida.");
+    return;
+  }
+
+  if (qty !== Number(progress.receiving.qty)) {
+    showToast("A quantidade conferida deve corresponder à quantidade recebida.");
+    return;
+  }
+
+  updateProgress("conference", { productId, qty, notes });
+  logAction("Conferência", `${product.name}: ${qty} unidade(s) conferida(s). ${notes}`);
+
+  document.getElementById("conferenceStatus").textContent =
+    `Conferência registrada para ${product.name}. Agora o endereçamento está liberado.`;
+
+  renderAll();
+  showToast("Conferência concluída! Você já pode endereçar o produto.");
+});
+
+document.getElementById("addressForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const progress = getProgress();
+
+  if (!progress.receiving?.done || !progress.conference?.done) {
+    showToast("Conclua o recebimento e a conferência primeiro.");
+    return;
+  }
+
+  const productId = document.getElementById("addressProduct").value;
+  const qty = Number(document.getElementById("addressQty").value);
+  const street = document.getElementById("addressStreet").value.trim();
+  const shelf = document.getElementById("addressShelf").value.trim();
+  const rack = document.getElementById("addressRack").value.trim();
+  const position = document.getElementById("addressPosition").value.trim();
+  const notes = document.getElementById("addressNotes").value.trim();
+  const product = getProducts().find(item => item.id === productId);
+
+  if (!product || !Number.isInteger(qty) || qty <= 0 ||
+      !street || !shelf || !rack || !position) {
+    showToast("Preencha todos os campos obrigatórios do endereço.");
+    return;
+  }
+
+  if (progress.conference.productId !== productId) {
+    showToast("Selecione o produto que foi conferido.");
+    return;
+  }
+
+  if (qty > Number(progress.conference.qty)) {
+    showToast("A quantidade a armazenar não pode superar a quantidade conferida.");
+    return;
+  }
+
+  const addresses = getAddresses();
+  const existingIndex = addresses.findIndex(item =>
+    item.productId === productId && item.username === currentUser.username
+  );
+
+  const record = {
+    id: existingIndex >= 0 ? addresses[existingIndex].id : Date.now(),
+    productId,
+    qty,
+    street,
+    shelf,
+    rack,
+    position,
+    notes,
+    username: currentUser.username,
+    userName: currentUser.name,
+    at: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) {
+    addresses[existingIndex] = record;
+  } else {
+    addresses.unshift(record);
+  }
+
+  write(KEYS.addresses, addresses);
+  updateProgress("address", { productId, qty, addressId: record.id });
+  logAction("Endereçamento", `${product.name}: ${qty} unidade(s) — ${getAddressLabel(record)}.`);
+
+  document.getElementById("addressForm").reset();
+
+  renderAll();
+  showToast("Endereçamento salvo com sucesso!");
+});
+
+document.getElementById("productForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  if (currentUser?.role !== "instructor") {
+    showToast("Somente a instrutora pode cadastrar produtos.");
+    return;
+  }
+
+  const code = document.getElementById("productCode").value.trim();
+  const name = document.getElementById("productName").value.trim();
+  const category = document.getElementById("productCategory").value.trim();
+  const qty = Number(document.getElementById("productQty").value);
+  const weight = Number(document.getElementById("productWeight").value) || 0;
+  const dimensions = document.getElementById("productDimensions").value.trim();
+
+  if (!code || !name || !category || !Number.isInteger(qty) || qty <= 0) {
+    showToast("Confira os dados do produto.");
+    return;
+  }
+
+  const products = getProducts();
+
+  if (products.some(item => item.code.toLowerCase() === code.toLowerCase())) {
+    showToast("Já existe um produto com esse código.");
+    return;
+  }
+
+  products.push({
+    id: "prd-" + Date.now(),
+    code,
+    name,
+    category,
+    qty,
+    weight,
+    dimensions,
+    createdAt: new Date().toISOString()
+  });
+
+  write(KEYS.products, products);
+  logAction("Cadastro de produto", `${name} (${code}), quantidade prevista: ${qty}.`);
+
+  document.getElementById("productForm").reset();
+  renderAll();
+  showToast("Produto cadastrado com sucesso!");
+});
+
+seedProducts();
 </script>
 </body>
 </html>
