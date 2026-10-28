@@ -704,6 +704,23 @@ td { color: var(--text); }
               <label>
                 Dimensões
                 <input id="productDimensions" placeholder="Ex.: 40 x 30 x 25 cm">
+              <input id="productName" required placeholder="Ex.: Chapa de madeira de MDF">
+              </label>
+              <label>
+                Categoria
+                <input id="productCategory" required placeholder="Ex.: Marcenaria">
+              </label>
+              <label>
+                Quantidade prevista
+                <input id="productQty" type="number" min="1" step="1" required placeholder="Ex.: 90">
+              </label>
+              <label>
+                Peso por unidade (kg)
+                <input id="productWeight" type="number" min="0" step="0.01" placeholder="Ex.: 57kg">
+              </label>
+              <label>
+                Dimensões
+                <input id="productDimensions" placeholder="Ex.:  2,75 × 1,85 m × 15 mm">
               </label>
             </div>
             <button class="btn-primary" type="submit">Cadastrar produto</button>
