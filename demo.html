@@ -138,7 +138,7 @@ function pagina(p){
 function produto(id){return estado.produtos.find(p=>p.id===Number(id));}
 function render(){
   const c=document.getElementById("conteudo");
-  const etapas=["Cadastro de produtos","Endereçamento e armazenagem","Pedido e picking","Conferência","Expedição e carregamento","Roteirização","Entrega simulada"];
+  const etapas=["Cadastro de produtos","Endereçamento e armazenagem","Pedido e picking","Conferência","Expedição e carregamento","Roteirização simulada com dados reais","Entrega simulada"];
   if(tela==="inicio"){
     c.innerHTML=`
       <div class="grid">
@@ -151,8 +151,7 @@ function render(){
       ${etapas.map((e,i)=>`<div class="step"><strong>${i+1}. ${e}</strong></div>`).join("")}
       <p>Pratique as operações de um centro de distribuição em um ambiente virtual.</p>
       <button onclick="pagina('produtos')">Iniciar simulação</button></div>
-      <div class="warning">Os dados desta demonstração ficam salvos somente neste navegador e dispositivo.</div>`;
-  }
+      
   if(tela==="produtos"){
     c.innerHTML=`<div class="card"><h2>Cadastro de produtos e estoque</h2>
       <div class="grid">
