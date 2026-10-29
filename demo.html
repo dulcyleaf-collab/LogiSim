@@ -138,7 +138,7 @@ function pagina(p){
 function produto(id){return estado.produtos.find(p=>p.id===Number(id));}
 function render(){
   const c=document.getElementById("conteudo");
-  const etapas=["Cadastro de produtos","Endereçamento e armazenagem","Pedido e picking","Conferência","Expedição e carregamento","Roteirização simulada com dados reais","Entrega simulada"];
+  const etapas=["Cadastro de produtos","Endereçamento e armazenagem","Pedido e picking","Conferência","Expedição e carregamento","Roteirização simulada com dados reais e mapa gps com os pontos no mapa","Entrega simulada"];
   if(tela==="inicio"){
     c.innerHTML=`
       <div class="grid">
@@ -208,7 +208,7 @@ function render(){
     ${p.status==="Carregado"?`<label>Rota</label><select id="rota${p.id}"><option>CD → Cliente</option><option>CD → Ponto de distribuição → Cliente</option><option>CD → Cliente → Retorno ao CD</option></select>
     <button onclick="iniciarRota(${p.id})">Iniciar rota</button>`:""}
     ${p.status==="Em rota gerar o mapa da rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
-    ${p.status==="Entregue"?"<p class='notice'>Entrega concluída!</p>":""}
+    ${p.status==="Entregue"?"<p class='notice'>Entrega concluída e o mpa com os pontos da roterização!</p>":""}
     </div>`).join("")}</div>`;
   }
   if(tela==="instrutor"){
