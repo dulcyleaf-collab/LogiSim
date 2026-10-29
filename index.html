@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -202,6 +201,7 @@ p { line-height: 1.5; }
   color: var(--muted);
   margin-bottom: 7px;
   border-radius: 8px;
+  padding: 10px;
 }
 
 .nav-btn:hover, .nav-btn.active {
@@ -372,20 +372,6 @@ td { color: var(--text); }
   font-size: 12px;
 }
 
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 99;
-  padding: 15px 20px;
-  border-radius: 10px;
-  background: var(--green);
-  color: #082417;
-  font-weight: bold;
-  box-shadow: 0 8px 25px #0005;
-  max-width: calc(100% - 40px);
-}
-
 @media (max-width: 1000px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .steps { grid-template-columns: 1fr; }
@@ -499,7 +485,7 @@ td { color: var(--text); }
         <div class="grid">
           <div class="card">
             <div class="stat-label">Produtos cadastrados</div>
-            <div class="stat-number" id="statProducts">0</div>
+            <div class="stat-number" id="statProducts">1</div>
             <div class="stat-icon">▤</div>
           </div>
           <div class="card">
@@ -531,7 +517,7 @@ td { color: var(--text); }
             <div class="step" id="dashStep1">
               <span class="step-number">2</span>
               <h3>Conferência</h3>
-              <p>Verificar se o produto e a quantidade estão corretos seguindo a documentação feita e registrada no sistema.</p>
+              <p>Verificar se o produto e a quantidade estão corretos.</p>
               <span class="step-status" id="dashStatus1">Pendente</span>
             </div>
             <div class="step" id="dashStep2">
@@ -546,11 +532,6 @@ td { color: var(--text); }
             <button class="btn-secondary" onclick="showPage('addresses')">Registrar endereço</button>
           </div>
         </div>
-
-        <div class="notice">
-          <strong>Atenção:</strong> o endereçamento é preenchido pelo próprio aluno.
-          É necessário concluir o recebimento e a conferência antes de registrar o endereço.
-        </div>
       </section>
 
       <section id="page-activity" class="page hidden">
@@ -559,17 +540,10 @@ td { color: var(--text); }
 
         <div class="card">
           <h3>1. Recebimento</h3>
-          <p class="muted">Selecione o produto e registre a quantidade que chegou ao setor.</p>
           <form id="receivingForm">
             <div class="form-grid">
-              <label>
-                Produto
-                <select id="receivingProduct" required></select>
-              </label>
-              <label>
-                Quantidade recebida
-                <input id="receivingQty" type="number" min="1" step="1" placeholder="Ex.: 50" required>
-              </label>
+              <label>Produto <select id="receivingProduct" required><option value="MDF">Chapa de madeira de MDF</option></select></label>
+              <label>Quantidade recebida <input id="receivingQty" type="number" min="1" value="90" required></label>
             </div>
             <button class="btn-primary" type="submit">Registrar recebimento</button>
           </form>
@@ -578,174 +552,117 @@ td { color: var(--text); }
 
         <div class="card">
           <h3>2. Conferência</h3>
-          <p class="muted">Compare a quantidade recebida com a quantidade prevista no cadastro(documentação).</p>
           <form id="conferenceForm">
             <div class="form-grid">
-              <label>
-                Produto recebido
-                <select id="conferenceProduct" required></select>
-              </label>
-              <label>
-                Quantidade conferida
-                <input id="conferenceQty" type="number" min="1" step="1" placeholder="Informe a quantidade conferida" required>
-              </label>
+              <label>Produto <select id="conferenceProduct" required><option value="MDF">Chapa de madeira de MDF</option></select></label>
+              <label>Quantidade conferida <input id="conferenceQty" type="number" min="1" value="90" required></label>
             </div>
-            <label>
-              Observações da conferência
-              <textarea id="conferenceNotes" rows="2" placeholder="Ex.: embalagem íntegra, quantidade conferida..."></textarea>
-            </label>
             <button class="btn-primary" type="submit">Registrar conferência</button>
           </form>
           <p id="conferenceStatus" class="muted"></p>
-        </div>
-
-        <div class="card">
-          <h3>3. Endereçamento de armazenagem</h3>
-          <p class="muted">Após concluir as duas primeiras etapas, acesse o formulário e escolha o endereço do produto.</p>
-          <button class="btn-primary" onclick="showPage('addresses')">Preencher endereço de armazenagem</button>
         </div>
       </section>
 
       <section id="page-addresses" class="page hidden">
         <h2 class="page-title">Endereçamento</h2>
-        <p class="page-description">O aluno deve definir e preencher a localização física do produto no estoque.</p>
-
-        <div id="addressLock" class="notice">
-          Conclua primeiro o recebimento e a conferência para liberar o formulário de endereçamento.
-        </div>
-
-        <div class="card">
-          <h3>Registrar localização física</h3>
-          <form id="addressForm">
-            <div class="form-grid">
-              <label>
-                Produto
-                <select id="addressProduct" required></select>
-              </label>
-              <label>
-                Quantidade a armazenar
-                <input id="addressQty" type="number" min="1" step="1" required placeholder="Ex.: 50">
-              </label>
-              <label>
-                Rua / Corredor
-                <input id="addressStreet" required placeholder="Ex.: Rua A">
-              </label>
-              <label>
-                Estante
-                <input id="addressShelf" required placeholder="Ex.: Estante 02">
-              </label>
-              <label>
-                Prateleira / Nível
-                <input id="addressRack" required placeholder="Ex.: Nível 03">
-              </label>
-              <label>
-                Posição
-                <input id="addressPosition" required placeholder="Ex.: Posição 04">
-              </label>
-              <label class="full-width">
-                Observações
-                <textarea id="addressNotes" rows="2" placeholder="Informações adicionais, se necessário"></textarea>
-              </label>
-            </div>
-            <div class="actions">
-              <button id="saveAddressBtn" class="btn-primary" type="submit">Salvar endereçamento</button>
-              <button class="btn-secondary" type="reset">Limpar formulário</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3>Endereços registrados</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Produto</th>
-                  <th>Quantidade</th>
-                  <th>Localização</th>
-                  <th>Responsável</th>
-                  <th>Data</th>
-                </tr>
-              </thead>
-              <tbody id="addressTable"></tbody>
-            </table>
+        <form id="addressForm">
+          <div class="form-grid">
+            <label>Produto <select id="addressProduct"><option value="MDF">Chapa de madeira de MDF</option></select></label>
+            <label>Quantidade <input id="addressQty" type="number" value="90"></label>
+            <label>Rua <input id="addressStreet" value="Rua A"></label>
+            <label>Estante <input id="addressShelf" value="Estante 01"></label>
           </div>
+          <button class="btn-primary" type="submit">Salvar endereçamento</button>
+        </form>
+        <div class="card" style="margin-top:20px;">
+          <h3>Endereços registrados</h3>
+          <table><thead><tr><th>Produto</th><th>Qtd</th><th>Local</th></tr></thead><tbody id="addressTable"><tr><td colspan="3">Nenhum registro</td></tr></tbody></table>
         </div>
       </section>
 
       <section id="page-products" class="page hidden">
         <h2 class="page-title">Produtos</h2>
-        <p class="page-description">Consulte os produtos e suas informações de armazenagem.</p>
-
-        <div class="card instructor-only hidden" id="newProductCard">
-          <h3>Cadastrar produto</h3>
-          <form id="productForm">
-            <div class="form-grid">
-              <label>
-                Código
-                <input id="productCode" required placeholder="Ex.: PRD001">
-              </label>
-              <label>
-                Nome do produto
-                <input id="productName" required placeholder="Ex.: Caixa de água">
-              </label>
-              <label>
-                Categoria
-                <input id="productCategory" required placeholder="Ex.: Bebidas">
-              </label>
-              <label>
-                Quantidade prevista
-                <input id="productQty" type="number" min="1" step="1" required placeholder="Ex.: 50">
-              </label>
-              <label>
-                Peso por unidade (kg)
-                <input id="productWeight" type="number" min="0" step="0.01" placeholder="Ex.: 12">
-              </label>
-              <label>
-                Dimensões
-                <input id="productDimensions" placeholder="Ex.: 40 x 30 x 25 cm">
-              <input id="productName" required placeholder="Ex.: Chapa de madeira de MDF">
-              </label>
-              <label>
-                Categoria
-                <input id="productCategory" required placeholder="Ex.: Marcenaria">
-              </label>
-              <label>
-                Quantidade prevista
-                <input id="productQty" type="number" min="1" step="1" required placeholder="Ex.: 90">
-              </label>
-              <label>
-                Peso por unidade (kg)
-                <input id="productWeight" type="number" min="0" step="0.01" placeholder="Ex.: 57kg">
-              </label>
-              <label>
-                Dimensões
-                <input id="productDimensions" placeholder="Ex.:  2,75 × 1,85 m × 15 mm">
-              </label>
-            </div>
-            <button class="btn-primary" type="submit">Cadastrar produto</button>
-          </form>
-        </div>
-
         <div class="card">
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Produto</th>
-                  <th>Categoria</th>
-                  <th>Quantidade prevista</th>
-                  <th>Peso (kg)</th>
-                  <th>Endereço</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="productTable"></tbody>
-            </table>
-          </div>
+          <table>
+            <thead><tr><th>Código</th><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Peso</th></tr></thead>
+            <tbody>
+              <tr><td>PRD001</td><td>Chapa de madeira de MDF</td><td>Marcenaria</td><td>90</td><td>57 kg</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
       <section id="page-history" class="page hidden">
-        <h2 class="page-title">Histórico de operaç
+        <h2 class="page-title">Histórico de operações</h2>
+        <div class="card"><p class="muted">Nenhuma operação finalizada ainda.</p></div>
+      </section>
+
+      <section id="page-instructor" class="page instructor-only hidden">
+        <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
+        <div class="card"><p class="muted">Acesso restrito à instrutora.</p></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+function showPage(pageId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById('page-' + pageId).classList.remove('hidden');
+  if(btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const user = document.getElementById('username').value.trim();
+  document.getElementById('userName').textContent = user;
+  
+  if(user.toLowerCase() === 'quezia' || user.toLowerCase() === 'instrutora') {
+    document.getElementById('userRole').textContent = 'Instrutora';
+    document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
+  } else {
+    document.getElementById('userRole').textContent = 'Aluno (Assistente de Logística)';
+  }
+
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+});
+
+function logout() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+// Validação básica dos formulários para simular interatividade na apresentação
+document.getElementById('receivingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  document.getElementById('receivingStatus').textContent = '✓ Recebimento registrado com sucesso!';
+  document.getElementById('dashStatus0').textContent = 'Concluído';
+  document.getElementById('dashStep0').classList.add('done');
+  document.getElementById('statSteps').textContent = '1/3';
+});
+
+document.getElementById('conferenceForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  document.getElementById('conferenceStatus').textContent = '✓ Conferência realizada com sucesso!';
+  document.getElementById('dashStatus1').textContent = 'Concluído';
+  document.getElementById('dashStep1').classList.add('done');
+  document.getElementById('statSteps').textContent = '2/3';
+});
+
+document.getElementById('addressForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  alert('Endereçamento salvo com sucesso!');
+  document.getElementById('dashStatus2').textContent = 'Concluído';
+  document.getElementById('dashStep2').classList.add('done');
+  document.getElementById('statSteps').textContent = '3/3';
+  document.getElementById('statAddresses').textContent = '1';
+  document.getElementById('addressTable').innerHTML = '<tr><td>Chapa de MDF</td><td>90</td><td>Rua A, Estante 01</td></tr>';
+});
+</script>
+
+</body>
+</html>
