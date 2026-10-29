@@ -134,21 +134,24 @@ th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--bo
 th { color: var(--orange); font-weight: bold; }
 td { color: var(--text); }
 
-.feedback-box {
-  margin-top: 15px; padding: 15px; border-radius: 9px; background: #09192d; border: 1px solid var(--border);
-}
+.progress { height: 8px; background: #09192d; border-radius: 99px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border); }
+.progress span { height: 100%; display: block; background: var(--orange); width: 0%; transition: width .3s; }
+.feedback { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; }
+.feedback.success { background: #10271b; border: 1px solid #166534; color: #bbf7d0; }
+.feedback.error { background: #2a1518; border: 1px solid #991b1b; color: #fecaca; }
 
-/* Simulador de Mapa Roteirização */
-.map-canvas {
-  background: #06111f; border: 2px dashed var(--border); border-radius: 12px;
-  height: 220px; display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden; margin-bottom: 15px;
+/* Mapa de Roteirização */
+.map-box {
+  background: #050e18; border: 2px solid var(--border); border-radius: 14px;
+  padding: 20px; text-align: center; position: relative;
 }
-.route-node {
-  position: absolute; width: 40px; height: 40px; background: var(--panel2);
-  border: 2px solid var(--orange); border-radius: 50%; display: grid; place-items: center;
-  font-weight: bold; font-size: 12px; cursor: pointer;
+.route-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0;
 }
+.route-stop {
+  background: var(--panel2); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer;
+}
+.route-stop.selected { border-color: var(--orange); background: #1d3550; }
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -170,11 +173,9 @@ td { color: var(--text); }
       </div>
     </div>
     <form id="loginForm">
-      <label>Usuário <input id="username" placeholder="Digite seu nome" required></label>
-      <label>Senha <input id="password" type="password" value="123" required></label>
-      <button type="submit" class="btn-primary">Entrar na plataforma</button>
+      <label>Seu Nome / Aluno <input id="username" placeholder="Digite seu nome" required></label>
+      <button type="submit" class="btn-primary">Entrar na Plataforma</button>
     </form>
-    <p class="muted" style="font-size:12px; margin-top:15px;">Dica: Digite seu nome e clique em entrar.</p>
   </div>
 </section>
 
@@ -190,7 +191,7 @@ td { color: var(--text); }
     <div class="user-info">
       <div>
         <strong id="userName">Usuário</strong>
-        <small id="userRole">Aluno - Assistente de Logística</small>
+        <small>Assistente de Logística</small>
       </div>
       <button class="btn-secondary" onclick="logout()">Sair</button>
     </div>
@@ -199,7 +200,7 @@ td { color: var(--text); }
   <div class="layout">
     <aside class="sidebar">
       <button class="nav-btn active" onclick="showPage('dashboard', this)">▦ Visão geral</button>
-      <button class="nav-btn" onclick="showPage('activities', this)">📝 A.L. (Atividades)</button>
+      <button class="nav-btn" onclick="showPage('challenge', this)">📝 A.L. (5 Etapas)</button>
       <button class="nav-btn" onclick="showPage('qrscanner', this)">📷 Leitor QR / Câmera</button>
       <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
       <button class="nav-btn" onclick="showPage('routing', this)">🗺️ Mapa & Roteirização</button>
@@ -208,17 +209,17 @@ td { color: var(--text); }
     <main>
       <!-- DASHBOARD -->
       <section id="page-dashboard" class="page">
-        <h2 class="page-title">Painel de Controle</h2>
-        <p class="page-description">Visão geral das simulações e status das operações logísticas.</p>
+        <h2 class="page-title">Visão Geral</h2>
+        <p class="page-description">Acompanhe o andamento das operações logísticas da simulação.</p>
         <div class="grid">
           <div class="card">
-            <div class="stat-label">Produtos no WMS</div>
-            <div class="stat-number" id="dashProductsCount">2</div>
+            <div class="stat-label">Produtos WMS</div>
+            <div class="stat-number" id="dashProdCount">4</div>
             <div class="stat-icon">▤</div>
           </div>
           <div class="card">
-            <div class="stat-label">A.L. Respondidas</div>
-            <div class="stat-number" id="dashActivitiesDone">0/3</div>
+            <div class="stat-label">A.L. Concluídas</div>
+            <div class="stat-number" id="dashChalCount">0</div>
             <div class="stat-icon">📝</div>
           </div>
           <div class="card">
@@ -228,115 +229,99 @@ td { color: var(--text); }
           </div>
           <div class="card">
             <div class="stat-label">Rotas Criadas</div>
-            <div class="stat-number" id="dashRoutesCount">0</div>
+            <div class="stat-number" id="dashRouteCount">0</div>
             <div class="stat-icon">🗺️</div>
           </div>
         </div>
       </section>
 
-      <!-- ATIVIDADES LOGÍSTICAS (A.L.) -->
-      <section id="page-activities" class="page hidden">
-        <h2 class="page-title">Atividades Logísticas (A.L.)</h2>
-        <p class="page-description">Responda aos testes práticos simulando o cotidiano do assistente de logística.</p>
-
+      <!-- A.L. 5 ETAPAS -->
+      <section id="page-challenge" class="page hidden">
+        <h2 class="page-title">A.L. 01 — Atividades Práticas Logísticas</h2>
+        <p class="page-description">Responda corretamente às 5 etapas operacionais avaliadas pelo sistema.</p>
+        
         <div class="card">
-          <h3>Questão 1: Divergência no Recebimento</h3>
-          <p class="muted">A nota fiscal indica 50 caixas de MDF, mas na conferência física você contou apenas 48. O que deve ser feito?</p>
-          <select id="q1">
-            <option value="">Selecione a resposta...</option>
-            <option value="err">Aceitar a mercadoria sem falar nada para não atrasar.</option>
-            <option value="ok">Registrar a divergência na nota e notificar o fornecedor/responsável.</option>
-            <option value="err">Devolver todo o caminhão imediatamente.</option>
-          </select>
-        </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong id="stepHeading">Etapa 1 de 5 — Recebimento</strong>
+            <span class="orange">Pontuação: <span id="liveScore">100</span>/100</span>
+          </div>
+          <div class="progress"><span id="progressBar" style="width: 20%;"></span></div>
+          
+          <div id="stepContent" style="margin-top:20px;"></div>
+          <div id="stepFeedback" class="feedback hidden"></div>
 
-        <div class="card">
-          <h3>Questão 2: Critério FIFO / Armazenagem</h3>
-          <p class="muted">Qual é o principal objetivo do sistema FIFO (First In, First Out) no armazém?</p>
-          <select id="q2">
-            <option value="">Selecione a resposta...</option>
-            <option value="ok">Garantir que os produtos mais antigos saiam primeiro, evitando perdas e vencimentos.</option>
-            <option value="err">Guardar os produtos mais pesados nas prateleiras mais altas.</option>
-            <option value="err">Acelerar a velocidade da empilhadeira na rua principal.</option>
-          </select>
-          <button class="btn-primary" style="margin-top:15px;" onclick="validateActivities()">Enviar e Validar A.L.</button>
-          <div id="activityFeedback" class="feedback-box hidden"></div>
+          <div class="actions">
+            <button class="btn-secondary" id="backStepBtn" onclick="prevStep()" disabled>Etapa anterior</button>
+            <button class="btn-primary" id="nextStepBtn" onclick="validateStep()">Validar e Avançar</button>
+          </div>
         </div>
       </section>
 
-      <!-- LEITOR DE QR CODE / CÂMERA -->
+      <!-- LEITOR QR CODE & CÂMERA -->
       <section id="page-qrscanner" class="page hidden">
-        <h2 class="page-title">Leitor de QR Code & Entrada por Câmera</h2>
-        <p class="page-description">Simule a leitura da etiqueta do produto para dar entrada automática no estoque.</p>
+        <h2 class="page-title">Leitor de QR Code & Câmera</h2>
+        <p class="page-description">Use a câmera do dispositivo para escanear a etiqueta e cadastrar o item no estoque automaticamente.</p>
         <div class="card">
-          <h3>Escanear Etiqueta / QR Code</h3>
-          <p class="muted">Você pode usar a câmera do celular para capturar o código do produto ou simular a leitura instantânea.</p>
-          
+          <h3>Câmera de Leitura</h3>
           <div class="actions">
-            <button class="btn-primary" onclick="openCameraScan()">📷 Abrir Câmera do Celular</button>
-            <button class="btn-secondary" onclick="simulateQRRead()">⚡ Simular Leitura Rápida QR</button>
+            <button class="btn-primary" onclick="startCamera()">📷 Ligar Câmera</button>
+            <button class="btn-secondary" onclick="simulateQREntry()">⚡ Simular Leitura Instantânea QR</button>
           </div>
-
-          <div id="cameraContainer" class="hidden" style="margin-top:15px; text-align:center;">
-            <video id="cameraStream" autoplay playsinline style="width:100%; max-width:300px; border-radius:10px; border:2px solid var(--orange);"></video>
-            <p class="muted" style="font-size:12px;">Apontar para o QR code do produto...</p>
-            <button class="btn-secondary" onclick="captureQRPhoto()">Tirar Foto / Capturar</button>
+          <div style="margin-top:15px; text-align:center;">
+            <video id="cameraFeed" autoplay playsinline class="hidden" style="width:100%; max-width:320px; border-radius:10px; border:2px solid var(--orange);"></video>
           </div>
-
-          <div id="qrResult" class="feedback-box hidden" style="margin-top:15px;"></div>
+          <div id="qrFeedback" class="feedback hidden" style="margin-top:15px;"></div>
         </div>
       </section>
 
       <!-- WMS PRODUTOS -->
       <section id="page-products" class="page hidden">
         <h2 class="page-title">WMS — Cadastro de Produtos</h2>
-        <p class="page-description">Cadastre qualquer novo produto no sistema para gerenciar o estoque.</p>
+        <p class="page-description">Cadastre e gerencie qualquer produto no sistema.</p>
 
         <div class="card">
-          <h3>Novo Cadastro de Produto</h3>
-          <form id="productForm">
+          <h3>Adicionar Novo Produto</h3>
+          <form id="wmsForm">
             <div class="form-grid">
-              <label>Código SKU <input id="pSku" required placeholder="Ex: SKU-900"></label>
-              <label>Nome do Produto <input id="pName" required placeholder="Ex: Chapa MDF 15mm"></label>
-              <label>Quantidade <input id="pQty" type="number" min="1" required placeholder="50"></label>
-              <label>Peso Unitário (kg) <input id="pWeight" type="number" step="0.1" required placeholder="42.5"></label>
+              <label>SKU <input id="wmsSku" required placeholder="Ex: SKU-999"></label>
+              <label>Nome do Produto <input id="wmsName" required placeholder="Ex: Caixa Organizadora"></label>
+              <label>Quantidade <input id="wmsQty" type="number" min="1" required placeholder="50"></label>
+              <label>Peso Unitário (kg) <input id="wmsWeight" type="number" step="0.1" required placeholder="2.5"></label>
             </div>
-            <button class="btn-primary" type="submit">Cadastrar no Sistema</button>
+            <button class="btn-primary" type="submit" style="margin-top:15px;">Cadastrar Produto</button>
           </form>
         </div>
 
         <div class="card">
-          <h3>Estoque Atualizado</h3>
+          <h3>Estoque Atual</h3>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Peso Unit.</th></tr>
-              </thead>
-              <tbody id="productTable">
-                <tr><td>SKU-101</td><td>Chapa MDF Naval</td><td>90</td><td>57 kg</td></tr>
-                <tr><td>SKU-102</td><td>Cola de Contato</td><td>120</td><td>2.5 kg</td></tr>
+              <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Peso Unit.</th><th>Endereço</th></tr></thead>
+              <tbody id="wmsTable">
+                <tr><td>SKU-101</td><td>Caixa de papelão</td><td>50</td><td>2 kg</td><td>A-01-01</td></tr>
+                <tr><td>SKU-102</td><td>Kit de ferramentas</td><td>20</td><td>5 kg</td><td>A-01-02</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- MAPA / ROTEIRIZAÇÃO -->
+      <!-- MAPA DE ROTEIRIZAÇÃO -->
       <section id="page-routing" class="page hidden">
         <h2 class="page-title">Mapa de Roteirização de Entregas</h2>
-        <p class="page-description">Monte a melhor rota considerando os pontos de entrega da região.</p>
-
-        <div class="card">
-          <h3>Simulador de Rota Logística</h3>
-          <div class="map-canvas" id="mapCanvas">
-            <div class="route-node" style="top:30px; left:40px;" onclick="selectRouteNode('CD Caxias')">CD</div>
-            <div class="route-node" style="top:120px; left:180px;" onclick="selectRouteNode('Loja Piabetá')">P1</div>
-            <div class="route-node" style="top:50px; left:320px;" onclick="selectRouteNode('Cliente Magé')">M2</div>
-            <div class="route-node" style="top:150px; left:450px;" onclick="selectRouteNode('Filial Duque')">D3</div>
+        <p class="page-description">Selecione a sequência correta das entregas para otimizar a rota do veículo.</p>
+        
+        <div class="card map-box">
+          <h3>Selecione a Sequência de Paradas</h3>
+          <p class="muted">Clique nos locais na ordem lógica de distribuição:</p>
+          <div class="route-grid">
+            <div class="route-stop" onclick="toggleStop(this, 'CD Central')"><strong>CD</strong><br>CD Central</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Loja Piabetá')"><strong>P1</strong><br>Loja Piabetá</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Cliente Magé')"><strong>M2</strong><br>Cliente Magé</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Filial Caxias')"><strong>D3</strong><br>Filial Caxias</div>
           </div>
-          <p class="muted">Toque nos pontos (CD, P1, M2, D3) para definir a sequência de entrega do veículo.</p>
-          <div id="routeStatus" class="orange" style="font-weight:bold; margin-bottom:10px;">Rota atual: CD Caxias ➔ Aguardando seleção...</div>
-          <button class="btn-primary" onclick="confirmRoute()">Confirmar e Otimizar Rota</button>
+          <p id="routeDisplay" class="orange" style="font-weight:bold; margin:15px 0;">Rota montada: (Nenhuma parada selecionada)</p>
+          <button class="btn-primary" onclick="saveRoute()">Salvar e Otimizar Rota</button>
         </div>
       </section>
     </main>
@@ -344,14 +329,6 @@ td { color: var(--text); }
 </div>
 
 <script>
-let state = {
-  productsCount: 2,
-  activitiesDone: 0,
-  qrScanned: 0,
-  routesCount: 0,
-  selectedRoute: ['CD Caxias']
-};
-
 function showPage(pageId, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -374,100 +351,158 @@ function logout() {
   document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-// Atividades (A.L.)
-function validateActivities() {
-  const q1 = document.getElementById('q1').value;
-  const q2 = document.getElementById('q2').value;
-  const fb = document.getElementById('activityFeedback');
-  fb.classList.remove('hidden');
+/* A.L. 5 ETAPAS */
+let currentStep = 0;
+let score = 100;
+const stepsData = [
+  {
+    title: "1. Recebimento",
+    question: "A nota fiscal informa 50 caixas, mas na contagem física deram 48. O que fazer?",
+    options: [
+      {val: "accept", text: "Dar entrada em 50 caixas sem registrar nada."},
+      {val: "divergence", text: "Registrar a divergência de 2 caixas e notificar o responsável."},
+      {val: "reject", text: "Recusar e apagar a nota fiscal inteira."}
+    ],
+    correct: "divergence"
+  },
+  {
+    title: "2. Endereçamento e Armazenagem",
+    question: "Qual endereço padrão indicado para armazenar o SKU principal recebido?",
+    options: [
+      {val: "A-01-01", text: "Endereço A-01-01"},
+      {val: "B-99-99", text: "Endereço B-99-99 (Externo)"},
+      {val: "Z-00-00", text: "Área de descarte"}
+    ],
+    correct: "A-01-01"
+  },
+  {
+    title: "3. Separação de Pedidos (Picking)",
+    question: "O pedido exige separar 3 unidades de SKU-101 e 2 unidades de SKU-103. Qual é a quantidade total de itens a separar?",
+    options: [
+      {val: "3", text: "3 unidades"},
+      {val: "5", text: "5 unidades"},
+      {val: "10", text: "10 unidades"}
+    ],
+    correct: "5"
+  },
+  {
+    title: "4. Documentação de Expedição",
+    question: "Qual documento registra os produtos, volumes e dados para acompanhar o transporte da carga?",
+    options: [
+      {val: "pedido", text: "Pedido de compra"},
+      {val: "romaneio", text: "Romaneio de carga"},
+      {val: "inventario", text: "Inventário físico anual"}
+    ],
+    correct: "romaneio"
+  },
+  {
+    title: "5. Expedição, Capacidade e Rota",
+    question: "O veículo suporta 500 kg e a carga atual é 420 kg + 100 kg novos. O que fazer?",
+    options: [
+      {val: "respect", text: "Não exceder 500 kg; reorganizar a carga ou usar outro veículo."},
+      {val: "overload", text: "Carregar tudo com 520 kg, pois a rota é curta."},
+      {val: "ignore", text: "Ignorar o peso e despachar."}
+    ],
+    correct: "respect"
+  }
+];
 
-  if(q1 === 'ok' && q2 === 'ok') {
-    fb.style.borderColor = 'var(--green)';
-    fb.style.color = '#8cf0b9';
-    fb.innerHTML = '<strong>Parabéns! Nota 100 nas Atividades Logísticas.</strong> Respostas corretas.';
-    state.activitiesDone = 1;
-    document.getElementById('dashActivitiesDone').textContent = '1/3';
+function renderStep() {
+  const s = stepsData[currentStep];
+  document.getElementById('stepHeading').textContent = `Etapa ${currentStep + 1} de 5 — ${s.title}`;
+  document.getElementById('progressBar').style.width = `${((currentStep + 1) / 5) * 100}%`;
+  
+  let html = `<p class="muted">${s.question}</p><div style="margin-top:10px;">`;
+  s.options.forEach((opt, idx) => {
+    html += `<label style="display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;">
+      <input type="radio" name="stepOpt" value="${opt.val}" style="width:auto; margin:0;"> ${opt.text}
+    </label>`;
+  });
+  html += `</div>`;
+  document.getElementById('stepContent').innerHTML = html;
+  document.getElementById('stepFeedback').classList.add('hidden');
+}
+
+function validateStep() {
+  const selected = document.querySelector('input[name="stepOpt"]:checked');
+  const fb = document.getElementById('stepFeedback');
+  if(!selected) {
+    alert('Selecione uma opção para continuar.');
+    return;
+  }
+
+  fb.classList.remove('hidden');
+  if(selected.value === stepsData[currentStep].correct) {
+    fb.className = 'feedback success';
+    fb.textContent = '✓ Resposta correta! Avançando para a próxima etapa...';
+    setTimeout(() => {
+      if(currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      } else {
+        document.getElementById('stepContent').innerHTML = `<h3>🎉 A.L. Concluída com Sucesso!</h3><p>Nota final: <strong>${score}/100</strong></p>`;
+        document.getElementById('nextStepBtn').classList.add('hidden');
+        document.getElementById('dashChalCount').textContent = '1';
+      }
+    }, 1200);
   } else {
-    fb.style.borderColor = 'var(--red)';
-    fb.style.color = '#ff8585';
-    fb.innerHTML = '<strong>Atenção:</strong> Há respostas incorretas. Reveja os conceitos de recebimento e FIFO.';
+    score = Math.max(0, score - 20);
+    document.getElementById('liveScore').textContent = score;
+    fb.className = 'feedback error';
+    fb.textContent = '✗ Resposta incorreta! Foram descontados 20 pontos. Tente novamente.';
   }
 }
 
-// Câmera & QR Code
-let videoStream = null;
-function openCameraScan() {
-  const container = document.getElementById('cameraContainer');
-  container.classList.remove('hidden');
-  const video = document.getElementById('cameraStream');
-  
+renderStep();
+
+/* CÂMERA / QR CODE */
+let mediaStream = null;
+function startCamera() {
+  const video = document.getElementById('cameraFeed');
+  video.classList.remove('hidden');
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     .then(stream => {
-      videoStream = stream;
+      mediaStream = stream;
       video.srcObject = stream;
     })
-    .catch(err => {
-      alert('Não foi possível acessar a câmera do celular. Use a simulação rápida.');
-      container.classList.add('hidden');
-    });
+    .catch(() => alert('Câmera indisponível. Use a simulação rápida.'));
 }
 
-function captureQRPhoto() {
-  if(videoStream) {
-    videoStream.getTracks().forEach(track => track.stop());
-  }
-  document.getElementById('cameraContainer').classList.add('hidden');
-  simulateQRRead();
-}
-
-function simulateQRRead() {
-  state.qrScanned++;
-  document.getElementById('dashQrCount').textContent = state.qrScanned;
-  const res = document.getElementById('qrResult');
-  res.classList.remove('hidden');
-  res.style.borderColor = 'var(--green)';
-  res.innerHTML = '<strong>QR Code Lido com Sucesso!</strong> Produto SKU-505 (Chapa Especial) adicionado automaticamente ao WMS.';
+function simulateQREntry() {
+  if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+  document.getElementById('cameraFeed').classList.add('hidden');
   
-  // Adiciona na tabela automaticamente
-  const tbody = document.getElementById('productTable');
-  tbody.innerHTML += `<tr><td>SKU-505</td><td>Chapa Especial (QR Code)</td><td>30</td><td>40 kg</td></tr>`;
-  state.productsCount++;
-  document.getElementById('dashProductsCount').textContent = state.productsCount;
+  const fb = document.getElementById('qrFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback success';
+  fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
+  
+  // Adiciona no WMS
+  const table = document.getElementById('wmsTable');
+  table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
+  document.getElementById('dashQrCount').textContent = '1';
 }
 
-// Cadastro de Produtos WMS
-document.getElementById('productForm').addEventListener('submit', function(e) {
+/* WMS PRODUTOS */
+document.getElementById('wmsForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  const sku = document.getElementById('pSku').value;
-  const name = document.getElementById('pName').value;
-  const qty = document.getElementById('pQty').value;
-  const weight = document.getElementById('pWeight').value;
+  const sku = document.getElementById('wmsSku').value;
+  const name = document.getElementById('wmsName').value;
+  const qty = document.getElementById('wmsQty').value;
+  const weight = document.getElementById('wmsWeight').value;
 
-  const tbody = document.getElementById('productTable');
-  tbody.innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td></tr>`;
-  
-  state.productsCount++;
-  document.getElementById('dashProductsCount').textContent = state.productsCount;
-  alert('Produto cadastrado com sucesso no sistema!');
+  document.getElementById('wmsTable').innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td><td>A-03-01</td></tr>`;
+  alert('Produto cadastrado com sucesso!');
   this.reset();
+  document.getElementById('dashProdCount').textContent = '5';
 });
 
-// Mapa de Roteirização
-function selectRouteNode(nodeName) {
-  if(!state.selectedRoute.includes(nodeName)) {
-    state.selectedRoute.push(nodeName);
-    document.getElementById('routeStatus').textContent = 'Rota atual: ' + state.selectedRoute.join(' ➔ ');
-  }
-}
-
-function confirmRoute() {
-  state.routesCount++;
-  document.getElementById('dashRoutesCount').textContent = state.routesCount;
-  alert('Rota otimizada confirmada com sucesso! Distância total estimada: 42 km.');
-  state.selectedRoute = ['CD Caxias'];
-  document.getElementById('routeStatus').textContent = 'Rota atual: CD Caxias ➔ Pronto para nova rota.';
-}
-</script>
-
-</body>
-</html>
+/* ROTEIRIZAÇÃO */
+let selectedStops = [];
+function toggleStop(el, name) {
+  if(selectedStops.includes(name)) {
+    selectedStops = selectedStops.filter(s => s !== name);
+    el.classList.remove('selected');
+  } else {
+    selectedStops.push(name);
+    el.classList.ad
