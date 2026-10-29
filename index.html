@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LogiSim | Simulação de Operações Logísticas</title>
-
 <style>
 :root {
   --bg: #071426;
@@ -40,28 +39,12 @@ button {
   transition: .2s;
 }
 
-button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
+button:disabled { opacity: .45; cursor: not-allowed; }
 
-.btn-primary {
-  background: var(--orange);
-  color: #111827;
-}
-
+.btn-primary { background: var(--orange); color: #111827; }
 .btn-primary:hover { background: var(--orange-hover); }
-
-.btn-secondary {
-  background: var(--panel2);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.btn-danger {
-  background: #562b35;
-  color: #ffd8dc;
-}
+.btn-secondary { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: #562b35; color: #ffd8dc; }
 
 input, select, textarea {
   width: 100%;
@@ -74,23 +57,15 @@ input, select, textarea {
   outline: none;
 }
 
-input:focus, select:focus, textarea:focus {
-  border-color: var(--orange);
-}
+input:focus, select:focus, textarea:focus { border-color: var(--orange); }
 
-label {
-  display: block;
-  margin-bottom: 15px;
-  color: var(--muted);
-  font-size: 14px;
-}
+label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
 
 h1, h2, h3 { margin-top: 0; }
 p { line-height: 1.5; }
 
 .muted { color: var(--muted); }
 .orange { color: var(--orange); }
-
 .hidden { display: none !important; }
 
 .login-screen {
@@ -99,9 +74,7 @@ p { line-height: 1.5; }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background:
-    radial-gradient(circle at top right, #183553 0, transparent 40%),
-    var(--bg);
+  background: radial-gradient(circle at top right, #183553 0, transparent 40%), var(--bg);
 }
 
 .login-card {
@@ -114,300 +87,77 @@ p { line-height: 1.5; }
   box-shadow: 0 20px 60px #0005;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin-bottom: 25px;
-}
-
+.brand { display: flex; align-items: center; gap: 13px; margin-bottom: 25px; }
 .brand-icon {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  background: var(--orange);
-  color: #102033;
-  font-size: 25px;
-  font-weight: 900;
-  border-radius: 13px;
+  width: 52px; height: 52px; display: grid; place-items: center;
+  background: var(--orange); color: #102033; font-size: 25px; font-weight: 900; border-radius: 13px;
 }
-
-.brand h1 {
-  font-size: 25px;
-  margin: 0 0 4px;
-}
-
+.brand h1 { font-size: 25px; margin: 0 0 4px; }
 .brand small { color: var(--muted); }
 
-.login-card .btn-primary { width: 100%; }
-
-.demo-note {
-  background: #09192d;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 12px;
-  margin-top: 18px;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
 .app { min-height: 100vh; }
-
 .topbar {
-  min-height: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 15px 25px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
+  min-height: 75px; display: flex; align-items: center; justify-content: space-between;
+  gap: 15px; padding: 15px 25px; background: var(--panel); border-bottom: 1px solid var(--border);
 }
-
 .topbar .brand { margin: 0; }
 .topbar .brand-icon { width: 42px; height: 42px; }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-info small { display: block; color: var(--muted); margin-top: 4px; }
 
-.user-info small {
-  display: block;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 235px minmax(0, 1fr);
-  min-height: calc(100vh - 75px);
-}
-
-.sidebar {
-  padding: 20px 13px;
-  background: #0a1a2e;
-  border-right: 1px solid var(--border);
-}
-
+.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100vh - 75px); }
+.sidebar { padding: 20px 13px; background: #0a1a2e; border-right: 1px solid var(--border); }
 .nav-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  color: var(--muted);
-  margin-bottom: 7px;
-  border-radius: 8px;
-  padding: 10px;
+  display: block; width: 100%; text-align: left; background: transparent;
+  color: var(--muted); margin-bottom: 7px; border-radius: 8px; padding: 12px;
 }
+.nav-btn:hover, .nav-btn.active { background: var(--panel2); color: var(--orange); }
 
-.nav-btn:hover, .nav-btn.active {
-  background: var(--panel2);
-  color: var(--orange);
-}
+main { padding: 25px; min-width: 0; max-width: 1400px; width: 100%; margin: 0 auto; }
+.page-title { margin-bottom: 5px; font-size: 26px; }
+.page-description { margin-top: 0; margin-bottom: 20px; color: var(--muted); }
 
-main {
-  padding: 28px;
-  min-width: 0;
-  max-width: 1500px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.page-title {
-  margin-bottom: 7px;
-  font-size: 28px;
-}
-
-.page-description {
-  margin-top: 0;
-  margin-bottom: 25px;
-  color: var(--muted);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 20px;
-  margin-bottom: 18px;
-  min-width: 0;
-}
-
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; margin-bottom: 20px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 20px; margin-bottom: 18px; }
 .stat-label { color: var(--muted); font-size: 13px; }
+.stat-number { font-size: 28px; font-weight: bold; margin-top: 10px; }
+.stat-icon { color: var(--orange); font-size: 22px; }
 
-.stat-number {
-  font-size: 30px;
-  font-weight: bold;
-  margin-top: 12px;
-}
-
-.stat-icon {
-  color: var(--orange);
-  font-size: 24px;
-}
-
-.card h3 { margin-bottom: 14px; }
-
-.steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 13px;
-}
-
-.step {
-  background: #0a1a2e;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  padding: 17px;
-}
-
-.step-number {
-  display: inline-grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  background: var(--panel2);
-  color: var(--orange);
-  border-radius: 50%;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.step.done .step-number {
-  background: var(--green);
-  color: #062414;
-}
-
-.step p { color: var(--muted); font-size: 13px; }
-
-.step-status {
-  display: block;
-  color: var(--muted);
-  font-size: 12px;
-  margin: 10px 0;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 15px;
-}
-
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 15px; }
 .full-width { grid-column: 1 / -1; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  min-width: 650px;
-}
-
-th, td {
-  padding: 13px 11px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-
+.table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 550px; }
+th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
 th { color: var(--orange); font-weight: bold; }
 td { color: var(--text); }
 
-.badge {
-  display: inline-block;
-  padding: 5px 8px;
-  border-radius: 20px;
-  background: var(--panel2);
-  color: var(--muted);
-  font-size: 11px;
-  white-space: nowrap;
+.feedback-box {
+  margin-top: 15px; padding: 15px; border-radius: 9px; background: #09192d; border: 1px solid var(--border);
 }
 
-.badge.success { background: #123f30; color: #8cf0b9; }
-.badge.pending { background: #4a351e; color: #ffd09a; }
-
-.notice {
-  padding: 14px;
-  border-radius: 9px;
-  background: #352b1d;
-  border: 1px solid #74512a;
-  color: #ffe0b7;
-  margin-bottom: 18px;
-  font-size: 13px;
-  line-height: 1.5;
+/* Simulador de Mapa Roteirização */
+.map-canvas {
+  background: #06111f; border: 2px dashed var(--border); border-radius: 12px;
+  height: 220px; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; margin-bottom: 15px;
+}
+.route-node {
+  position: absolute; width: 40px; height: 40px; background: var(--panel2);
+  border: 2px solid var(--orange); border-radius: 50%; display: grid; place-items: center;
+  font-weight: bold; font-size: 12px; cursor: pointer;
 }
 
-.empty {
-  padding: 25px;
-  color: var(--muted);
-  text-align: center;
-}
-
-.footer {
-  text-align: center;
-  padding: 20px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .steps { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 700px) {
-  .topbar { padding: 12px; flex-wrap: wrap; }
-  .topbar .brand h1 { font-size: 20px; }
-  .user-info { width: 100%; justify-content: space-between; }
   .layout { grid-template-columns: 1fr; }
-  .sidebar {
-    display: flex;
-    overflow-x: auto;
-    gap: 5px;
-    padding: 10px;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-btn {
-    width: auto;
-    flex: 0 0 auto;
-    margin: 0;
-    white-space: nowrap;
-    font-size: 12px;
-    padding: 10px;
-  }
-  main { padding: 17px 12px; }
-  .page-title { font-size: 24px; }
-  .grid { gap: 10px; }
-  .card { padding: 15px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .full-width { grid-column: auto; }
+  .sidebar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; border: none; border-bottom: 1px solid var(--border); }
+  .nav-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
 }
 </style>
 </head>
-
 <body>
 
 <section id="loginScreen" class="login-screen">
@@ -419,32 +169,12 @@ td { color: var(--text); }
         <small>Simulação de Operações Logísticas</small>
       </div>
     </div>
-
-    <p class="muted">
-      Entre na plataforma para registrar e acompanhar as etapas da operação logística.
-    </p>
-
     <form id="loginForm">
-      <label>
-        Usuário
-        <input id="username" autocomplete="username" placeholder="Digite seu usuário" required>
-      </label>
-
-      <label>
-        Senha
-        <input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required>
-      </label>
-
+      <label>Usuário <input id="username" placeholder="Digite seu nome" required></label>
+      <label>Senha <input id="password" type="password" value="123" required></label>
       <button type="submit" class="btn-primary">Entrar na plataforma</button>
-      <p id="loginError" style="color:#ff8585;font-size:13px"></p>
     </form>
-
-    <div class="demo-note">
-      <strong>Projeto LogiSim</strong><br>
-      Curso: Assistente de Logística<br>
-      Turma: APR477<br>
-      Instrutora: Quezia
-    </div>
+    <p class="muted" style="font-size:12px; margin-top:15px;">Dica: Digite seu nome e clique em entrar.</p>
   </div>
 </section>
 
@@ -454,14 +184,13 @@ td { color: var(--text); }
       <div class="brand-icon">LS</div>
       <div>
         <h1>LogiSim</h1>
-        <small>Operações logísticas simuladas</small>
+        <small>Firjan SENAI Caxias</small>
       </div>
     </div>
-
     <div class="user-info">
       <div>
         <strong id="userName">Usuário</strong>
-        <small id="userRole">Aluno</small>
+        <small id="userRole">Aluno - Assistente de Logística</small>
       </div>
       <button class="btn-secondary" onclick="logout()">Sair</button>
     </div>
@@ -469,143 +198,160 @@ td { color: var(--text); }
 
   <div class="layout">
     <aside class="sidebar">
-      <button class="nav-btn active" data-page="dashboard" onclick="showPage('dashboard',this)">▦ Visão geral</button>
-      <button class="nav-btn" data-page="activity" onclick="showPage('activity',this)">✓ Etapas logísticas</button>
-      <button class="nav-btn" data-page="addresses" onclick="showPage('addresses',this)">⌖ Endereçamento</button>
-      <button class="nav-btn" data-page="products" onclick="showPage('products',this)">▤ Produtos</button>
-      <button class="nav-btn" data-page="history" onclick="showPage('history',this)">◷ Histórico</button>
-      <button class="nav-btn instructor-only hidden" data-page="instructor" onclick="showPage('instructor',this)">♙ Painel da instrutora</button>
+      <button class="nav-btn active" onclick="showPage('dashboard', this)">▦ Visão geral</button>
+      <button class="nav-btn" onclick="showPage('activities', this)">📝 A.L. (Atividades)</button>
+      <button class="nav-btn" onclick="showPage('qrscanner', this)">📷 Leitor QR / Câmera</button>
+      <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
+      <button class="nav-btn" onclick="showPage('routing', this)">🗺️ Mapa & Roteirização</button>
     </aside>
 
     <main>
+      <!-- DASHBOARD -->
       <section id="page-dashboard" class="page">
-        <h2 class="page-title">Visão geral</h2>
-        <p class="page-description">Acompanhe o andamento das atividades da operação logística.</p>
-
+        <h2 class="page-title">Painel de Controle</h2>
+        <p class="page-description">Visão geral das simulações e status das operações logísticas.</p>
         <div class="grid">
           <div class="card">
-            <div class="stat-label">Produtos cadastrados</div>
-            <div class="stat-number" id="statProducts">1</div>
+            <div class="stat-label">Produtos no WMS</div>
+            <div class="stat-number" id="dashProductsCount">2</div>
             <div class="stat-icon">▤</div>
           </div>
           <div class="card">
-            <div class="stat-label">Endereços registrados</div>
-            <div class="stat-number" id="statAddresses">0</div>
-            <div class="stat-icon">⌖</div>
+            <div class="stat-label">A.L. Respondidas</div>
+            <div class="stat-number" id="dashActivitiesDone">0/3</div>
+            <div class="stat-icon">📝</div>
           </div>
           <div class="card">
-            <div class="stat-label">Etapas concluídas por mim</div>
-            <div class="stat-number" id="statSteps">0/3</div>
-            <div class="stat-icon">✓</div>
+            <div class="stat-label">QR Codes Lidos</div>
+            <div class="stat-number" id="dashQrCount">0</div>
+            <div class="stat-icon">📷</div>
           </div>
           <div class="card">
-            <div class="stat-label">Registros no histórico</div>
-            <div class="stat-number" id="statHistory">0</div>
-            <div class="stat-icon">◷</div>
+            <div class="stat-label">Rotas Criadas</div>
+            <div class="stat-number" id="dashRoutesCount">0</div>
+            <div class="stat-icon">🗺️</div>
           </div>
+        </div>
+      </section>
+
+      <!-- ATIVIDADES LOGÍSTICAS (A.L.) -->
+      <section id="page-activities" class="page hidden">
+        <h2 class="page-title">Atividades Logísticas (A.L.)</h2>
+        <p class="page-description">Responda aos testes práticos simulando o cotidiano do assistente de logística.</p>
+
+        <div class="card">
+          <h3>Questão 1: Divergência no Recebimento</h3>
+          <p class="muted">A nota fiscal indica 50 caixas de MDF, mas na conferência física você contou apenas 48. O que deve ser feito?</p>
+          <select id="q1">
+            <option value="">Selecione a resposta...</option>
+            <option value="err">Aceitar a mercadoria sem falar nada para não atrasar.</option>
+            <option value="ok">Registrar a divergência na nota e notificar o fornecedor/responsável.</option>
+            <option value="err">Devolver todo o caminhão imediatamente.</option>
+          </select>
         </div>
 
         <div class="card">
-          <h3>Fluxo da operação</h3>
-          <div class="steps">
-            <div class="step" id="dashStep0">
-              <span class="step-number">1</span>
-              <h3>Recebimento</h3>
-              <p>Registrar a chegada do produto e a quantidade recebida.</p>
-              <span class="step-status" id="dashStatus0">Pendente</span>
-            </div>
-            <div class="step" id="dashStep1">
-              <span class="step-number">2</span>
-              <h3>Conferência</h3>
-              <p>Verificar se o produto e a quantidade estão corretos.</p>
-              <span class="step-status" id="dashStatus1">Pendente</span>
-            </div>
-            <div class="step" id="dashStep2">
-              <span class="step-number">3</span>
-              <h3>Endereçamento</h3>
-              <p>Escolher e registrar onde o produto será armazenado.</p>
-              <span class="step-status" id="dashStatus2">Pendente</span>
-            </div>
-          </div>
+          <h3>Questão 2: Critério FIFO / Armazenagem</h3>
+          <p class="muted">Qual é o principal objetivo do sistema FIFO (First In, First Out) no armazém?</p>
+          <select id="q2">
+            <option value="">Selecione a resposta...</option>
+            <option value="ok">Garantir que os produtos mais antigos saiam primeiro, evitando perdas e vencimentos.</option>
+            <option value="err">Guardar os produtos mais pesados nas prateleiras mais altas.</option>
+            <option value="err">Acelerar a velocidade da empilhadeira na rua principal.</option>
+          </select>
+          <button class="btn-primary" style="margin-top:15px;" onclick="validateActivities()">Enviar e Validar A.L.</button>
+          <div id="activityFeedback" class="feedback-box hidden"></div>
+        </div>
+      </section>
+
+      <!-- LEITOR DE QR CODE / CÂMERA -->
+      <section id="page-qrscanner" class="page hidden">
+        <h2 class="page-title">Leitor de QR Code & Entrada por Câmera</h2>
+        <p class="page-description">Simule a leitura da etiqueta do produto para dar entrada automática no estoque.</p>
+        <div class="card">
+          <h3>Escanear Etiqueta / QR Code</h3>
+          <p class="muted">Você pode usar a câmera do celular para capturar o código do produto ou simular a leitura instantânea.</p>
+          
           <div class="actions">
-            <button class="btn-primary" onclick="showPage('activity')">Acessar etapas</button>
-            <button class="btn-secondary" onclick="showPage('addresses')">Registrar endereço</button>
+            <button class="btn-primary" onclick="openCameraScan()">📷 Abrir Câmera do Celular</button>
+            <button class="btn-secondary" onclick="simulateQRRead()">⚡ Simular Leitura Rápida QR</button>
           </div>
-        </div>
-      </section>
 
-      <section id="page-activity" class="page hidden">
-        <h2 class="page-title">Etapas logísticas</h2>
-        <p class="page-description">Execute cada etapa na sequência para simular o processo de armazenagem.</p>
-
-        <div class="card">
-          <h3>1. Recebimento</h3>
-          <form id="receivingForm">
-            <div class="form-grid">
-              <label>Produto <select id="receivingProduct" required><option value="MDF">Chapa de madeira de MDF</option></select></label>
-              <label>Quantidade recebida <input id="receivingQty" type="number" min="1" value="90" required></label>
-            </div>
-            <button class="btn-primary" type="submit">Registrar recebimento</button>
-          </form>
-          <p id="receivingStatus" class="muted"></p>
-        </div>
-
-        <div class="card">
-          <h3>2. Conferência</h3>
-          <form id="conferenceForm">
-            <div class="form-grid">
-              <label>Produto <select id="conferenceProduct" required><option value="MDF">Chapa de madeira de MDF</option></select></label>
-              <label>Quantidade conferida <input id="conferenceQty" type="number" min="1" value="90" required></label>
-            </div>
-            <button class="btn-primary" type="submit">Registrar conferência</button>
-          </form>
-          <p id="conferenceStatus" class="muted"></p>
-        </div>
-      </section>
-
-      <section id="page-addresses" class="page hidden">
-        <h2 class="page-title">Endereçamento</h2>
-        <form id="addressForm">
-          <div class="form-grid">
-            <label>Produto <select id="addressProduct"><option value="MDF">Chapa de madeira de MDF</option></select></label>
-            <label>Quantidade <input id="addressQty" type="number" value="90"></label>
-            <label>Rua <input id="addressStreet" value="Rua A"></label>
-            <label>Estante <input id="addressShelf" value="Estante 01"></label>
+          <div id="cameraContainer" class="hidden" style="margin-top:15px; text-align:center;">
+            <video id="cameraStream" autoplay playsinline style="width:100%; max-width:300px; border-radius:10px; border:2px solid var(--orange);"></video>
+            <p class="muted" style="font-size:12px;">Apontar para o QR code do produto...</p>
+            <button class="btn-secondary" onclick="captureQRPhoto()">Tirar Foto / Capturar</button>
           </div>
-          <button class="btn-primary" type="submit">Salvar endereçamento</button>
-        </form>
-        <div class="card" style="margin-top:20px;">
-          <h3>Endereços registrados</h3>
-          <table><thead><tr><th>Produto</th><th>Qtd</th><th>Local</th></tr></thead><tbody id="addressTable"><tr><td colspan="3">Nenhum registro</td></tr></tbody></table>
+
+          <div id="qrResult" class="feedback-box hidden" style="margin-top:15px;"></div>
         </div>
       </section>
 
+      <!-- WMS PRODUTOS -->
       <section id="page-products" class="page hidden">
-        <h2 class="page-title">Produtos</h2>
+        <h2 class="page-title">WMS — Cadastro de Produtos</h2>
+        <p class="page-description">Cadastre qualquer novo produto no sistema para gerenciar o estoque.</p>
+
         <div class="card">
-          <table>
-            <thead><tr><th>Código</th><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Peso</th></tr></thead>
-            <tbody>
-              <tr><td>PRD001</td><td>Chapa de madeira de MDF</td><td>Marcenaria</td><td>90</td><td>57 kg</td></tr>
-            </tbody>
-          </table>
+          <h3>Novo Cadastro de Produto</h3>
+          <form id="productForm">
+            <div class="form-grid">
+              <label>Código SKU <input id="pSku" required placeholder="Ex: SKU-900"></label>
+              <label>Nome do Produto <input id="pName" required placeholder="Ex: Chapa MDF 15mm"></label>
+              <label>Quantidade <input id="pQty" type="number" min="1" required placeholder="50"></label>
+              <label>Peso Unitário (kg) <input id="pWeight" type="number" step="0.1" required placeholder="42.5"></label>
+            </div>
+            <button class="btn-primary" type="submit">Cadastrar no Sistema</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Estoque Atualizado</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Peso Unit.</th></tr>
+              </thead>
+              <tbody id="productTable">
+                <tr><td>SKU-101</td><td>Chapa MDF Naval</td><td>90</td><td>57 kg</td></tr>
+                <tr><td>SKU-102</td><td>Cola de Contato</td><td>120</td><td>2.5 kg</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
-      <section id="page-history" class="page hidden">
-        <h2 class="page-title">Histórico de operações</h2>
-        <div class="card"><p class="muted">Nenhuma operação finalizada ainda.</p></div>
-      </section>
+      <!-- MAPA / ROTEIRIZAÇÃO -->
+      <section id="page-routing" class="page hidden">
+        <h2 class="page-title">Mapa de Roteirização de Entregas</h2>
+        <p class="page-description">Monte a melhor rota considerando os pontos de entrega da região.</p>
 
-      <section id="page-instructor" class="page instructor-only hidden">
-        <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
-        <div class="card"><p class="muted">Acesso restrito à instrutora.</p></div>
+        <div class="card">
+          <h3>Simulador de Rota Logística</h3>
+          <div class="map-canvas" id="mapCanvas">
+            <div class="route-node" style="top:30px; left:40px;" onclick="selectRouteNode('CD Caxias')">CD</div>
+            <div class="route-node" style="top:120px; left:180px;" onclick="selectRouteNode('Loja Piabetá')">P1</div>
+            <div class="route-node" style="top:50px; left:320px;" onclick="selectRouteNode('Cliente Magé')">M2</div>
+            <div class="route-node" style="top:150px; left:450px;" onclick="selectRouteNode('Filial Duque')">D3</div>
+          </div>
+          <p class="muted">Toque nos pontos (CD, P1, M2, D3) para definir a sequência de entrega do veículo.</p>
+          <div id="routeStatus" class="orange" style="font-weight:bold; margin-bottom:10px;">Rota atual: CD Caxias ➔ Aguardando seleção...</div>
+          <button class="btn-primary" onclick="confirmRoute()">Confirmar e Otimizar Rota</button>
+        </div>
       </section>
     </main>
   </div>
 </div>
 
 <script>
+let state = {
+  productsCount: 2,
+  activitiesDone: 0,
+  qrScanned: 0,
+  routesCount: 0,
+  selectedRoute: ['CD Caxias']
+};
+
 function showPage(pageId, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -617,16 +363,8 @@ function showPage(pageId, btn) {
 
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  const user = document.getElementById('username').value.trim();
-  document.getElementById('userName').textContent = user;
-  
-  if(user.toLowerCase() === 'quezia' || user.toLowerCase() === 'instrutora') {
-    document.getElementById('userRole').textContent = 'Instrutora';
-    document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
-  } else {
-    document.getElementById('userRole').textContent = 'Aluno (Assistente de Logística)';
-  }
-
+  const name = document.getElementById('username').value.trim();
+  document.getElementById('userName').textContent = name || 'Aluno';
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
 });
@@ -636,32 +374,99 @@ function logout() {
   document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-// Validação básica dos formulários para simular interatividade na apresentação
-document.getElementById('receivingForm').addEventListener('submit', function(e) {
+// Atividades (A.L.)
+function validateActivities() {
+  const q1 = document.getElementById('q1').value;
+  const q2 = document.getElementById('q2').value;
+  const fb = document.getElementById('activityFeedback');
+  fb.classList.remove('hidden');
+
+  if(q1 === 'ok' && q2 === 'ok') {
+    fb.style.borderColor = 'var(--green)';
+    fb.style.color = '#8cf0b9';
+    fb.innerHTML = '<strong>Parabéns! Nota 100 nas Atividades Logísticas.</strong> Respostas corretas.';
+    state.activitiesDone = 1;
+    document.getElementById('dashActivitiesDone').textContent = '1/3';
+  } else {
+    fb.style.borderColor = 'var(--red)';
+    fb.style.color = '#ff8585';
+    fb.innerHTML = '<strong>Atenção:</strong> Há respostas incorretas. Reveja os conceitos de recebimento e FIFO.';
+  }
+}
+
+// Câmera & QR Code
+let videoStream = null;
+function openCameraScan() {
+  const container = document.getElementById('cameraContainer');
+  container.classList.remove('hidden');
+  const video = document.getElementById('cameraStream');
+  
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      videoStream = stream;
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      alert('Não foi possível acessar a câmera do celular. Use a simulação rápida.');
+      container.classList.add('hidden');
+    });
+}
+
+function captureQRPhoto() {
+  if(videoStream) {
+    videoStream.getTracks().forEach(track => track.stop());
+  }
+  document.getElementById('cameraContainer').classList.add('hidden');
+  simulateQRRead();
+}
+
+function simulateQRRead() {
+  state.qrScanned++;
+  document.getElementById('dashQrCount').textContent = state.qrScanned;
+  const res = document.getElementById('qrResult');
+  res.classList.remove('hidden');
+  res.style.borderColor = 'var(--green)';
+  res.innerHTML = '<strong>QR Code Lido com Sucesso!</strong> Produto SKU-505 (Chapa Especial) adicionado automaticamente ao WMS.';
+  
+  // Adiciona na tabela automaticamente
+  const tbody = document.getElementById('productTable');
+  tbody.innerHTML += `<tr><td>SKU-505</td><td>Chapa Especial (QR Code)</td><td>30</td><td>40 kg</td></tr>`;
+  state.productsCount++;
+  document.getElementById('dashProductsCount').textContent = state.productsCount;
+}
+
+// Cadastro de Produtos WMS
+document.getElementById('productForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  document.getElementById('receivingStatus').textContent = '✓ Recebimento registrado com sucesso!';
-  document.getElementById('dashStatus0').textContent = 'Concluído';
-  document.getElementById('dashStep0').classList.add('done');
-  document.getElementById('statSteps').textContent = '1/3';
+  const sku = document.getElementById('pSku').value;
+  const name = document.getElementById('pName').value;
+  const qty = document.getElementById('pQty').value;
+  const weight = document.getElementById('pWeight').value;
+
+  const tbody = document.getElementById('productTable');
+  tbody.innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td></tr>`;
+  
+  state.productsCount++;
+  document.getElementById('dashProductsCount').textContent = state.productsCount;
+  alert('Produto cadastrado com sucesso no sistema!');
+  this.reset();
 });
 
-document.getElementById('conferenceForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  document.getElementById('conferenceStatus').textContent = '✓ Conferência realizada com sucesso!';
-  document.getElementById('dashStatus1').textContent = 'Concluído';
-  document.getElementById('dashStep1').classList.add('done');
-  document.getElementById('statSteps').textContent = '2/3';
-});
+// Mapa de Roteirização
+function selectRouteNode(nodeName) {
+  if(!state.selectedRoute.includes(nodeName)) {
+    state.selectedRoute.push(nodeName);
+    document.getElementById('routeStatus').textContent = 'Rota atual: ' + state.selectedRoute.join(' ➔ ');
+  }
+}
 
-document.getElementById('addressForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  alert('Endereçamento salvo com sucesso!');
-  document.getElementById('dashStatus2').textContent = 'Concluído';
-  document.getElementById('dashStep2').classList.add('done');
-  document.getElementById('statSteps').textContent = '3/3';
-  document.getElementById('statAddresses').textContent = '1';
-  document.getElementById('addressTable').innerHTML = '<tr><td>Chapa de MDF</td><td>90</td><td>Rua A, Estante 01</td></tr>';
-});
+function confirmRoute() {
+  state.routesCount++;
+  document.getElementById('dashRoutesCount').textContent = state.routesCount;
+  alert('Rota otimizada confirmada com sucesso! Distância total estimada: 42 km.');
+  state.selectedRoute = ['CD Caxias'];
+  document.getElementById('routeStatus').textContent = 'Rota atual: CD Caxias ➔ Pronto para nova rota.';
+}
 </script>
 
 </body>
