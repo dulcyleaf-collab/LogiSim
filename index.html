@@ -173,9 +173,14 @@ td { color: var(--text); }
       </div>
     </div>
     <form id="loginForm">
-      <label>Seu Nome / Aluno <input id="username" placeholder="Digite seu nome" required></label>
+      <label>Nome do Usuário <input id="username" placeholder="Digite seu nome (ex: Dulcylea)" required></label>
+      <label>Senha <input id="password" type="password" placeholder="Digite sua senha" required></label>
       <button type="submit" class="btn-primary">Entrar na Plataforma</button>
     </form>
+    <div class="muted" style="font-size:12px; margin-top:15px;">
+      💡 Aluno entra com qualquer nome/senha.<br>
+      💡 Instrutora entra digitando <strong>Quezia</strong> como usuário.
+    </div>
   </div>
 </section>
 
@@ -191,7 +196,7 @@ td { color: var(--text); }
     <div class="user-info">
       <div>
         <strong id="userName">Usuário</strong>
-        <small>Assistente de Logística</small>
+        <small id="userRole">Assistente de Logística</small>
       </div>
       <button class="btn-secondary" onclick="logout()">Sair</button>
     </div>
@@ -204,6 +209,7 @@ td { color: var(--text); }
       <button class="nav-btn" onclick="showPage('qrscanner', this)">📷 Leitor QR / Câmera</button>
       <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
       <button class="nav-btn" onclick="showPage('routing', this)">🗺️ Mapa & Roteirização</button>
+      <button class="nav-btn instructor-only hidden" onclick="showPage('instructor', this)" style="color:#ffb47f;">📋 Painel da Instrutora</button>
     </aside>
 
     <main>
@@ -324,6 +330,24 @@ td { color: var(--text); }
           <button class="btn-primary" onclick="saveRoute()">Salvar e Otimizar Rota</button>
         </div>
       </section>
+
+      <!-- PAINEL DA INSTRUTORA -->
+      <section id="page-instructor" class="page hidden">
+        <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
+        <p class="page-description">Visão gerencial de acompanhamento das turmas e notas da simulação.</p>
+        <div class="card">
+          <h3>Relatório de Turma (APR477)</h3>
+          <p class="muted">Status do sistema: Operacional e conectado ao banco local.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Aluno</th><th>A.L. Concluída</th><th>Nota</th><th>Status</th></tr></thead>
+              <tbody id="instructorTable">
+                <tr><td>Dulcylea Fonseca</td><td>Simulada (5 Etapas)</td><td>100</td><td><span style="color:var(--green)">Aprovada</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 </div>
@@ -342,6 +366,15 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const name = document.getElementById('username').value.trim();
   document.getElementById('userName').textContent = name || 'Aluno';
+  
+  if(name.toLowerCase() === 'quezia' || name.toLowerCase() === 'instrutora') {
+    document.getElementById('userRole').textContent = 'Instrutora (Quezia)';
+    document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
+  } else {
+    document.getElementById('userRole').textContent = 'Assistente de Logística';
+    document.querySelectorAll('.instructor-only').forEach(el => el.classList.add('hidden'));
+  }
+
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
 });
@@ -477,7 +510,6 @@ function simulateQREntry() {
   fb.className = 'feedback success';
   fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
   
-  // Adiciona no WMS
   const table = document.getElementById('wmsTable');
   table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
   document.getElementById('dashQrCount').textContent = '1';
@@ -505,4 +537,23 @@ function toggleStop(el, name) {
     el.classList.remove('selected');
   } else {
     selectedStops.push(name);
-    el.classList.ad
+    el.classList.add('selected');
+  }
+  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (selectedStops.length ? selectedStops.join(' ➔ ') : '(Nenhuma parada selecionada)');
+}
+
+function saveRoute() {
+  if(selectedStops.length < 2) {
+    alert('Selecione pelo menos 2 pontos para formar a rota.');
+    return;
+  }
+  alert('Rota otimizada com sucesso! Distância total estimada calculada.');
+  document.getElementById('dashRouteCount').textContent = '1';
+  selectedStops = [];
+  document.querySelectorAll('.route-stop').forEach(el => el.classList.remove('selected'));
+  document.getElementById('routeDisplay').textContent = 'Rota montada: (Nenhuma parada selecionada)';
+}
+</script>
+
+</body>
+</html>
