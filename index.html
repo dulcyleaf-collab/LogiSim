@@ -3,222 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LogiSim | Enterprise Logistics Platform</title>
+<title>LogiSim | Simulação de Operações Logísticas</title>
 <style>
 :root {
-  --bg-gradient: radial-gradient(120% 120% at 50% 10%, #0d1e36 0%, #040a14 100%);
-  --panel-bg: rgba(15, 28, 48, 0.75);
-  --panel-border: rgba(255, 255, 255, 0.08);
-  --orange-primary: #f97316;
-  --orange-gradient: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --green-badge: #10b981;
-  --blue-accent: #38bdf8;
+  --bg: #071426;
+  --panel: #10233d;
+  --panel2: #183553;
+  --orange: #f28c28;
+  --orange-hover: #ff9f43;
+  --text: #f4f7fb;
+  --muted: #a9bbd0;
+  --border: #2b4563;
+  --green: #28c76f;
+  --red: #ff6262;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: var(--bg-gradient);
-  color: var(--text-main);
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
 }
 
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 
 button {
   cursor: pointer;
   border: none;
-  border-radius: 10px;
-  padding: 12px 20px;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-primary {
-  background: var(--orange-gradient);
-  color: #0c131d;
-  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.35);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(234, 88, 12, 0.5);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  border: 1px solid var(--panel-border);
-  backdrop-filter: blur(10px);
-}
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--orange-primary);
-}
-
-input, select {
-  width: 100%;
+  border-radius: 9px;
   padding: 12px 16px;
-  margin-top: 6px;
-  background: rgba(4, 10, 20, 0.6);
-  color: var(--text-main);
-  border: 1px solid var(--panel-border);
-  border-radius: 10px;
-  outline: none;
-  transition: all 0.2s;
+  font-weight: bold;
+  transition: .2s;
 }
 
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn-primary { background: var(--orange); color: #111827; }
+.btn-primary:hover { background: var(--orange-hover); }
+.btn-secondary { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: #562b35; color: #ffd8dc; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 7px;
+  background: #09192d;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus { border-color: var(--orange); }
+
+label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
+
+h1, h2, h3 { margin-top: 0; }
+p { line-height: 1.5; }
+
+.muted { color: var(--muted); }
+.orange { color: var(--orange); }
 .hidden { display: none !important; }
 
-/* Login Container */
 .login-screen {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background: radial-gradient(circle at top right, #183553 0, transparent 40%), var(--bg);
 }
 
 .login-card {
   width: 100%;
-  max-width: 480px;
-  background: var(--panel-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--panel-border);
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  max-width: 440px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 20px 60px #0005;
 }
 
-.brand-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 25px;
+.brand { display: flex; align-items: center; gap: 13px; margin-bottom: 25px; }
+.brand-icon {
+  width: 52px; height: 52px; display: grid; place-items: center;
+  background: var(--orange); color: #102033; font-size: 25px; font-weight: 900; border-radius: 13px;
 }
-.brand-logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: var(--orange-gradient);
-  display: grid;
-  place-items: center;
-  color: #09111e;
-  font-weight: 900;
-  font-size: 24px;
-  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-}
+.brand h1 { font-size: 25px; margin: 0 0 4px; }
+.brand small { color: var(--muted); }
 
-.team-badge {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 25px;
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-.team-badge strong { color: var(--orange-primary); }
-
+.app { min-height: 100vh; }
 .topbar {
-  padding: 16px 32px;
-  background: rgba(13, 26, 46, 0.8);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid var(--panel-border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  min-height: 75px; display: flex; align-items: center; justify-content: space-between;
+  gap: 15px; padding: 15px 25px; background: var(--panel); border-bottom: 1px solid var(--border);
 }
+.topbar .brand { margin: 0; }
+.topbar .brand-icon { width: 42px; height: 42px; }
 
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  min-height: calc(100vh - 75px);
-}
+.user-info { display: flex; align-items: center; gap: 12px; }
+.user-info small { display: block; color: var(--muted); margin-top: 4px; }
 
-.sidebar {
-  padding: 24px 16px;
-  background: rgba(6, 14, 26, 0.5);
-  border-right: 1px solid var(--panel-border);
-}
-
+.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100vh - 75px); }
+.sidebar { padding: 20px 13px; background: #0a1a2e; border-right: 1px solid var(--border); }
 .nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-weight: 500;
+  display: block; width: 100%; text-align: left; background: transparent;
+  color: var(--muted); margin-bottom: 7px; border-radius: 8px; padding: 12px;
 }
-.nav-btn:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-main);
-}
-.nav-btn.active {
-  background: rgba(249, 115, 22, 0.12);
-  color: var(--orange-primary);
-  border: 1px solid rgba(249, 115, 22, 0.3);
-  font-weight: 600;
-}
+.nav-btn:hover, .nav-btn.active { background: var(--panel2); color: var(--orange); }
 
-main { padding: 32px; max-width: 1300px; margin: 0 auto; width: 100%; }
+main { padding: 25px; min-width: 0; max-width: 1400px; width: 100%; margin: 0 auto; }
+.page-title { margin-bottom: 5px; font-size: 26px; }
+.page-description { margin-top: 0; margin-bottom: 20px; color: var(--muted); }
 
-.card {
-  background: var(--panel-bg);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--panel-border);
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  margin-bottom: 24px;
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; margin-bottom: 20px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 20px; margin-bottom: 18px; }
+.stat-label { color: var(--muted); font-size: 13px; }
+.stat-number { font-size: 28px; font-weight: bold; margin-top: 10px; }
+.stat-icon { color: var(--orange); font-size: 22px; }
+
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 15px; }
+.full-width { grid-column: 1 / -1; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+
+.table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 550px; }
+th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--orange); font-weight: bold; }
+td { color: var(--text); }
+
+.progress { height: 8px; background: #09192d; border-radius: 99px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border); }
+.progress span { height: 100%; display: block; background: var(--orange); width: 0%; transition: width .3s; }
+.feedback { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; }
+.feedback.success { background: #10271b; border: 1px solid #166534; color: #bbf7d0; }
+.feedback.error { background: #2a1518; border: 1px solid #991b1b; color: #fecaca; }
+
+/* Mapa de Roteirização */
+.map-box {
+  background: #050e18; border: 2px solid var(--border); border-radius: 14px;
+  padding: 20px; text-align: center; position: relative;
 }
-
 .route-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin: 20px 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0;
 }
-
 .route-stop {
-  background: rgba(255, 255, 255, 0.03);
-  border: 2px solid var(--panel-border);
-  border-radius: 14px;
-  padding: 18px 10px;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s ease;
+  background: var(--panel2); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer;
 }
-.route-stop.selected {
-  border-color: var(--orange-primary);
-  background: rgba(249, 115, 22, 0.12);
-}
-
-#mapCanvas {
-  width: 100%;
-  height: 280px;
-  background: #030812;
-  border: 1px solid var(--panel-border);
-  border-radius: 14px;
-  margin: 15px 0;
-}
+.route-stop.selected { border-color: var(--orange); background: #1d3550; }
 
 @media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .layout { grid-template-columns: 1fr; }
-  .route-grid { grid-template-columns: repeat(2, 1fr); }
-  .sidebar { display: flex; overflow-x: auto; gap: 8px; }
-  .nav-btn { width: auto; white-space: nowrap; }
+  .sidebar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; border: none; border-bottom: 1px solid var(--border); }
+  .nav-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
 }
 </style>
 </head>
@@ -226,208 +165,393 @@ main { padding: 32px; max-width: 1300px; margin: 0 auto; width: 100%; }
 
 <section id="loginScreen" class="login-screen">
   <div class="login-card">
-    <div class="brand-header">
-      <div class="brand-logo">LS</div>
+    <div class="brand">
+      <div class="brand-icon">LS</div>
       <div>
-        <h1 style="margin:0; font-size:26px;">LogiSim</h1>
-        <span style="color:var(--text-muted); font-size:13px;">Plataforma Integrada de Operações Logísticas</span>
+        <h1>LogiSim</h1>
+        <small>Simulação de Operações Logísticas</small>
       </div>
     </div>
-    <div class="team-badge">
-      <strong>PROJETO INTEGRADOR | FIRJAN SENAI CAXIAS</strong><br>
-      • Dulcylea Fonseca Ferreira<br>
-      • Ana Beatriz Paixão | Gabriella Sampaio<br>
-      • Pedro Lucas | Sofia de Faria
+    <form id="loginForm">
+      <label>Nome do Usuário <input id="username" placeholder="Digite seu nome (ex: Dulcylea)" required></label>
+      <label>Senha <input id="password" type="password" placeholder="Digite sua senha" required></label>
+      <button type="submit" class="btn-primary">Entrar na Plataforma</button>
+    </form>
+    <div class="muted" style="font-size:12px; margin-top:15px;">
+      💡 Aluno entra com qualquer nome/senha.<br>
+      💡 Instrutora entra digitando <strong>Quezia</strong> como usuário.
     </div>
-    <div style="margin-bottom: 20px;">
-      <label style="color:var(--text-muted); font-size:13px;">Acesso ao Operador</label>
-      <input id="usernameInput" placeholder="Informe seu nome" value="Dulcylea">
-    </div>
-    <button type="button" class="btn-primary" style="width:100%" onclick="entrarDireto()">Acessar Ambiente de Simulação &gt;</button>
   </div>
 </section>
 
-<div id="app" class="hidden">
+<div id="app" class="app hidden">
   <header class="topbar">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <div class="brand-logo" style="width:38px; height:38px; font-size:18px; border-radius:10px;">LS</div>
+    <div class="brand">
+      <div class="brand-icon">LS</div>
       <div>
-        <strong style="font-size:16px;">LogiSim Enterprise</strong>
-        <span style="display:block; font-size:11px; color:var(--text-muted);">Firjan SENAI Caxias</span>
+        <h1>LogiSim</h1>
+        <small>Firjan SENAI Caxias</small>
       </div>
     </div>
-    <div style="display:flex; align-items:center; gap:16px;">
-      <div style="text-align:right;">
-        <span style="font-size:11px; color:var(--text-muted); display:block;">OPERADOR ATIVO</span>
-        <strong id="userName" style="color:var(--orange-primary); font-size:14px;">Dulcylea</strong>
+    <div class="user-info">
+      <div>
+        <strong id="userName">Usuário</strong>
+        <small id="userRole">Assistente de Logística</small>
       </div>
-      <button class="btn-secondary" onclick="sair()" style="padding:8px 14px; font-size:12px;">Sair</button>
+      <button class="btn-secondary" onclick="logout()">Sair</button>
     </div>
   </header>
 
   <div class="layout">
     <aside class="sidebar">
-      <button class="nav-btn active" onclick="mudarAba('dash', this)">Visão Geral</button>
-      <button class="nav-btn" onclick="mudarAba('al', this)">Atividade A.L. (5 Etapas)</button>
-      <button class="nav-btn" onclick="mudarAba('qr', this)">Scanner QR Code</button>
-      <button class="nav-btn" onclick="mudarAba('wms', this)">Módulo WMS</button>
-      <button class="nav-btn" onclick="mudarAba('rota', this)">Roteirização</button>
-      <button class="nav-btn" onclick="mudarAba('quezia', this)" style="color:var(--blue-accent);">Painel Instrutora</button>
+      <button class="nav-btn active" onclick="showPage('dashboard', this)">▦ Visão geral</button>
+      <button class="nav-btn" onclick="showPage('challenge', this)"> A.L. (5 Etapas)</button>
+      <button class="nav-btn" onclick="showPage('qrscanner', this)"> Leitor QR / Câmera</button>
+      <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
+      <button class="nav-btn" onclick="showPage('routing', this)"> Mapa & Roteirização</button>
+      <button class="nav-btn instructor-only hidden" onclick="showPage('instructor', this)" style="color:#ffb47f;">📋 Painel da Instrutora</button>
     </aside>
 
     <main>
-      <div id="page-dash" class="page">
-        <h2>Painel de Controle do Sistema</h2>
-        <p style="color:var(--text-muted);">Métricas gerais das simulações operacionais executadas.</p>
-        <div class="card"><strong>Sistema operacional e pronto para a demonstração.</strong></div>
-      </div>
-
-      <div id="page-al" class="page hidden"><div class="card"><h3>Atividade A.L. Ativa</h3></div></div>
-      <div id="page-qr" class="page hidden"><div class="card"><h3>Scanner QR Code Ativo</h3></div></div>
-      <div id="page-wms" class="page hidden"><div class="card"><h3>Módulo WMS Ativo</h3></div></div>
-
-      <!-- MAPA & ROTEIRIZAÇÃO -->
-      <div id="page-rota" class="page">
-        <h2 style="margin-top:0;">Mapa de Roteirização de Entregas</h2>
-        <p style="color:var(--text-muted);">Selecione a sequência correta das entregas para desenhar a rota do veículo no mapa abaixo:</p>
-
-        <div class="card">
-          <div class="route-grid">
-            <div class="route-stop" onclick="toggleStop(this, 'CD Central', 80, 200)">
-              <strong style="color:var(--orange-primary);">CD</strong><br>
-              <span style="font-size:12px; color:var(--text-muted);">CD Central</span>
-            </div>
-            <div class="route-stop" onclick="toggleStop(this, 'Loja Piabetá', 240, 80)">
-              <strong style="color:var(--orange-primary);">P1</strong><br>
-              <span style="font-size:12px; color:var(--text-muted);">Loja Piabetá</span>
-            </div>
-            <div class="route-stop" onclick="toggleStop(this, 'Cliente Magé', 400, 160)">
-              <strong style="color:var(--orange-primary);">M2</strong><br>
-              <span style="font-size:12px; color:var(--text-muted);">Cliente Magé</span>
-            </div>
-            <div class="route-stop" onclick="toggleStop(this, 'Filial Caxias', 520, 90)">
-              <strong style="color:var(--orange-primary);">D3</strong><br>
-              <span style="font-size:12px; color:var(--text-muted);">Filial Caxias</span>
-            </div>
+      <!-- DASHBOARD -->
+      <section id="page-dashboard" class="page">
+        <h2 class="page-title">Visão Geral</h2>
+        <p class="page-description">Acompanhe o andamento das operações logísticas da simulação.</p>
+        <div class="grid">
+          <div class="card">
+            <div class="stat-label">Produtos WMS</div>
+            <div class="stat-number" id="dashProdCount">4</div>
+            <div class="stat-icon">▤</div>
           </div>
-
-          <!-- MAPA CANVAS ONDE A ROTA É DESENHADA -->
-          <canvas id="mapCanvas" width="600" height="280"></canvas>
-
-          <p id="routeDisplay" style="color:var(--orange-primary); font-weight:bold; text-align:center;">
-            Rota montada: (Nenhuma parada selecionada)
-          </p>
-          <div style="text-align:center;">
-            <button class="btn-primary" onclick="salvarRota()">Salvar e Otimizar Rota</button>
+          <div class="card">
+            <div class="stat-label">A.L. Concluídas</div>
+            <div class="stat-number" id="dashChalCount">0</div>
+            <div class="stat-icon">📝</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">QR Codes Lidos</div>
+            <div class="stat-number" id="dashQrCount">0</div>
+            <div class="stat-icon">📷</div>
+          </div>
+          <div class="card">
+            <div class="stat-label">Rotas Criadas</div>
+            <div class="stat-number" id="dashRouteCount">0</div>
+            <div class="stat-icon">🗺️</div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div id="page-quezia" class="page hidden"><div class="card"><h3>Painel Instrutora</h3></div></div>
+      <!-- A.L. 5 ETAPAS -->
+      <section id="page-challenge" class="page hidden">
+        <h2 class="page-title">A.L. 01 — Atividades Práticas Logísticas</h2>
+        <p class="page-description">Responda corretamente às 5 etapas operacionais avaliadas pelo sistema.</p>
+        
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong id="stepHeading">Etapa 1 de 5 — Recebimento</strong>
+            <span class="orange">Pontuação: <span id="liveScore">100</span>/100</span>
+          </div>
+          <div class="progress"><span id="progressBar" style="width: 20%;"></span></div>
+          
+          <div id="stepContent" style="margin-top:20px;"></div>
+          <div id="stepFeedback" class="feedback hidden"></div>
+
+          <div class="actions">
+            <button class="btn-secondary" id="backStepBtn" onclick="prevStep()" disabled>Etapa anterior</button>
+            <button class="btn-primary" id="nextStepBtn" onclick="validateStep()">Validar e Avançar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- LEITOR QR CODE & CÂMERA -->
+      <section id="page-qrscanner" class="page hidden">
+        <h2 class="page-title">Leitor de QR Code & Câmera</h2>
+        <p class="page-description">Use a câmera do dispositivo para escanear a etiqueta e cadastrar o item no estoque automaticamente.</p>
+        <div class="card">
+          <h3>Câmera de Leitura</h3>
+          <div class="actions">
+            <button class="btn-primary" onclick="startCamera()">📷 Ligar Câmera</button>
+            <button class="btn-secondary" onclick="simulateQREntry()">⚡ Simular Leitura Instantânea QR</button>
+          </div>
+          <div style="margin-top:15px; text-align:center;">
+            <video id="cameraFeed" autoplay playsinline class="hidden" style="width:100%; max-width:320px; border-radius:10px; border:2px solid var(--orange);"></video>
+          </div>
+          <div id="qrFeedback" class="feedback hidden" style="margin-top:15px;"></div>
+        </div>
+      </section>
+
+      <!-- WMS PRODUTOS -->
+      <section id="page-products" class="page hidden">
+        <h2 class="page-title">WMS — Cadastro de Produtos</h2>
+        <p class="page-description">Cadastre e gerencie qualquer produto no sistema.</p>
+
+        <div class="card">
+          <h3>Adicionar Novo Produto</h3>
+          <form id="wmsForm">
+            <div class="form-grid">
+              <label>SKU <input id="wmsSku" required placeholder="Ex: SKU-999"></label>
+              <label>Nome do Produto <input id="wmsName" required placeholder="Ex: Caixa Organizadora"></label>
+              <label>Quantidade <input id="wmsQty" type="number" min="1" required placeholder="50"></label>
+              <label>Peso Unitário (kg) <input id="wmsWeight" type="number" step="0.1" required placeholder="2.5"></label>
+            </div>
+            <button class="btn-primary" type="submit" style="margin-top:15px;">Cadastrar Produto</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Estoque Atual</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Peso Unit.</th><th>Endereço</th></tr></thead>
+              <tbody id="wmsTable">
+                <tr><td>SKU-101</td><td>Caixa de papelão</td><td>50</td><td>2 kg</td><td>A-01-01</td></tr>
+                <tr><td>SKU-102</td><td>Kit de ferramentas</td><td>20</td><td>5 kg</td><td>A-01-02</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAPA DE ROTEIRIZAÇÃO -->
+      <section id="page-routing" class="page hidden">
+        <h2 class="page-title">Mapa de Roteirização de Entregas</h2>
+        <p class="page-description">Selecione a sequência correta das entregas para otimizar a rota do veículo.</p>
+        
+        <div class="card map-box">
+          <h3>Selecione a Sequência de Paradas</h3>
+          <p class="muted">Clique nos locais na ordem lógica de distribuição:</p>
+          <div class="route-grid">
+            <div class="route-stop" onclick="toggleStop(this, 'CD Central')"><strong>CD</strong><br>CD Central</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Loja Piabetá')"><strong>P1</strong><br>Loja Piabetá</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Cliente Magé')"><strong>M2</strong><br>Cliente Magé</div>
+            <div class="route-stop" onclick="toggleStop(this, 'Filial Caxias')"><strong>D3</strong><br>Filial Caxias</div>
+          </div>
+          <p id="routeDisplay" class="orange" style="font-weight:bold; margin:15px 0;">Rota montada: (Nenhuma parada selecionada)</p>
+          <button class="btn-primary" onclick="saveRoute()">Salvar e Otimizar Rota</button>
+        </div>
+      </section>
+
+      <!-- PAINEL DA INSTRUTORA -->
+      <section id="page-instructor" class="page hidden">
+        <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
+        <p class="page-description">Visão gerencial de acompanhamento das turmas e notas da simulação.</p>
+        <div class="card">
+          <h3>Relatório de Turma (APR477)</h3>
+          <p class="muted">Status do sistema: Operacional e conectado ao banco local.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Aluno</th><th>A.L. Concluída</th><th>Nota</th><th>Status</th></tr></thead>
+              <tbody id="instructorTable">
+                <tr><td>Dulcylea Fonseca</td><td>Simulada (5 Etapas)</td><td>100</td><td><span style="color:var(--green)">Aprovada</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 </div>
 
 <script>
-function entrarDireto() {
-  const nome = document.getElementById('usernameInput').value || 'Dulcylea';
-  document.getElementById('userName').textContent = nome;
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  desenharMapa();
+function showPage(pageId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById('page-' + pageId).classList.remove('hidden');
+  if(btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
 }
 
-function sair() {
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('username').value.trim();
+  document.getElementById('userName').textContent = name || 'Aluno';
+  
+  if(name.toLowerCase() === 'quezia' || name.toLowerCase() === 'instrutora') {
+    document.getElementById('userRole').textContent = 'Instrutora (Quezia)';
+    document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
+  } else {
+    document.getElementById('userRole').textContent = 'Assistente de Logística';
+    document.querySelectorAll('.instructor-only').forEach(el => el.classList.add('hidden'));
+  }
+
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+});
+
+function logout() {
   document.getElementById('app').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-function mudarAba(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById('page-' + id).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  if(id === 'rota') setTimeout(desenharMapa, 50);
+/* A.L. 5 ETAPAS */
+let currentStep = 0;
+let score = 100;
+const stepsData = [
+  {
+    title: "1. Recebimento",
+    question: "A nota fiscal informa 50 caixas, mas na contagem física deram 48. O que fazer?",
+    options: [
+      {val: "accept", text: "Dar entrada em 50 caixas sem registrar nada."},
+      {val: "divergence", text: "Registrar a divergência de 2 caixas e notificar o responsável."},
+      {val: "reject", text: "Recusar e apagar a nota fiscal inteira."}
+    ],
+    correct: "divergence"
+  },
+  {
+    title: "2. Endereçamento e Armazenagem",
+    question: "Qual endereço padrão indicado para armazenar o SKU principal recebido?",
+    options: [
+      {val: "A-01-01", text: "Endereço A-01-01"},
+      {val: "B-99-99", text: "Endereço B-99-99 (Externo)"},
+      {val: "Z-00-00", text: "Área de descarte"}
+    ],
+    correct: "A-01-01"
+  },
+  {
+    title: "3. Separação de Pedidos (Picking)",
+    question: "O pedido exige separar 3 unidades de SKU-101 e 2 unidades de SKU-103. Qual é a quantidade total de itens a separar?",
+    options: [
+      {val: "3", text: "3 unidades"},
+      {val: "5", text: "5 unidades"},
+      {val: "10", text: "10 unidades"}
+    ],
+    correct: "5"
+  },
+  {
+    title: "4. Documentação de Expedição",
+    question: "Qual documento registra os produtos, volumes e dados para acompanhar o transporte da carga?",
+    options: [
+      {val: "pedido", text: "Pedido de compra"},
+      {val: "romaneio", text: "Romaneio de carga"},
+      {val: "inventario", text: "Inventário físico anual"}
+    ],
+    correct: "romaneio"
+  },
+  {
+    title: "5. Expedição, Capacidade e Rota",
+    question: "O veículo suporta 500 kg e a carga atual é 420 kg + 100 kg novos. O que fazer?",
+    options: [
+      {val: "respect", text: "Não exceder 500 kg; reorganizar a carga ou usar outro veículo."},
+      {val: "overload", text: "Carregar tudo com 520 kg, pois a rota é curta."},
+      {val: "ignore", text: "Ignorar o peso e despachar."}
+    ],
+    correct: "respect"
+  }
+];
+
+function renderStep() {
+  const s = stepsData[currentStep];
+  document.getElementById('stepHeading').textContent = `Etapa ${currentStep + 1} de 5 — ${s.title}`;
+  document.getElementById('progressBar').style.width = `${((currentStep + 1) / 5) * 100}%`;
+  
+  let html = `<p class="muted">${s.question}</p><div style="margin-top:10px;">`;
+  s.options.forEach((opt, idx) => {
+    html += `<label style="display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;">
+      <input type="radio" name="stepOpt" value="${opt.val}" style="width:auto; margin:0;"> ${opt.text}
+    </label>`;
+  });
+  html += `</div>`;
+  document.getElementById('stepContent').innerHTML = html;
+  document.getElementById('stepFeedback').classList.add('hidden');
 }
 
-let selectedStops = [];
+function validateStep() {
+  const selected = document.querySelector('input[name="stepOpt"]:checked');
+  const fb = document.getElementById('stepFeedback');
+  if(!selected) {
+    alert('Selecione uma opção para continuar.');
+    return;
+  }
 
-function toggleStop(el, name, x, y) {
-  const index = selectedStops.findIndex(s => s.name === name);
-  if(index > -1) {
-    selectedStops.splice(index, 1);
+  fb.classList.remove('hidden');
+  if(selected.value === stepsData[currentStep].correct) {
+    fb.className = 'feedback success';
+    fb.textContent = '✓ Resposta correta! Avançando para a próxima etapa...';
+    setTimeout(() => {
+      if(currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      } else {
+        document.getElementById('stepContent').innerHTML = `<h3>🎉 A.L. Concluída com Sucesso!</h3><p>Nota final: <strong>${score}/100</strong></p>`;
+        document.getElementById('nextStepBtn').classList.add('hidden');
+        document.getElementById('dashChalCount').textContent = '1';
+      }
+    }, 1200);
+  } else {
+    score = Math.max(0, score - 20);
+    document.getElementById('liveScore').textContent = score;
+    fb.className = 'feedback error';
+    fb.textContent = '✗ Resposta incorreta! Foram descontados 20 pontos. Tente novamente.';
+  }
+}
+
+renderStep();
+
+/* CÂMERA / QR CODE */
+let mediaStream = null;
+function startCamera() {
+  const video = document.getElementById('cameraFeed');
+  video.classList.remove('hidden');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      mediaStream = stream;
+      video.srcObject = stream;
+    })
+    .catch(() => alert('Câmera indisponível. Use a simulação rápida.'));
+}
+
+function simulateQREntry() {
+  if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+  document.getElementById('cameraFeed').classList.add('hidden');
+  
+  const fb = document.getElementById('qrFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback success';
+  fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
+  
+  const table = document.getElementById('wmsTable');
+  table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
+  document.getElementById('dashQrCount').textContent = '1';
+}
+
+/* WMS PRODUTOS */
+document.getElementById('wmsForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const sku = document.getElementById('wmsSku').value;
+  const name = document.getElementById('wmsName').value;
+  const qty = document.getElementById('wmsQty').value;
+  const weight = document.getElementById('wmsWeight').value;
+
+  document.getElementById('wmsTable').innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td><td>A-03-01</td></tr>`;
+  alert('Produto cadastrado com sucesso!');
+  this.reset();
+  document.getElementById('dashProdCount').textContent = '5';
+});
+
+/* ROTEIRIZAÇÃO */
+let selectedStops = [];
+function toggleStop(el, name) {
+  if(selectedStops.includes(name)) {
+    selectedStops = selectedStops.filter(s => s !== name);
     el.classList.remove('selected');
   } else {
-    selectedStops.push({name, x, y});
+    selectedStops.push(name);
     el.classList.add('selected');
   }
-  
-  const nomes = selectedStops.map(s => s.name);
-  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (nomes.length ? nomes.join(' ➔ ') : '(Nenhuma parada selecionada)');
-  desenharMapa();
+  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (selectedStops.length ? selectedStops.join(' ➔ ') : '(Nenhuma parada selecionada)');
 }
 
-function desenharMapa() {
-  const canvas = document.getElementById('mapCanvas');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Fundo com grelha viária
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
-  ctx.lineWidth = 1;
-  for(let i = 0; i < canvas.width; i += 30) {
-    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
-  }
-  for(let j = 0; j < canvas.height; j += 30) {
-    ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
-  }
-
-  // Desenhar linhas de rota conectando os pontos selecionados
-  if(selectedStops.length >= 2) {
-    ctx.beginPath();
-    ctx.moveTo(selectedStops[0].x, selectedStops[0].y);
-    for(let k = 1; k < selectedStops.length; k++) {
-      ctx.lineTo(selectedStops[k].x, selectedStops[k].y);
-    }
-    ctx.strokeStyle = "#f97316";
-    ctx.lineWidth = 4;
-    ctx.setLineDash([6, 6]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
-
-  // Desenhar pontos fixos das paradas no mapa
-  const allStops = [
-    {name: 'CD Central', x: 80, y: 200},
-    {name: 'Loja Piabetá', x: 240, y: 80},
-    {name: 'Cliente Magé', x: 400, y: 160},
-    {name: 'Filial Caxias', x: 520, y: 90}
-  ];
-
-  allStops.forEach(st => {
-    const isSelected = selectedStops.some(s => s.name === st.name);
-    ctx.beginPath();
-    ctx.arc(st.x, st.y, isSelected ? 10 : 6, 0, 2 * Math.PI);
-    ctx.fillStyle = isSelected ? "#f97316" : "#475569";
-    ctx.fill();
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.fillStyle = isSelected ? "#ffffff" : "#94a3b8";
-    ctx.font = "bold 12px sans-serif";
-    ctx.fillText(st.name, st.x - 25, st.y - 15);
-  });
-}
-
-function salvarRota() {
+function saveRoute() {
   if(selectedStops.length < 2) {
     alert('Selecione pelo menos 2 pontos para formar a rota.');
     return;
   }
-  alert('Rota otimizada e salva com sucesso!');
+  alert('Rota otimizada com sucesso! Distância total estimada calculada.');
+  document.getElementById('dashRouteCount').textContent = '1';
+  selectedStops = [];
+  document.querySelectorAll('.route-stop').forEach(el => el.classList.remove('selected'));
+  document.getElementById('routeDisplay').textContent = 'Rota montada: (Nenhuma parada selecionada)';
 }
 </script>
 
