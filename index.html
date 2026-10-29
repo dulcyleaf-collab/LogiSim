@@ -72,10 +72,6 @@ input, select {
   outline: none;
   transition: all 0.2s;
 }
-input:focus {
-  border-color: var(--orange-primary);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
-}
 
 .hidden { display: none !important; }
 
@@ -130,7 +126,6 @@ input:focus {
 }
 .team-badge strong { color: var(--orange-primary); }
 
-/* Dashboard Header */
 .topbar {
   padding: 16px 32px;
   background: rgba(13, 26, 46, 0.8);
@@ -179,13 +174,6 @@ input:focus {
 
 main { padding: 32px; max-width: 1300px; margin: 0 auto; width: 100%; }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
 .card {
   background: var(--panel-bg);
   backdrop-filter: blur(16px);
@@ -196,55 +184,27 @@ main { padding: 32px; max-width: 1300px; margin: 0 auto; width: 100%; }
   margin-bottom: 24px;
 }
 
-.stat-title {
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.stat-value {
-  font-size: 36px;
-  font-weight: 800;
-  margin-top: 8px;
-  background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.route-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 20px 0;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(16, 185, 129, 0.15);
-  color: var(--green-badge);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+.route-stop {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 18px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.route-stop.selected {
+  border-color: var(--orange-primary);
+  background: rgba(249, 115, 22, 0.12);
 }
 
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 14px;
-}
-th {
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--panel-border);
-}
-td {
-  padding: 16px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-tr:last-child td { border-bottom: none; }
-
-/* Canvas do Mapa */
 #mapCanvas {
   width: 100%;
   height: 280px;
@@ -256,7 +216,7 @@ tr:last-child td { border-bottom: none; }
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .route-grid { grid-template-columns: repeat(2, 1fr); }
   .sidebar { display: flex; overflow-x: auto; gap: 8px; }
   .nav-btn { width: auto; white-space: nowrap; }
 }
@@ -264,41 +224,36 @@ tr:last-child td { border-bottom: none; }
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
 <section id="loginScreen" class="login-screen">
   <div class="login-card">
     <div class="brand-header">
       <div class="brand-logo">LS</div>
       <div>
-        <h1 style="margin:0; font-size:26px; letter-spacing:-0.02em;">LogiSim</h1>
+        <h1 style="margin:0; font-size:26px;">LogiSim</h1>
         <span style="color:var(--text-muted); font-size:13px;">Plataforma Integrada de Operações Logísticas</span>
       </div>
     </div>
-
     <div class="team-badge">
       <strong>PROJETO INTEGRADOR | FIRJAN SENAI CAXIAS</strong><br>
       • Dulcylea Fonseca Ferreira<br>
       • Ana Beatriz Paixão | Gabriella Sampaio<br>
       • Pedro Lucas | Sofia de Faria
     </div>
-
     <div style="margin-bottom: 20px;">
-      <label style="color:var(--text-muted); font-size:13px; font-weight:600;">Acesso ao Operador</label>
+      <label style="color:var(--text-muted); font-size:13px;">Acesso ao Operador</label>
       <input id="usernameInput" placeholder="Informe seu nome" value="Dulcylea">
     </div>
-
     <button type="button" class="btn-primary" style="width:100%" onclick="entrarDireto()">Acessar Ambiente de Simulação &gt;</button>
   </div>
 </section>
 
-<!-- PLATAFORMA DENTRO -->
 <div id="app" class="hidden">
   <header class="topbar">
     <div style="display:flex; align-items:center; gap:12px;">
       <div class="brand-logo" style="width:38px; height:38px; font-size:18px; border-radius:10px;">LS</div>
       <div>
         <strong style="font-size:16px;">LogiSim Enterprise</strong>
-        <span style="display:block; font-size:11px; color:var(--text-muted);">Unidade Duque de Caxias</span>
+        <span style="display:block; font-size:11px; color:var(--text-muted);">Firjan SENAI Caxias</span>
       </div>
     </div>
     <div style="display:flex; align-items:center; gap:16px;">
@@ -321,101 +276,54 @@ tr:last-child td { border-bottom: none; }
     </aside>
 
     <main>
-      <!-- VISÃO GERAL -->
       <div id="page-dash" class="page">
-        <h2 style="margin:0 0 8px 0; font-size:28px;">Painel de Controle do Sistema</h2>
-        <p style="color:var(--text-muted); margin-bottom:28px;">Métricas gerais das simulações operacionais executadas.</p>
-        
-        <div class="stats-grid">
-          <div class="card"><span class="stat-title">Itens WMS</span><div class="stat-value" id="numProd">2</div></div>
-          <div class="card"><span class="stat-title">A.L. Concluídas</span><div class="stat-value" id="numAL">0</div></div>
-          <div class="card"><span class="stat-title">Leituras QR</span><div class="stat-value" id="numQR">0</div></div>
-          <div class="card"><span class="stat-title">Rotas Ativas</span><div class="stat-value" id="numRota">0</div></div>
-        </div>
+        <h2>Painel de Controle do Sistema</h2>
+        <p style="color:var(--text-muted);">Métricas gerais das simulações operacionais executadas.</p>
+        <div class="card"><strong>Sistema operacional e pronto para a demonstração.</strong></div>
       </div>
 
-      <!-- ATIVIDADE A.L. -->
-      <div id="page-al" class="page hidden">
-        <div class="card">
-          <span class="badge" style="margin-bottom:12px;">Simulação Avaliativa</span>
-          <h3 id="alTitulo" style="margin:10px 0; font-size:22px;">Etapa 1 de 5 — Recebimento</h3>
-          <p id="alPergunta" style="color:var(--text-muted); font-size:15px; margin-bottom:20px;">A nota fiscal informa 50 caixas, mas na contagem física deram 48. O que fazer?</p>
-          <div id="alOpcoes"></div>
-          <div id="alMsg" style="margin-top:15px; font-weight:bold;"></div>
-          <button type="button" class="btn-primary" style="margin-top:20px;" onclick="responderAL()">Confirmar Resposta &gt;</button>
-        </div>
-      </div>
+      <div id="page-al" class="page hidden"><div class="card"><h3>Atividade A.L. Ativa</h3></div></div>
+      <div id="page-qr" class="page hidden"><div class="card"><h3>Scanner QR Code Ativo</h3></div></div>
+      <div id="page-wms" class="page hidden"><div class="card"><h3>Módulo WMS Ativo</h3></div></div>
 
-      <!-- LEITOR QR -->
-      <div id="page-qr" class="page hidden">
-        <div class="card">
-          <h3 style="margin-top:0;">Leitor de QR Code / Código de Barras</h3>
-          <p style="color:var(--text-muted);">Simulação de captura remota de etiquetas de estoque para atualização instantânea do WMS.</p>
-          <button type="button" class="btn-primary" onclick="simularQR()">Executar Leitura de Etiqueta QR</button>
-          <div id="qrRes" style="margin-top:20px; color:var(--green-badge); font-weight:700;"></div>
-        </div>
-      </div>
+      <!-- MAPA & ROTEIRIZAÇÃO -->
+      <div id="page-rota" class="page">
+        <h2 style="margin-top:0;">Mapa de Roteirização de Entregas</h2>
+        <p style="color:var(--text-muted);">Selecione a sequência correta das entregas para desenhar a rota do veículo no mapa abaixo:</p>
 
-      <!-- WMS -->
-      <div id="page-wms" class="page hidden">
         <div class="card">
-          <h3 style="margin-top:0;">Novo Cadastro de Produto</h3>
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
-            <input id="pNome" placeholder="Descrição do Produto">
-            <input id="pQty" type="number" placeholder="Quantidade em Estoque">
-          </div>
-          <button type="button" class="btn-primary" onclick="addProd()">Cadastrar no Banco WMS</button>
-        </div>
-        
-        <div class="card">
-          <h3 style="margin-top:0;">Estoque Registrado</h3>
-          <table>
-            <thead><tr><th>Descrição</th><th>Quantidade</th><th>Status</th></tr></thead>
-            <tbody id="tabelaWms">
-              <tr><td>Chapa de MDF 15mm</td><td>90 un</td><td><span class="badge">Disponível</span></td></tr>
-              <tr><td>Caixa de Papelão Dupla</td><td>50 un</td><td><span class="badge">Disponível</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ROTEIRIZAÇÃO COM MAPA CANVAS INTERATIVO -->
-      <div id="page-rota" class="page hidden">
-        <div class="card">
-          <h3 style="margin-top:0;">Otimizador e Gerador de Rota</h3>
-          <p style="color:var(--text-muted); margin-bottom:15px;">Selecione os pontos abaixo para traçar a rota diretamente no mapa digital:</p>
-          
-          <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
-            <button type="button" class="btn-secondary" onclick="addPonto('CD Caxias', 80, 200)">+ CD Caxias</button>
-            <button type="button" class="btn-secondary" onclick="addPonto('Piabetá', 280, 80)">+ Piabetá</button>
-            <button type="button" class="btn-secondary" onclick="addPonto('Magé', 480, 150)">+ Magé</button>
-            <button type="button" class="btn-secondary" onclick="limparRota()" style="border-color:#ef4444; color:#ef4444;">Limpar Mapa</button>
+          <div class="route-grid">
+            <div class="route-stop" onclick="toggleStop(this, 'CD Central', 80, 200)">
+              <strong style="color:var(--orange-primary);">CD</strong><br>
+              <span style="font-size:12px; color:var(--text-muted);">CD Central</span>
+            </div>
+            <div class="route-stop" onclick="toggleStop(this, 'Loja Piabetá', 240, 80)">
+              <strong style="color:var(--orange-primary);">P1</strong><br>
+              <span style="font-size:12px; color:var(--text-muted);">Loja Piabetá</span>
+            </div>
+            <div class="route-stop" onclick="toggleStop(this, 'Cliente Magé', 400, 160)">
+              <strong style="color:var(--orange-primary);">M2</strong><br>
+              <span style="font-size:12px; color:var(--text-muted);">Cliente Magé</span>
+            </div>
+            <div class="route-stop" onclick="toggleStop(this, 'Filial Caxias', 520, 90)">
+              <strong style="color:var(--orange-primary);">D3</strong><br>
+              <span style="font-size:12px; color:var(--text-muted);">Filial Caxias</span>
+            </div>
           </div>
 
-          <!-- MAPA GRAFICAMENTE GERADO -->
+          <!-- MAPA CANVAS ONDE A ROTA É DESENHADA -->
           <canvas id="mapCanvas" width="600" height="280"></canvas>
 
-          <div id="rotaTexto" style="color:var(--orange-primary); font-size:15px; font-weight:700; margin-bottom:8px;">Seqüência: Nenhuma</div>
-          <div id="rotaInfo" style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Distância Total Estimada: 0 km | Tempo Estimado: 0 min</div>
-          
-          <button type="button" class="btn-primary" onclick="salvarRota()">Gravar e Otimizar Rota</button>
+          <p id="routeDisplay" style="color:var(--orange-primary); font-weight:bold; text-align:center;">
+            Rota montada: (Nenhuma parada selecionada)
+          </p>
+          <div style="text-align:center;">
+            <button class="btn-primary" onclick="salvarRota()">Salvar e Otimizar Rota</button>
+          </div>
         </div>
       </div>
 
-      <!-- INSTRUTORA QUEZIA -->
-      <div id="page-quezia" class="page hidden">
-        <div class="card">
-          <h3 style="margin-top:0;">Painel de Avaliação — Instrutora Quezia</h3>
-          <p style="color:var(--text-muted); margin-bottom:20px;">Acompanhamento de desempenho da Turma APR477 (Duque de Caxias)</p>
-          <table>
-            <thead><tr><th>Aluno(a)</th><th>Avaliação Logística</th><th>Desempenho</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Dulcylea Fonseca Ferreira</strong></td><td>Módulo A.L. Concluído</td><td><span class="badge">Nota 100</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
+      <div id="page-quezia" class="page hidden"><div class="card"><h3>Painel Instrutora</h3></div></div>
     </main>
   </div>
 </div>
@@ -426,6 +334,7 @@ function entrarDireto() {
   document.getElementById('userName').textContent = nome;
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
+  desenharMapa();
 }
 
 function sair() {
@@ -438,83 +347,23 @@ function mudarAba(id, btn) {
   document.getElementById('page-' + id).classList.remove('hidden');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  if(id === 'rota') desenharMapa();
+  if(id === 'rota') setTimeout(desenharMapa, 50);
 }
 
-/* LÓGICA A.L. */
-let etapaAL = 0;
-const perguntas = [
-  {t: "Etapa 1 de 5 — Recebimento", p: "A nota fiscal informa 50 caixas, mas na contagem física deram 48. O que fazer?", o: ["Registrar divergência de 2 caixas e notificar o setor responsável", "Aceitar 50 caixas no sistema para agilizar o processo"], c: 0},
-  {t: "Etapa 2 de 5 — Endereçamento", p: "Qual o endereço correto no WMS para otimizar o fluxo de picking?", o: ["Rua A - Estante 01 - Nível 02", "Qualquer espaço vago no pátio externo"], c: 0},
-  {t: "Etapa 3 de 5 — Picking", p: "Separar 3 caixas de MDF e 2 de fita adesiva. Qual a quantidade total?", o: ["5 volumes no total", "10 volumes no total"], c: 0},
-  {t: "Etapa 4 de 5 — Documentação", p: "Qual documento obrigatório acompanha o transporte da carga?", o: ["Romaneio de Carga e Nota Fiscal", "Comprovante simples de pedido"], c: 0},
-  {t: "Etapa 5 de 5 — Expedição", p: "A capacidade do veículo é de 500kg e a carga possui 520kg. Procedimento?", o: ["Redistribuir a carga sem ultrapassar o limite operacional", "Liberar o veículo com excesso para cumprir o horário"], c: 0}
-];
+let selectedStops = [];
 
-function carregarAL() {
-  const q = perguntas[etapaAL];
-  document.getElementById('alTitulo').textContent = q.t;
-  document.getElementById('alPergunta').textContent = q.p;
-  let html = '';
-  q.o.forEach((opt, i) => {
-    html += `<label style="display:flex; align-items:center; gap:12px; margin:12px 0; cursor:pointer; background:rgba(255,255,255,0.03); padding:14px; border-radius:12px; border:1px solid var(--panel-border);"><input type="radio" name="optAL" value="${i}" style="width:auto; margin:0;"> <span>${opt}</span></label>`;
-  });
-  document.getElementById('alOpcoes').innerHTML = html;
-  document.getElementById('alMsg').textContent = '';
-}
-
-function responderAL() {
-  const sel = document.querySelector('input[name="optAL"]:checked');
-  if(!sel) return alert('Selecione uma opção!');
-  
-  if(parseInt(sel.value) === perguntas[etapaAL].c) {
-    document.getElementById('alMsg').style.color = 'var(--green-badge)';
-    document.getElementById('alMsg').textContent = 'Resposta Correta! Registrada com sucesso.';
-    setTimeout(() => {
-      etapaAL++;
-      if(etapaAL < perguntas.length) {
-        carregarAL();
-      } else {
-        document.getElementById('page-al').innerHTML = '<div class="card"><h2 style="color:var(--green-badge); margin-top:0;">Simulação A.L. Concluída com Sucesso!</h2><p>Pontuação Final Alcançada: <strong>100/100</strong></p></div>';
-        document.getElementById('numAL').textContent = '1';
-      }
-    }, 1000);
+function toggleStop(el, name, x, y) {
+  const index = selectedStops.findIndex(s => s.name === name);
+  if(index > -1) {
+    selectedStops.splice(index, 1);
+    el.classList.remove('selected');
   } else {
-    document.getElementById('alMsg').style.color = '#ef4444';
-    document.getElementById('alMsg').textContent = 'Resposta Incorreta. Revise o procedimento operacional e tente novamente.';
+    selectedStops.push({name, x, y});
+    el.classList.add('selected');
   }
-}
-
-carregarAL();
-
-function simularQR() {
-  document.getElementById('qrRes').textContent = 'QR Code Lido: Chapa Especial MDF (Lote #77) integrado ao WMS!';
-  document.getElementById('tabelaWms').innerHTML += '<tr><td>Chapa Especial MDF (Etiqueta QR)</td><td>30 un</td><td><span class="badge">Registrado</span></td></tr>';
-  document.getElementById('numQR').textContent = '1';
-}
-
-function addProd() {
-  const n = document.getElementById('pNome').value;
-  const q = document.getElementById('pQty').value;
-  if(n && q) {
-    document.getElementById('tabelaWms').innerHTML += `<tr><td>${n}</td><td>${q} un</td><td><span class="badge">Disponível</span></td></tr>`;
-    document.getElementById('numProd').textContent = '3';
-    alert('Produto inserido no banco WMS!');
-  }
-}
-
-/* SISTEMA DO MAPA E ROTEIRIZAÇÃO */
-let rotaPontos = [];
-
-function addPonto(nome, x, y) {
-  if(!rotaPontos.some(p => p.nome === nome)) {
-    rotaPontos.push({nome, x, y});
-    desenharMapa();
-  }
-}
-
-function limparRota() {
-  rotaPontos = [];
+  
+  const nomes = selectedStops.map(s => s.name);
+  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (nomes.length ? nomes.join(' ➔ ') : '(Nenhuma parada selecionada)');
   desenharMapa();
 }
 
@@ -523,11 +372,11 @@ function desenharMapa() {
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
   
-  // Limpar Canvas e desenhar fundo da malha viária
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Fundo com grelha viária
   ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
   ctx.lineWidth = 1;
-  
   for(let i = 0; i < canvas.width; i += 30) {
     ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
   }
@@ -535,12 +384,12 @@ function desenharMapa() {
     ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
   }
 
-  // Desenhar Linhas da Rota se houver 2 ou mais pontos
-  if(rotaPontos.length >= 2) {
+  // Desenhar linhas de rota conectando os pontos selecionados
+  if(selectedStops.length >= 2) {
     ctx.beginPath();
-    ctx.moveTo(rotaPontos[0].x, rotaPontos[0].y);
-    for(let k = 1; k < rotaPontos.length; k++) {
-      ctx.lineTo(rotaPontos[k].x, rotaPontos[k].y);
+    ctx.moveTo(selectedStops[0].x, selectedStops[0].y);
+    for(let k = 1; k < selectedStops.length; k++) {
+      ctx.lineTo(selectedStops[k].x, selectedStops[k].y);
     }
     ctx.strokeStyle = "#f97316";
     ctx.lineWidth = 4;
@@ -549,45 +398,36 @@ function desenharMapa() {
     ctx.setLineDash([]);
   }
 
-  // Desenhar Pontos/Paradas no Mapa
-  const pontosDisponiveis = [
-    {nome: 'CD Caxias', x: 80, y: 200},
-    {nome: 'Piabetá', x: 280, y: 80},
-    {nome: 'Magé', x: 480, y: 150}
+  // Desenhar pontos fixos das paradas no mapa
+  const allStops = [
+    {name: 'CD Central', x: 80, y: 200},
+    {name: 'Loja Piabetá', x: 240, y: 80},
+    {name: 'Cliente Magé', x: 400, y: 160},
+    {name: 'Filial Caxias', x: 520, y: 90}
   ];
 
-  pontosDisponiveis.forEach(p => {
-    const selecionado = rotaPontos.some(rp => rp.nome === p.nome);
+  allStops.forEach(st => {
+    const isSelected = selectedStops.some(s => s.name === st.name);
     ctx.beginPath();
-    ctx.arc(p.x, p.y, selecionado ? 10 : 7, 0, 2 * Math.PI);
-    ctx.fillStyle = selecionado ? "#f97316" : "#475569";
+    ctx.arc(st.x, st.y, isSelected ? 10 : 6, 0, 2 * Math.PI);
+    ctx.fillStyle = isSelected ? "#f97316" : "#475569";
     ctx.fill();
     ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.fillStyle = selecionado ? "#ffffff" : "#94a3b8";
+    ctx.fillStyle = isSelected ? "#ffffff" : "#94a3b8";
     ctx.font = "bold 12px sans-serif";
-    ctx.fillText(p.nome, p.x - 20, p.y - 15);
+    ctx.fillText(st.name, st.x - 25, st.y - 15);
   });
-
-  // Atualizar textos e dados
-  const nomes = rotaPontos.map(p => p.nome);
-  document.getElementById('rotaTexto').textContent = 'Seqüência: ' + (nomes.length ? nomes.join(' > ') : 'Nenhuma');
-  
-  let dist = nomes.length === 2 ? 24 : (nomes.length === 3 ? 42 : 0);
-  let tempo = nomes.length === 2 ? 35 : (nomes.length === 3 ? 58 : 0);
-  
-  document.getElementById('rotaInfo').textContent = `Distância Total Estimada: ${dist} km | Tempo Estimado: ${tempo} min`;
 }
 
 function salvarRota() {
-  if(rotaPontos.length < 2) {
-    alert('Selecione pelo menos 2 pontos para gerar e otimizar a rota no mapa.');
+  if(selectedStops.length < 2) {
+    alert('Selecione pelo menos 2 pontos para formar a rota.');
     return;
   }
-  alert('Rota otimizada e despachada com sucesso para o sistema de transporte!');
-  document.getElementById('numRota').textContent = '1';
+  alert('Rota otimizada e salva com sucesso!');
 }
 </script>
 
