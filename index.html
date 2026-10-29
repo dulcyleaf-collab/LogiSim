@@ -529,31 +529,175 @@ document.getElementById('wmsForm').addEventListener('submit', function(e) {
   document.getElementById('dashProdCount').textContent = '5';
 });
 
-/* ROTEIRIZAÇÃO */
+
+/* ROTEIRIZAÇÃO COM MAPA */
 let selectedStops = [];
+
 function toggleStop(el, name) {
-  if(selectedStops.includes(name)) {
+  if (selectedStops.includes(name)) {
     selectedStops = selectedStops.filter(s => s !== name);
-    el.classList.remove('selected');
+    el.classList.remove("selected");
   } else {
     selectedStops.push(name);
-    el.classList.add('selected');
+    el.classList.add("selected");
   }
-  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (selectedStops.length ? selectedStops.join(' ➔ ') : '(Nenhuma parada selecionada)');
+
+  const display = document.getElementById("routeDisplay");
+
+  if (display) {
+    display.textContent = "Rota montada: " +
+      (selectedStops.length
+        ? selectedStops.join(" ➔ ")
+        : "(Nenhuma parada selecionada)");
+  }
 }
 
 function saveRoute() {
-  if(selectedStops.length < 2) {
-    alert('Selecione pelo menos 2 pontos para formar a rota.');
+  if (selectedStops.length < 2) {
+    alert("Selecione pelo menos 2 pontos para formar a rota.");
     return;
   }
-  alert('Rota otimizada com sucesso! Distância total estimada calculada.');
-  document.getElementById('dashRouteCount').textContent = '1';
-  selectedStops = [];
-  document.querySelectorAll('.route-stop').forEach(el => el.classList.remove('selected'));
-  document.getElementById('routeDisplay').textContent = 'Rota montada: (Nenhuma parada selecionada)';
-}
-</script>
 
-</body>
-</html>
+  // Guarda a sequência escolhida pelo aluno.
+  const rota = [...selectedStops];
+
+  // Atualiza o contador do painel, se ele existir.
+  const contador = document.getElementById("dashRouteCount");
+  if (contador) contador.textContent = "1";
+
+  // Cria ou encontra a área onde o mapa será exibido.
+  let area = document.getElementById("routeMapArea");
+
+  if (!area) {
+    area = document.createElement("div");
+    area.id = "routeMapArea";
+    area.className = "card";
+
+    const display = document.getElementById("routeDisplay");
+
+    if (display && display.parentElement) {
+      display.parentElement.appendChild(area);
+    } else {
+      document.body.appendChild(area);
+    }
+  }
+
+  area.innerHTML = `
+    <h3>Mapa da rota logística</h3>
+    <p>Sequência de pontos selecionada pelo aluno:</p>
+    <div id="routeMap" style="
+      width:100%;
+      min-height:300px;
+      background:#eaf2e5;
+      border-radius:10px;
+      overflow:hidden;">
+    </div>
+    <div id="routeMapLegend" style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;">
+    </div>
+    <p class="small">
+      Mapa esquemático para fins educacionais.
+      Os pontos não representam endereços reais.
+    </p>
+  `;
+
+  desenharMapaSelecionado(rota);
+
+  // Mantém os pontos selecionados e a rota visíveis no mapa.
+  const display = document.getElementById("routeDisplay");
+  if (display) {
+    display.textContent = "Rota salva: " + rota.join(" ➔ ");
+  }
+
+  document.querySelectorAll(".route-stop").forEach(el => {
+    el.classList.remove("selected");
+  });
+
+  selectedStops = [];
+}
+
+function desenharMapaSelecionado(pontos) {
+  const area = document.getElementById("routeMap");
+  const legenda = document.getElementById("routeMapLegend");
+
+  if (!area || !legenda) return;
+
+  const largura = 700;
+  const altura = 300;
+  const margem = 65;
+
+  const coordenadas = pontos.map((nome, i) => ({
+    nome,
+    x: pontos.length === 1
+      ? largura / 2
+      : margem + i * (largura - margem * 2) / (pontos.length - 1),
+    y: i % 2 === 0 ? 95 : 185
+  }));
+
+  const linhas = coordenadas
+    .map(p => `${p.x},${p.y}`)
+    .join(" ");
+
+  const marcadores = coordenadas.map((p, i) => `
+    <circle cx="${p.x}" cy="${p.y}" r="18"
+      fill="#f97316" stroke="#ffffff" stroke-width="4"/>
+    <text x="${p.x}" y="${p.y + 6}"
+      text-anchor="middle" font-size="16"
+      font-weight="bold" fill="#ffffff">${i + 1}</text>
+    <text x="${p.x}" y="${p.y + 39}"
+      text-anchor="middle" font-size="13"
+      font-weight="bold" fill="#102b4e">
+      ${escaparMapa(p.nome)}
+    </text>
+  `).join("");
+
+  area.innerHTML = `
+    <svg viewBox="0 0 ${largura} ${altura}"
+      style="width:100%;height:auto;display:block"
+      role="img" aria-label="Mapa esquemático da rota">
+      <rect width="${largura}" height="${altura}" fill="#eaf2e5"/>
+
+      <path d="M0 40 L700 250 M0 250 L700 40"
+        stroke="#ffffff" stroke-width="22" fill="none"/>
+
+      <path d="M0 40 L700 250 M0 250 L700 40"
+        stroke="#cbd5c0" stroke-width="2"
+        stroke-dasharray="9 8" fill="none"/>
+
+      <polyline points="${linhas}"
+        fill="none" stroke="#f97316"
+        stroke-width="6" stroke-linejoin="round"
+        stroke-linecap="round"/>
+
+      ${marcadores}
+
+      <text x="350" y="280" text-anchor="middle"
+        font-size="12" fill="#475569">
+        ROTA SIMULADA — PONTOS NA ORDEM SELECIONADA
+      </text>
+    </svg>
+  `;
+
+  legenda.innerHTML = coordenadas.map((p, i) => `
+    <span style="
+      background:#eff6ff;
+      padding:8px;
+      border-radius:7px;">
+      <strong>${i + 1}.</strong> ${escaparMapa(p.nome)}
+    </span>
+  `).join("");
+}
+
+function escaparMapa(texto) {
+  return String(texto).replace(/[&<>"']/g, c => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[c]));
+}
+
