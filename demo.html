@@ -207,7 +207,7 @@ function render(){
     Status: <strong>${escapar(p.status)}</strong>
     ${p.status==="Carregado"?`<label>Rota</label><select id="rota${p.id}"><option>CD → Cliente</option><option>CD → Ponto de distribuição → Cliente</option><option>CD → Cliente → Retorno ao CD</option></select>
     <button onclick="iniciarRota(${p.id})">Iniciar rota</button>`:""}
-    ${p.status==="Em rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
+    ${p.status==="Em rota gerar o mapa da rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
     ${p.status==="Entregue"?"<p class='notice'>Entrega concluída!</p>":""}
     </div>`).join("")}</div>`;
   }
