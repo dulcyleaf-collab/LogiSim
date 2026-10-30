@@ -17,9 +17,7 @@
   --green: #28c76f;
   --red: #ff6262;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -27,9 +25,7 @@ body {
   color: var(--text);
   min-height: 100vh;
 }
-
 button, input, select, textarea { font: inherit; }
-
 button {
   cursor: pointer;
   border: none;
@@ -38,14 +34,11 @@ button {
   font-weight: bold;
   transition: .2s;
 }
-
 button:disabled { opacity: .45; cursor: not-allowed; }
-
 .btn-primary { background: var(--orange); color: #111827; }
 .btn-primary:hover { background: var(--orange-hover); }
 .btn-secondary { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
 .btn-danger { background: #562b35; color: #ffd8dc; }
-
 input, select, textarea {
   width: 100%;
   padding: 12px;
@@ -56,18 +49,13 @@ input, select, textarea {
   border-radius: 8px;
   outline: none;
 }
-
 input:focus, select:focus, textarea:focus { border-color: var(--orange); }
-
 label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
-
 h1, h2, h3 { margin-top: 0; }
 p { line-height: 1.5; }
-
 .muted { color: var(--muted); }
 .orange { color: var(--orange); }
 .hidden { display: none !important; }
-
 .login-screen {
   min-height: 100vh;
   display: flex;
@@ -76,7 +64,6 @@ p { line-height: 1.5; }
   padding: 20px;
   background: radial-gradient(circle at top right, #183553 0, transparent 40%), var(--bg);
 }
-
 .login-card {
   width: 100%;
   max-width: 440px;
@@ -86,61 +73,55 @@ p { line-height: 1.5; }
   padding: 30px;
   box-shadow: 0 20px 60px #0005;
 }
-
 .brand { display: flex; align-items: center; gap: 13px; margin-bottom: 25px; }
 .brand-icon {
   width: 52px; height: 52px; display: grid; place-items: center;
-  background: var(--orange); color: #102033; font-size: 25px; font-weight: 900; border-radius: 13px;
+  background: var(--orange); color: #102033; font-size: 25px;
+  font-weight: 900; border-radius: 13px;
 }
 .brand h1 { font-size: 25px; margin: 0 0 4px; }
 .brand small { color: var(--muted); }
-
 .app { min-height: 100vh; }
 .topbar {
-  min-height: 75px; display: flex; align-items: center; justify-content: space-between;
-  gap: 15px; padding: 15px 25px; background: var(--panel); border-bottom: 1px solid var(--border);
+  min-height: 75px; display: flex; align-items: center;
+  justify-content: space-between; gap: 15px; padding: 15px 25px;
+  background: var(--panel); border-bottom: 1px solid var(--border);
 }
 .topbar .brand { margin: 0; }
 .topbar .brand-icon { width: 42px; height: 42px; }
-
 .user-info { display: flex; align-items: center; gap: 12px; }
 .user-info small { display: block; color: var(--muted); margin-top: 4px; }
-
-.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: calc(100vh - 75px); }
+.layout {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr);
+  min-height: calc(100vh - 75px);
+}
 .sidebar { padding: 20px 13px; background: #0a1a2e; border-right: 1px solid var(--border); }
 .nav-btn {
   display: block; width: 100%; text-align: left; background: transparent;
   color: var(--muted); margin-bottom: 7px; border-radius: 8px; padding: 12px;
 }
 .nav-btn:hover, .nav-btn.active { background: var(--panel2); color: var(--orange); }
-
 main { padding: 25px; min-width: 0; max-width: 1400px; width: 100%; margin: 0 auto; }
 .page-title { margin-bottom: 5px; font-size: 26px; }
 .page-description { margin-top: 0; margin-bottom: 20px; color: var(--muted); }
-
 .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; margin-bottom: 20px; }
 .card { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 20px; margin-bottom: 18px; }
 .stat-label { color: var(--muted); font-size: 13px; }
 .stat-number { font-size: 28px; font-weight: bold; margin-top: 10px; }
 .stat-icon { color: var(--orange); font-size: 22px; }
-
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 15px; }
 .full-width { grid-column: 1 / -1; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-
 .table-wrap { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 550px; }
 th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
 th { color: var(--orange); font-weight: bold; }
 td { color: var(--text); }
-
 .progress { height: 8px; background: #09192d; border-radius: 99px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border); }
 .progress span { height: 100%; display: block; background: var(--orange); width: 0%; transition: width .3s; }
 .feedback { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; }
 .feedback.success { background: #10271b; border: 1px solid #166534; color: #bbf7d0; }
 .feedback.error { background: #2a1518; border: 1px solid #991b1b; color: #fecaca; }
-
-/* Mapa de Roteirização */
 .map-box {
   background: #050e18; border: 2px solid var(--border); border-radius: 14px;
   padding: 20px; text-align: center; position: relative;
@@ -149,15 +130,22 @@ td { color: var(--text); }
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0;
 }
 .route-stop {
-  background: var(--panel2); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer;
+  background: var(--panel2); border: 2px solid var(--border);
+  border-radius: 10px; padding: 15px; cursor: pointer;
 }
 .route-stop.selected { border-color: var(--orange); background: #1d3550; }
-
 @media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .layout { grid-template-columns: 1fr; }
   .sidebar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; border: none; border-bottom: 1px solid var(--border); }
   .nav-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
+}
+@media (max-width: 520px) {
+  main { padding: 15px; }
+  .topbar { padding: 12px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .route-grid { grid-template-columns: repeat(2, 1fr); }
+  .login-card { padding: 22px; }
 }
 </style>
 </head>
@@ -173,8 +161,12 @@ td { color: var(--text); }
       </div>
     </div>
     <form id="loginForm">
-      <label>Nome do Usuário <input id="username" placeholder="Digite seu nome (ex: Dulcylea)" required></label>
-      <label>Senha <input id="password" type="password" placeholder="Digite sua senha" required></label>
+      <label>Nome do Usuário
+        <input id="username" placeholder="Digite seu nome (ex: Dulcylea)" required>
+      </label>
+      <label>Senha
+        <input id="password" type="password" placeholder="Digite sua senha" required>
+      </label>
       <button type="submit" class="btn-primary">Entrar na Plataforma</button>
     </form>
     <div class="muted" style="font-size:12px; margin-top:15px;">
@@ -205,15 +197,14 @@ td { color: var(--text); }
   <div class="layout">
     <aside class="sidebar">
       <button class="nav-btn active" onclick="showPage('dashboard', this)">▦ Visão geral</button>
-      <button class="nav-btn" onclick="showPage('challenge', this)"> A.L. (5 Etapas)</button>
-      <button class="nav-btn" onclick="showPage('qrscanner', this)"> Leitor QR / Câmera</button>
+      <button class="nav-btn" onclick="showPage('challenge', this)">A.L. (5 Etapas)</button>
+      <button class="nav-btn" onclick="showPage('qrscanner', this)">Leitor QR / Câmera</button>
       <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
-      <button class="nav-btn" onclick="showPage('routing', this)"> Mapa & Roteirização</button>
+      <button class="nav-btn" onclick="showPage('routing', this)">Mapa & Roteirização</button>
       <button class="nav-btn instructor-only hidden" onclick="showPage('instructor', this)" style="color:#ffb47f;">📋 Painel da Instrutora</button>
     </aside>
 
     <main>
-      <!-- DASHBOARD -->
       <section id="page-dashboard" class="page">
         <h2 class="page-title">Visão Geral</h2>
         <p class="page-description">Acompanhe o andamento das operações logísticas da simulação.</p>
@@ -241,21 +232,17 @@ td { color: var(--text); }
         </div>
       </section>
 
-      <!-- A.L. 5 ETAPAS -->
       <section id="page-challenge" class="page hidden">
         <h2 class="page-title">A.L. 01 — Atividades Práticas Logísticas</h2>
         <p class="page-description">Responda corretamente às 5 etapas operacionais avaliadas pelo sistema.</p>
-        
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <strong id="stepHeading">Etapa 1 de 5 — Recebimento</strong>
             <span class="orange">Pontuação: <span id="liveScore">100</span>/100</span>
           </div>
           <div class="progress"><span id="progressBar" style="width: 20%;"></span></div>
-          
           <div id="stepContent" style="margin-top:20px;"></div>
           <div id="stepFeedback" class="feedback hidden"></div>
-
           <div class="actions">
             <button class="btn-secondary" id="backStepBtn" onclick="prevStep()" disabled>Etapa anterior</button>
             <button class="btn-primary" id="nextStepBtn" onclick="validateStep()">Validar e Avançar</button>
@@ -263,7 +250,6 @@ td { color: var(--text); }
         </div>
       </section>
 
-      <!-- LEITOR QR CODE & CÂMERA -->
       <section id="page-qrscanner" class="page hidden">
         <h2 class="page-title">Leitor de QR Code & Câmera</h2>
         <p class="page-description">Use a câmera do dispositivo para escanear a etiqueta e cadastrar o item no estoque automaticamente.</p>
@@ -280,11 +266,9 @@ td { color: var(--text); }
         </div>
       </section>
 
-      <!-- WMS PRODUTOS -->
       <section id="page-products" class="page hidden">
         <h2 class="page-title">WMS — Cadastro de Produtos</h2>
         <p class="page-description">Cadastre e gerencie qualquer produto no sistema.</p>
-
         <div class="card">
           <h3>Adicionar Novo Produto</h3>
           <form id="wmsForm">
@@ -297,7 +281,6 @@ td { color: var(--text); }
             <button class="btn-primary" type="submit" style="margin-top:15px;">Cadastrar Produto</button>
           </form>
         </div>
-
         <div class="card">
           <h3>Estoque Atual</h3>
           <div class="table-wrap">
@@ -312,11 +295,9 @@ td { color: var(--text); }
         </div>
       </section>
 
-      <!-- MAPA DE ROTEIRIZAÇÃO -->
       <section id="page-routing" class="page hidden">
         <h2 class="page-title">Mapa de Roteirização de Entregas</h2>
-        <p class="page-description">Selecione a sequência correta das entregas para otimizar a rota do veículo.</p>
-        
+        <p class="page-description">Selecione o depósito e os clientes para montar o mapa esquemático e visualizar a sequência de entregas.</p>
         <div class="card map-box">
           <h3>Selecione a Sequência de Paradas</h3>
           <p class="muted">Clique nos locais na ordem lógica de distribuição:</p>
@@ -331,13 +312,15 @@ td { color: var(--text); }
         </div>
       </section>
 
-      <!-- PAINEL DA INSTRUTORA -->
       <section id="page-instructor" class="page hidden">
         <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
         <p class="page-description">Visão gerencial de acompanhamento das turmas e notas da simulação.</p>
         <div class="card">
           <h3>Relatório de Turma (APR477)</h3>
-          <p class="muted">Status do sistema: Operacional e conectado ao banco local.</p>
+          <p class="muted">Registros salvos neste dispositivo. A instrutora pode exportar os dados em CSV e abrir no Excel ou Google Planilhas.</p>
+          <button class="btn-primary" onclick="exportarRegistrosCSV()">Baixar planilha de atividades (CSV)</button>
+          <button class="btn-secondary" onclick="atualizarPainelRegistros()" style="margin-left:8px">Atualizar registros</button>
+          <p id="registroResumo" class="muted" style="margin-top:10px"></p>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Aluno</th><th>A.L. Concluída</th><th>Nota</th><th>Status</th></tr></thead>
@@ -353,6 +336,62 @@ td { color: var(--text); }
 </div>
 
 <script>
+let activeStudentName = '';
+const CHAVE_REGISTROS = 'logisim_registros_apr477';
+
+function obterRegistros() {
+  try {
+    return JSON.parse(localStorage.getItem(CHAVE_REGISTROS) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function registrarNoLogiSim(evento, detalhes, extras = {}) {
+  if (!activeStudentName) return;
+  const registros = obterRegistros();
+  registros.push({
+    dataHora: new Date().toLocaleString('pt-BR'),
+    aluno: activeStudentName,
+    evento: evento,
+    detalhes: detalhes || '',
+    pontuacao: extras.score ?? extras.pontuacao ?? '',
+    dados: JSON.stringify(extras)
+  });
+  localStorage.setItem(CHAVE_REGISTROS, JSON.stringify(registros));
+  atualizarPainelRegistros();
+}
+
+function atualizarPainelRegistros() {
+  const registros = obterRegistros();
+  const resumo = document.getElementById('registroResumo');
+  if (resumo) resumo.textContent = registros.length + ' registro(s) salvo(s) neste dispositivo.';
+}
+
+function exportarRegistrosCSV() {
+  const registros = obterRegistros();
+  if (!registros.length) {
+    alert('Ainda não há registros neste dispositivo. Realize alguma atividade primeiro.');
+    return;
+  }
+  const colunas = ['Data/Hora','Aluno','Evento','Detalhes','Pontuação','Dados completos'];
+  const linhas = [colunas, ...registros.map(r => [
+    r.dataHora, r.aluno, r.evento, r.detalhes, r.pontuacao, r.dados
+  ])];
+  const csv = '\uFEFF' + linhas.map(l => l.map(v =>
+    '"' + String(v ?? '').replace(/"/g,'""') + '"'
+  ).join(';')).join('\r\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'LogiSim_registros_APR477.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 function showPage(pageId, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + pageId).classList.remove('hidden');
@@ -365,8 +404,10 @@ function showPage(pageId, btn) {
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const name = document.getElementById('username').value.trim();
+  activeStudentName = name || 'Aluno';
+  registrarNoLogiSim('Login', 'Acesso à plataforma');
   document.getElementById('userName').textContent = name || 'Aluno';
-  
+
   if(name.toLowerCase() === 'quezia' || name.toLowerCase() === 'instrutora') {
     document.getElementById('userRole').textContent = 'Instrutora (Quezia)';
     document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
@@ -377,6 +418,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
+  atualizarPainelRegistros();
 });
 
 function logout() {
@@ -384,9 +426,10 @@ function logout() {
   document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-/* A.L. 5 ETAPAS */
+/* A.L. — 5 ETAPAS */
 let currentStep = 0;
 let score = 100;
+
 const stepsData = [
   {
     title: "1. Recebimento",
@@ -432,276 +475,4 @@ const stepsData = [
     title: "5. Expedição, Capacidade e Rota",
     question: "O veículo suporta 500 kg e a carga atual é 420 kg + 100 kg novos. O que fazer?",
     options: [
-      {val: "respect", text: "Não exceder 500 kg; reorganizar a carga ou usar outro veículo."},
-      {val: "overload", text: "Carregar tudo com 520 kg, pois a rota é curta."},
-      {val: "ignore", text: "Ignorar o peso e despachar."}
-    ],
-    correct: "respect"
-  }
-];
-
-function renderStep() {
-  const s = stepsData[currentStep];
-  document.getElementById('stepHeading').textContent = `Etapa ${currentStep + 1} de 5 — ${s.title}`;
-  document.getElementById('progressBar').style.width = `${((currentStep + 1) / 5) * 100}%`;
-  
-  let html = `<p class="muted">${s.question}</p><div style="margin-top:10px;">`;
-  s.options.forEach((opt, idx) => {
-    html += `<label style="display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;">
-      <input type="radio" name="stepOpt" value="${opt.val}" style="width:auto; margin:0;"> ${opt.text}
-    </label>`;
-  });
-  html += `</div>`;
-  document.getElementById('stepContent').innerHTML = html;
-  document.getElementById('stepFeedback').classList.add('hidden');
-}
-
-function validateStep() {
-  const selected = document.querySelector('input[name="stepOpt"]:checked');
-  const fb = document.getElementById('stepFeedback');
-  if(!selected) {
-    alert('Selecione uma opção para continuar.');
-    return;
-  }
-
-  fb.classList.remove('hidden');
-  if(selected.value === stepsData[currentStep].correct) {
-    fb.className = 'feedback success';
-    fb.textContent = '✓ Resposta correta! Avançando para a próxima etapa...';
-    setTimeout(() => {
-      if(currentStep < stepsData.length - 1) {
-        currentStep++;
-        renderStep();
-      } else {
-        document.getElementById('stepContent').innerHTML = `<h3>🎉 A.L. Concluída com Sucesso!</h3><p>Nota final: <strong>${score}/100</strong></p>`;
-        document.getElementById('nextStepBtn').classList.add('hidden');
-        document.getElementById('dashChalCount').textContent = '1';
-      }
-    }, 1200);
-  } else {
-    score = Math.max(0, score - 20);
-    document.getElementById('liveScore').textContent = score;
-    fb.className = 'feedback error';
-    fb.textContent = '✗ Resposta incorreta! Foram descontados 20 pontos. Tente novamente.';
-  }
-}
-
-renderStep();
-
-/* CÂMERA / QR CODE */
-let mediaStream = null;
-function startCamera() {
-  const video = document.getElementById('cameraFeed');
-  video.classList.remove('hidden');
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
-      mediaStream = stream;
-      video.srcObject = stream;
-    })
-    .catch(() => alert('Câmera indisponível. Use a simulação rápida.'));
-}
-
-function simulateQREntry() {
-  if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
-  document.getElementById('cameraFeed').classList.add('hidden');
-  
-  const fb = document.getElementById('qrFeedback');
-  fb.classList.remove('hidden');
-  fb.className = 'feedback success';
-  fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
-  
-  const table = document.getElementById('wmsTable');
-  table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
-  document.getElementById('dashQrCount').textContent = '1';
-}
-
-/* WMS PRODUTOS */
-document.getElementById('wmsForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const sku = document.getElementById('wmsSku').value;
-  const name = document.getElementById('wmsName').value;
-  const qty = document.getElementById('wmsQty').value;
-  const weight = document.getElementById('wmsWeight').value;
-
-  document.getElementById('wmsTable').innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td><td>A-03-01</td></tr>`;
-  alert('Produto cadastrado com sucesso!');
-  this.reset();
-  document.getElementById('dashProdCount').textContent = '5';
-});
-
-
-
-/* ROTEIRIZAÇÃO */
-let selectedStops = [];
-
-function toggleStop(el, name) {
-  if (selectedStops.includes(name)) {
-    selectedStops = selectedStops.filter(stop => stop !== name);
-    el.classList.remove('selected');
-  } else {
-    selectedStops.push(name);
-    el.classList.add('selected');
-  }
-
-  const display = document.getElementById('routeDisplay');
-
-  if (display) {
-    display.textContent = 'Rota montada: ' +
-      (selectedStops.length
-        ? selectedStops.join(' ➔ ')
-        : '(Nenhuma parada selecionada)');
-  }
-}
-
-function saveRoute() {
-  if (selectedStops.length < 2) {
-    alert('Selecione pelo menos 2 pontos para formar a rota.');
-    return;
-  }
-
-  // Guarda os pontos antes de limpar a seleção.
-  const stops = [...selectedStops];
-  const display = document.getElementById('routeDisplay');
-
-  if (!display) {
-    alert('Não foi encontrado o espaço da rota (routeDisplay).');
-    return;
-  }
-
-  // Cria ou reutiliza o espaço do mapa logo abaixo da rota.
-  let area = document.getElementById('routeMapArea');
-
-  if (!area) {
-    area = document.createElement('div');
-    area.id = 'routeMapArea';
-    display.insertAdjacentElement('afterend', area);
-  }
-
-  area.style.cssText = [
-    'display:block',
-    'visibility:visible',
-    'width:100%',
-    'box-sizing:border-box',
-    'margin-top:20px',
-    'padding:16px',
-    'background:#101d30',
-    'border:1px solid #334b68',
-    'border-radius:14px',
-    'color:#ffffff',
-    'overflow:hidden'
-  ].join(';');
-
-  // Calcula posições dos pontos no mapa esquemático.
-  const width = 700;
-  const height = 300;
-  const marginX = 65;
-  const marginY = 65;
-  const count = stops.length;
-  const points = stops.map((name, index) => {
-    const x = count === 1
-      ? width / 2
-      : marginX + index * (width - marginX * 2) / (count - 1);
-
-    const y = index % 2 === 0
-      ? marginY + 35
-      : height - marginY - 15;
-
-    return { name, x, y, number: index + 1 };
-  });
-
-  // Evita que nomes inseridos no SVG sejam interpretados como HTML.
-  function escapeRouteText(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    })[char]);
-  }
-
-  const routeLines = points.slice(1).map((point, index) => {
-    const previous = points[index];
-    const middleX = (previous.x + point.x) / 2;
-    const middleY = (previous.y + point.y) / 2;
-
-    return `
-      <line x1="${previous.x}" y1="${previous.y}"
-            x2="${point.x}" y2="${point.y}"
-            stroke="#ff9f43" stroke-width="5"
-            stroke-linecap="round" />
-      <text x="${middleX}" y="${middleY - 12}"
-            fill="#ffd08a" font-size="13"
-            text-anchor="middle">Trecho ${index + 1}</text>
-    `;
-  }).join('');
-
-  const routePoints = points.map(point => `
-    <circle cx="${point.x}" cy="${point.y}" r="19"
-            fill="#ff9f43" stroke="#ffffff" stroke-width="3" />
-    <text x="${point.x}" y="${point.y + 5}"
-          fill="#142238" font-size="15" font-weight="bold"
-          text-anchor="middle">${point.number}</text>
-    <text x="${point.x}" y="${point.y + 38}"
-          fill="#ffffff" font-size="12"
-          text-anchor="middle">${escapeRouteText(point.name)}</text>
-  `).join('');
-
-  area.innerHTML = `
-    <h3 style="margin:0 0 8px;color:#ff9f43">
-      🗺️ Mapa da rota simulada
-    </h3>
-    <p style="margin:0 0 12px;color:#d5deea;font-size:14px">
-      ${points.length} pontos na sequência selecionada.
-    </p>
-
-    <div style="width:100%;overflow-x:auto">
-      <svg viewBox="0 0 ${width} ${height}"
-           role="img"
-           aria-label="Mapa esquemático da rota"
-           style="display:block;width:100%;min-width:500px;height:auto;
-                  background:#172840;border-radius:10px">
-        <defs>
-          <pattern id="routeGrid" width="35" height="35"
-                   patternUnits="userSpaceOnUse">
-            <path d="M 35 0 L 0 0 0 35"
-                  fill="none" stroke="#29405b" stroke-width="1"/>
-          </pattern>
-        </defs>
-        <rect width="${width}" height="${height}"
-              fill="url(#routeGrid)"/>
-        ${routeLines}
-        ${routePoints}
-      </svg>
-    </div>
-
-    <h4 style="margin:16px 0 8px">Sequência da rota</h4>
-    <ol style="padding-left:24px;line-height:1.9">
-      ${points.map(point =>
-        `<li>${escapeRouteText(point.name)}</li>`
-      ).join('')}
-    </ol>
-
-    <p style="font-size:12px;color:#b8c7da;margin-bottom:0">
-      Mapa ilustrativo para fins educacionais. As posições e distâncias
-      não representam coordenadas geográficas ou quilômetros reais.
-    </p>
-  `;
-
-  // Atualiza o contador, caso ele exista na tela.
-  const counter = document.getElementById('dashRouteCount');
-  if (counter) {
-    counter.textContent = '1';
-  }
-
-  // Mantém o mapa visível e limpa apenas a seleção dos pontos.
-  selectedStops = [];
-
-  document.querySelectorAll('.route-stop').forEach(el => {
-    el.classList.remove('selected');
-  });
-
-  display.textContent = 'Rota montada: (Nenhuma parada selecionada)';
-
-  area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
+      {val: "respect", text: "Não excede
