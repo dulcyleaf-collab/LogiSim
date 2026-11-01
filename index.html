@@ -2,615 +2,758 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LogiSim | Simulação de Operações Logísticas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LogiSim | Laboratório Logístico Virtual</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
-:root {
-  --bg: #071426;
-  --panel: #10233d;
-  --panel2: #183553;
-  --orange: #f28c28;
-  --orange-hover: #ff9f43;
-  --text: #f4f7fb;
-  --muted: #a9bbd0;
-  --border: #2b4563;
-  --green: #28c76f;
-  --red: #ff6262;
+:root{
+  --navy:#102b4e;
+  --blue:#1d4ed8;
+  --orange:#f97316;
+  --bg:#eef2f7;
+  --white:#fff;
+  --green:#15803d;
 }
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font:15px Arial,sans-serif;
+  background:var(--bg);
+  color:#172033;
 }
-button, input, select, textarea { font: inherit; }
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 9px;
-  padding: 12px 16px;
-  font-weight: bold;
-  transition: .2s;
+header{
+  background:var(--navy);
+  color:white;
+  padding:20px;
+  border-bottom:4px solid var(--orange);
 }
-button:disabled { opacity: .45; cursor: not-allowed; }
-.btn-primary { background: var(--orange); color: #111827; }
-.btn-primary:hover { background: var(--orange-hover); }
-.btn-secondary { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
-.btn-danger { background: #562b35; color: #ffd8dc; }
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 7px;
-  background: #09192d;
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  outline: none;
+header h1{margin:0 0 5px;font-size:26px}
+header p{margin:0;color:#cbd5e1}
+main{max-width:1150px;margin:auto;padding:18px}
+.card{
+  background:white;
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 2px 8px #0f172a12;
 }
-input:focus, select:focus, textarea:focus { border-color: var(--orange); }
-label { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
-h1, h2, h3 { margin-top: 0; }
-p { line-height: 1.5; }
-.muted { color: var(--muted); }
-.orange { color: var(--orange); }
-.hidden { display: none !important; }
-.login-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: radial-gradient(circle at top right, #183553 0, transparent 40%), var(--bg);
+h2{font-size:20px;margin-top:0}
+h3{font-size:16px}
+input,select,button{
+  font:inherit;
+  padding:11px;
+  border-radius:7px;
+  border:1px solid #cbd5e1;
+  width:100%;
+  margin:5px 0;
 }
-.login-card {
-  width: 100%;
-  max-width: 440px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 30px;
-  box-shadow: 0 20px 60px #0005;
+button{
+  background:var(--blue);
+  color:white;
+  border:0;
+  font-weight:bold;
+  cursor:pointer;
 }
-.brand { display: flex; align-items: center; gap: 13px; margin-bottom: 25px; }
-.brand-icon {
-  width: 52px; height: 52px; display: grid; place-items: center;
-  background: var(--orange); color: #102033; font-size: 25px;
-  font-weight: 900; border-radius: 13px;
+button:hover{filter:brightness(.92)}
+button.secondary{background:#e2e8f0;color:#172033}
+button.green{background:var(--green)}
+button.orange{background:var(--orange)}
+label{display:block;margin-top:8px;font-weight:bold}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
 }
-.brand h1 { font-size: 25px; margin: 0 0 4px; }
-.brand small { color: var(--muted); }
-.app { min-height: 100vh; }
-.topbar {
-  min-height: 75px; display: flex; align-items: center;
-  justify-content: space-between; gap: 15px; padding: 15px 25px;
-  background: var(--panel); border-bottom: 1px solid var(--border);
+.stat{
+  background:#eff6ff;
+  padding:15px;
+  border-radius:9px;
+  border-left:4px solid var(--orange);
 }
-.topbar .brand { margin: 0; }
-.topbar .brand-icon { width: 42px; height: 42px; }
-.user-info { display: flex; align-items: center; gap: 12px; }
-.user-info small { display: block; color: var(--muted); margin-top: 4px; }
-.layout {
-  display: grid; grid-template-columns: 240px minmax(0, 1fr);
-  min-height: calc(100vh - 75px);
+.stat strong{
+  display:block;
+  font-size:25px;
+  color:var(--navy);
+  margin-top:8px;
 }
-.sidebar { padding: 20px 13px; background: #0a1a2e; border-right: 1px solid var(--border); }
-.nav-btn {
-  display: block; width: 100%; text-align: left; background: transparent;
-  color: var(--muted); margin-bottom: 7px; border-radius: 8px; padding: 12px;
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-bottom:16px;
 }
-.nav-btn:hover, .nav-btn.active { background: var(--panel2); color: var(--orange); }
-main { padding: 25px; min-width: 0; max-width: 1400px; width: 100%; margin: 0 auto; }
-.page-title { margin-bottom: 5px; font-size: 26px; }
-.page-description { margin-top: 0; margin-bottom: 20px; color: var(--muted); }
-.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px; margin-bottom: 20px; }
-.card { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 20px; margin-bottom: 18px; }
-.stat-label { color: var(--muted); font-size: 13px; }
-.stat-number { font-size: 28px; font-weight: bold; margin-top: 10px; }
-.stat-icon { color: var(--orange); font-size: 22px; }
-.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 15px; }
-.full-width { grid-column: 1 / -1; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-.table-wrap { width: 100%; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 550px; }
-th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
-th { color: var(--orange); font-weight: bold; }
-td { color: var(--text); }
-.progress { height: 8px; background: #09192d; border-radius: 99px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border); }
-.progress span { height: 100%; display: block; background: var(--orange); width: 0%; transition: width .3s; }
-.feedback { margin-top: 15px; padding: 12px; border-radius: 8px; font-size: 13px; }
-.feedback.success { background: #10271b; border: 1px solid #166534; color: #bbf7d0; }
-.feedback.error { background: #2a1518; border: 1px solid #991b1b; color: #fecaca; }
-.map-box {
-  background: #050e18; border: 2px solid var(--border); border-radius: 14px;
-  padding: 20px; text-align: center; position: relative;
+nav button{width:auto;margin:0}
+nav button.active{background:var(--navy)}
+table{width:100%;border-collapse:collapse}
+th,td{
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid #e2e8f0;
 }
-.route-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0;
+th{background:#eff6ff}
+.tablewrap{overflow-x:auto}
+.small{color:#64748b;font-size:13px}
+.hidden{display:none!important}
+.notice{
+  padding:12px;
+  background:#dcfce7;
+  border-radius:8px;
+  margin:10px 0;
 }
-.route-stop {
-  background: var(--panel2); border: 2px solid var(--border);
-  border-radius: 10px; padding: 15px; cursor: pointer;
+.warning{
+  padding:12px;
+  background:#ffedd5;
+  border-radius:8px;
+  margin:10px 0;
 }
-.route-stop.selected { border-color: var(--orange); background: #1d3550; }
-@media (max-width: 900px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { display: flex; overflow-x: auto; gap: 5px; padding: 10px; border: none; border-bottom: 1px solid var(--border); }
-  .nav-btn { width: auto; flex: 0 0 auto; white-space: nowrap; }
+.step{
+  border-left:4px solid #93c5fd;
+  padding:10px 12px;
+  margin:10px 0;
+  background:#f8fafc;
+  border-radius:5px;
 }
-@media (max-width: 520px) {
-  main { padding: 15px; }
-  .topbar { padding: 12px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .route-grid { grid-template-columns: repeat(2, 1fr); }
-  .login-card { padding: 22px; }
+.mapa-rota{
+  height:350px;
+  width:100%;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  margin:12px 0;
+  z-index:1;
+}
+.mapa-legenda{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:10px 0;
+}
+.mapa-legenda span{
+  background:#eff6ff;
+  padding:8px 10px;
+  border-radius:7px;
+  font-size:13px;
+}
+footer{text-align:center;color:#64748b;padding:24px}
+@media(max-width:600px){
+  main{padding:10px}
+  .card{padding:13px}
+  nav button{flex:1 1 45%}
+  .mapa-rota{height:280px}
 }
 </style>
 </head>
-<body>
 
-<section id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <div class="brand">
-      <div class="brand-icon">LS</div>
-      <div>
-        <h1>LogiSim</h1>
-        <small>Simulação de Operações Logísticas</small>
-      </div>
-    </div>
-    <form id="loginForm">
-      <label>Nome do Usuário
-        <input id="username" placeholder="Digite seu nome (ex: Dulcylea)" required>
-      </label>
-      <label>Senha
-        <input id="password" type="password" placeholder="Digite sua senha" required>
-      </label>
-      <button type="submit" class="btn-primary">Entrar na Plataforma</button>
-    </form>
-    <div class="muted" style="font-size:12px; margin-top:15px;">
-      💡 Aluno entra com qualquer nome/senha.<br>
-      💡 Instrutora entra digitando <strong>Quezia</strong> como usuário.
-    </div>
-  </div>
+<body>
+<header>
+  <h1>📦 LogiSim</h1>
+  <p>Laboratório Logístico Virtual | Firjan SENAI Caxias</p>
+</header>
+
+<main>
+<section id="login" class="card">
+  <h2>Acessar plataforma</h2>
+  <p>Entre no ambiente de aprendizagem logística.</p>
+
+  <label for="nome">Nome do aluno ou instrutor</label>
+  <input id="nome" placeholder="Digite seu nome (Ex: Dulcylea ou Quezia)" value="Dulcylea">
+
+  <label for="perfil">Perfil</label>
+  <select id="perfil">
+    <option value="aluno">Aluno</option>
+    <option value="instrutor">Instrutor (Quezia)</option>
+  </select>
+
+  <button onclick="entrar()">Entrar no LogiSim</button>
+  <p class="small">💡 Dica: Digite <strong>Quezia</strong> como nome ou selecione o perfil Instrutora para desbloquear o Painel Gerencial.</p>
 </section>
 
-<div id="app" class="app hidden">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-icon">LS</div>
+<section id="app" class="hidden">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <div>
-        <h1>LogiSim</h1>
-        <small>Firjan SENAI Caxias</small>
+        <strong id="boasVindas"></strong>
+        <p class="small">Ambiente de simulação logística</p>
       </div>
+      <button class="secondary" style="width:auto" onclick="sair()">Sair</button>
     </div>
-    <div class="user-info">
-      <div>
-        <strong id="userName">Usuário</strong>
-        <small id="userRole">Assistente de Logística</small>
-      </div>
-      <button class="btn-secondary" onclick="logout()">Sair</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <button class="nav-btn active" onclick="showPage('dashboard', this)">▦ Visão geral</button>
-      <button class="nav-btn" onclick="showPage('challenge', this)">A.L. (5 Etapas)</button>
-      <button class="nav-btn" onclick="showPage('qrscanner', this)">Leitor QR / Câmera</button>
-      <button class="nav-btn" onclick="showPage('products', this)">▤ WMS Produtos</button>
-      <button class="nav-btn" onclick="showPage('routing', this)">Mapa & Roteirização</button>
-      <button class="nav-btn instructor-only hidden" onclick="showPage('instructor', this)" style="color:#ffb47f;">📋 Painel da Instrutora</button>
-    </aside>
-
-    <main>
-      <section id="page-dashboard" class="page">
-        <h2 class="page-title">Visão Geral</h2>
-        <p class="page-description">Acompanhe o andamento das operações logísticas da simulação.</p>
-        <div class="grid">
-          <div class="card">
-            <div class="stat-label">Produtos WMS</div>
-            <div class="stat-number" id="dashProdCount">4</div>
-            <div class="stat-icon">▤</div>
-          </div>
-          <div class="card">
-            <div class="stat-label">A.L. Concluídas</div>
-            <div class="stat-number" id="dashChalCount">0</div>
-            <div class="stat-icon">📝</div>
-          </div>
-          <div class="card">
-            <div class="stat-label">QR Codes Lidos</div>
-            <div class="stat-number" id="dashQrCount">0</div>
-            <div class="stat-icon">📷</div>
-          </div>
-          <div class="card">
-            <div class="stat-label">Rotas Criadas</div>
-            <div class="stat-number" id="dashRouteCount">0</div>
-            <div class="stat-icon">🗺️</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="page-challenge" class="page hidden">
-        <h2 class="page-title">A.L. 01 — Atividades Práticas Logísticas</h2>
-        <p class="page-description">Responda corretamente às 5 etapas operacionais avaliadas pelo sistema.</p>
-        <div class="card">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong id="stepHeading">Etapa 1 de 5 — Recebimento</strong>
-            <span class="orange">Pontuação: <span id="liveScore">100</span>/100</span>
-          </div>
-          <div class="progress"><span id="progressBar" style="width: 20%;"></span></div>
-          <div id="stepContent" style="margin-top:20px;"></div>
-          <div id="stepFeedback" class="feedback hidden"></div>
-          <div class="actions">
-            <button class="btn-secondary" id="backStepBtn" onclick="prevStep()" disabled>Etapa anterior</button>
-            <button class="btn-primary" id="nextStepBtn" onclick="validateStep()">Validar e Avançar</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="page-qrscanner" class="page hidden">
-        <h2 class="page-title">Leitor de QR Code & Câmera</h2>
-        <p class="page-description">Use a câmera do dispositivo para escanear a etiqueta e cadastrar o item no estoque automaticamente.</p>
-        <div class="card">
-          <h3>Câmera de Leitura</h3>
-          <div class="actions">
-            <button class="btn-primary" onclick="startCamera()">📷 Ligar Câmera</button>
-            <button class="btn-secondary" onclick="simulateQREntry()">⚡ Simular Leitura Instantânea QR</button>
-          </div>
-          <div style="margin-top:15px; text-align:center;">
-            <video id="cameraFeed" autoplay playsinline class="hidden" style="width:100%; max-width:320px; border-radius:10px; border:2px solid var(--orange);"></video>
-          </div>
-          <div id="qrFeedback" class="feedback hidden" style="margin-top:15px;"></div>
-        </div>
-      </section>
-
-      <section id="page-products" class="page hidden">
-        <h2 class="page-title">WMS — Cadastro de Produtos</h2>
-        <p class="page-description">Cadastre e gerencie qualquer produto no sistema.</p>
-        <div class="card">
-          <h3>Adicionar Novo Produto</h3>
-          <form id="wmsForm">
-            <div class="form-grid">
-              <label>SKU <input id="wmsSku" required placeholder="Ex: SKU-999"></label>
-              <label>Nome do Produto <input id="wmsName" required placeholder="Ex: Caixa Organizadora"></label>
-              <label>Quantidade <input id="wmsQty" type="number" min="1" required placeholder="50"></label>
-              <label>Peso Unitário (kg) <input id="wmsWeight" type="number" step="0.1" required placeholder="2.5"></label>
-            </div>
-            <button class="btn-primary" type="submit" style="margin-top:15px;">Cadastrar Produto</button>
-          </form>
-        </div>
-        <div class="card">
-          <h3>Estoque Atual</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Peso Unit.</th><th>Endereço</th></tr></thead>
-              <tbody id="wmsTable">
-                <tr><td>SKU-101</td><td>Caixa de papelão</td><td>50</td><td>2 kg</td><td>A-01-01</td></tr>
-                <tr><td>SKU-102</td><td>Kit de ferramentas</td><td>20</td><td>5 kg</td><td>A-01-02</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="page-routing" class="page hidden">
-        <h2 class="page-title">Mapa de Roteirização de Entregas</h2>
-        <p class="page-description">Selecione o depósito e os clientes para montar o mapa esquemático e visualizar a sequência de entregas.</p>
-        <div class="card map-box">
-          <h3>Selecione a Sequência de Paradas</h3>
-          <p class="muted">Clique nos locais na ordem lógica de distribuição:</p>
-          <div class="route-grid">
-            <div class="route-stop" onclick="toggleStop(this, 'CD Central')"><strong>CD</strong><br>CD Central</div>
-            <div class="route-stop" onclick="toggleStop(this, 'Loja Piabetá')"><strong>P1</strong><br>Loja Piabetá</div>
-            <div class="route-stop" onclick="toggleStop(this, 'Cliente Magé')"><strong>M2</strong><br>Cliente Magé</div>
-            <div class="route-stop" onclick="toggleStop(this, 'Filial Caxias')"><strong>D3</strong><br>Filial Caxias</div>
-          </div>
-          <p id="routeDisplay" class="orange" style="font-weight:bold; margin:15px 0;">Rota montada: (Nenhuma parada selecionada)</p>
-          <button class="btn-primary" onclick="saveRoute()">Salvar e Otimizar Rota</button>
-        </div>
-      </section>
-
-      <section id="page-instructor" class="page hidden">
-        <h2 class="page-title">Painel da Instrutora (Quezia)</h2>
-        <p class="page-description">Visão gerencial de acompanhamento das turmas e notas da simulação.</p>
-        <div class="card">
-          <h3>Relatório de Turma (APR477)</h3>
-          <p class="muted">Registros salvos neste dispositivo. A instrutora pode exportar os dados em CSV e abrir no Excel ou Google Planilhas.</p>
-          <button class="btn-primary" onclick="exportarRegistrosCSV()">Baixar planilha de atividades (CSV)</button>
-          <button class="btn-secondary" onclick="atualizarPainelRegistros()" style="margin-left:8px">Atualizar registros</button>
-          <p id="registroResumo" class="muted" style="margin-top:10px"></p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Aluno</th><th>A.L. Concluída</th><th>Nota</th><th>Status</th></tr></thead>
-              <tbody id="instructorTable">
-                <tr><td>Dulcylea Fonseca</td><td>Simulada (5 Etapas)</td><td>100</td><td><span style="color:var(--green)">Aprovada</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </main>
   </div>
-</div>
+
+  <nav id="menu">
+    <button data-page="inicio" onclick="pagina('inicio')">Visão geral</button>
+    <button data-page="produtos" onclick="pagina('produtos')">Produtos e estoque</button>
+    <button data-page="armazenagem" onclick="pagina('armazenagem')">Endereçamento</button>
+    <button data-page="pedidos" onclick="pagina('pedidos')">Pedidos e picking</button>
+    <button data-page="expedicao" onclick="pagina('expedicao')">Expedição e carga</button>
+    <button data-page="rota" onclick="pagina('rota')">Roteirização e entrega</button>
+    <button id="menuInstrutor" data-page="instrutor" onclick="pagina('instrutor')">Painel do instrutor</button>
+  </nav>
+
+  <div id="conteudo"></div>
+</section>
+</main>
+
+<footer>LogiSim — Projeto educacional de simulação de operações logísticas.</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-let activeStudentName = '';
-const CHAVE_REGISTROS = 'logisim_registros_apr477';
+const CHAVE="logisim_demo_v3";
 
-function obterRegistros() {
-  try {
-    return JSON.parse(localStorage.getItem(CHAVE_REGISTROS) || '[]');
-  } catch (e) {
-    return [];
+let estado={};
+let usuario={nome:"",perfil:"aluno"};
+let tela="inicio";
+let mapasAtivos={};
+
+function carregar(){
+  try{
+    estado=JSON.parse(localStorage.getItem(CHAVE))||{};
+  }catch(e){
+    estado={};
+  }
+
+  estado.produtos=estado.produtos||[
+    {id:1,nome:"Caixa de MDF 15mm",codigo:"PRD001",qtd:50,endereco:"A-01-01"},
+    {id:2,nome:"Caixa de Papelão Dupla",codigo:"PRD002",qtd:30,endereco:"A-01-02"},
+    {id:3,nome:"Fita Adesiva Industrial",codigo:"PRD003",qtd:20,endereco:"B-02-01"}
+  ];
+
+  estado.pedidos=estado.pedidos||[
+    {id:1001,cliente:"Loja Piabetá",produto:1,qtd:5,status:"Carregado",rota:"CD → Ponto de distribuição → Cliente"}
+  ];
+
+  estado.registros=estado.registros||[];
+  estado.proximoId=estado.proximoId||4;
+  salvar();
+}
+
+function salvar(){
+  try{
+    localStorage.setItem(CHAVE,JSON.stringify(estado));
+  }catch(e){
+    console.warn("Não foi possível salvar os dados neste navegador.",e);
   }
 }
 
-function registrarNoLogiSim(evento, detalhes, extras = {}) {
-  if (!activeStudentName) return;
-  const registros = obterRegistros();
-  registros.push({
-    dataHora: new Date().toLocaleString('pt-BR'),
-    aluno: activeStudentName,
-    evento: evento,
-    detalhes: detalhes || '',
-    pontuacao: extras.score ?? extras.pontuacao ?? '',
-    dados: JSON.stringify(extras)
+function escapar(s){
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+}
+
+function registrar(etapa,detalhe){
+  estado.registros.unshift({
+    aluno:usuario.nome,
+    etapa,
+    detalhe,
+    data:new Date().toLocaleString("pt-BR")
   });
-  localStorage.setItem(CHAVE_REGISTROS, JSON.stringify(registros));
-  atualizarPainelRegistros();
+  salvar();
 }
 
-function atualizarPainelRegistros() {
-  const registros = obterRegistros();
-  const resumo = document.getElementById('registroResumo');
-  if (resumo) resumo.textContent = registros.length + ' registro(s) salvo(s) neste dispositivo.';
-}
+function entrar(){
+  const nome=document.getElementById("nome").value.trim();
+  const perfilSelect=document.getElementById("perfil").value;
 
-function exportarRegistrosCSV() {
-  const registros = obterRegistros();
-  if (!registros.length) {
-    alert('Ainda não há registros neste dispositivo. Realize alguma atividade primeiro.');
+  if(!nome){
+    alert("Digite seu nome para continuar.");
     return;
   }
-  const colunas = ['Data/Hora','Aluno','Evento','Detalhes','Pontuação','Dados completos'];
-  const linhas = [colunas, ...registros.map(r => [
-    r.dataHora, r.aluno, r.evento, r.detalhes, r.pontuacao, r.dados
-  ])];
-  const csv = '\uFEFF' + linhas.map(l => l.map(v =>
-    '"' + String(v ?? '').replace(/"/g,'""') + '"'
-  ).join(';')).join('\r\n');
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'LogiSim_registros_APR477.csv';
-  document.body.appendChild(a);
+
+  // Se digitar Quezia ou selecionar instrutor, força o perfil de instrutora
+  const ehInstrutora = (nome.toLowerCase().includes("quezia") || perfilSelect === "instrutor");
+
+  usuario={
+    nome,
+    perfil: ehInstrutora ? "instrutor" : "aluno"
+  };
+
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  document.getElementById("boasVindas").textContent=
+    "Olá, "+usuario.nome+" — "+ (usuario.perfil==="instrutor" ? "Instrutora (Quezia)" : "Assistente de Logística");
+
+  document.getElementById("menuInstrutor").classList.toggle(
+    "hidden", usuario.perfil!=="instrutor"
+  );
+
+  pagina("inicio");
+}
+
+function sair(){
+  Object.values(mapasAtivos).forEach(m=>{
+    try{m.remove()}catch(e){}
+  });
+  mapasAtivos={};
+
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+}
+
+function pagina(p){
+  if(p==="instrutor"&&usuario.perfil!=="instrutor"){
+    p="inicio";
+  }
+
+  tela=p;
+
+  document.querySelectorAll("nav button").forEach(b=>{
+    b.classList.toggle("active",b.dataset.page===p);
+  });
+
+  render();
+}
+
+function produto(id){
+  return estado.produtos.find(p=>p.id===Number(id));
+}
+
+function render(){
+  const c=document.getElementById("conteudo");
+
+  Object.values(mapasAtivos).forEach(m=>{
+    try{m.remove()}catch(e){}
+  });
+  mapasAtivos={};
+
+  const etapas=[
+    "Cadastro de produtos",
+    "Endereçamento e armazenagem",
+    "Pedido e picking",
+    "Conferência",
+    "Expedição e carregamento",
+    "Roteirização com mapa dos pontos",
+    "Entrega simulada"
+  ];
+
+  if(tela==="inicio"){
+    c.innerHTML=`
+      <div class="grid">
+        <div class="stat">Produtos cadastrados<strong>${estado.produtos.length}</strong></div>
+        <div class="stat">Unidades em estoque<strong>${estado.produtos.reduce((s,p)=>s+Number(p.qtd),0)}</strong></div>
+        <div class="stat">Pedidos<strong>${estado.pedidos.length}</strong></div>
+        <div class="stat">Operações registradas<strong>${estado.registros.length}</strong></div>
+      </div>
+
+      <div class="card">
+        <h2>Fluxo logístico integrado</h2>
+        ${etapas.map((e,i)=>`
+          <div class="step"><strong>${i+1}. ${e}</strong></div>
+        `).join("")}
+        <p>Pratique as operações de um centro de distribuição em um ambiente virtual corporativo.</p>
+        <button onclick="pagina('produtos')">Iniciar simulação</button>
+      </div>`;
+  }
+
+  if(tela==="produtos"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Cadastro de produtos e estoque</h2>
+        <div class="grid">
+          <div><label>Código</label><input id="codigo" placeholder="PRD004"></div>
+          <div><label>Nome do produto</label><input id="nomeProduto" placeholder="Caixa de papel"></div>
+          <div><label>Quantidade inicial</label><input id="quantidade" type="number" min="0" value="10"></div>
+          <div><label>Categoria</label><input id="categoria" placeholder="Ex.: Embalagem"></div>
+        </div>
+        <button onclick="cadastrarProduto()">Cadastrar produto</button>
+      </div>
+      <div class="card"><h2>Estoque atual</h2>${tabelaProdutos()}</div>`;
+  }
+
+  if(tela==="armazenagem"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Endereçamento e armazenagem</h2>
+        <p>Associe cada produto a um endereço físico.</p>
+        <label>Produto</label>
+        <select id="produtoEndereco">${opcoesProdutos()}</select>
+        <div class="grid">
+          <div><label>Rua</label><input id="rua" value="A"></div>
+          <div><label>Estante</label><input id="estante" value="01"></div>
+          <div><label>Prateleira</label><input id="prateleira" value="01"></div>
+        </div>
+        <button onclick="guardarEndereco()">Salvar endereço</button>
+      </div>
+      <div class="card"><h2>Mapa de localização do estoque</h2>${tabelaProdutos()}</div>`;
+  }
+
+  if(tela==="pedidos"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Pedidos, picking e conferência</h2>
+        <p>Separe os produtos e confira as quantidades solicitadas.</p>
+
+        ${estado.pedidos.length?estado.pedidos.map(p=>`
+          <div class="step">
+            <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
+            <p>Produto: ${escapar(produto(p.produto)?.nome||"Produto removido")}</p>
+            <p>Quantidade: ${p.qtd} | Status: <strong>${escapar(p.status)}</strong></p>
+
+            ${p.status==="Novo"?`
+              <button onclick="separar(${p.id})">Iniciar picking</button>
+            `:""}
+
+            ${p.status==="Em separação"?`
+              <label>Quantidade conferida</label>
+              <input id="conf${p.id}" type="number" min="0" value="${p.qtd}">
+              <button class="green" onclick="conferir(${p.id})">Conferir pedido</button>
+            `:""}
+          </div>
+        `).join(""):`<p>Nenhum pedido cadastrado.</p>`}
+      </div>
+
+      <div class="card">
+        <h3>Criar pedido de demonstração</h3>
+        <label>Cliente</label><input id="cliente" value="Loja Piabetá">
+        <label>Produto</label><select id="produtoPedido">${opcoesProdutos()}</select>
+        <label>Quantidade</label><input id="qtdPedido" type="number" min="1" value="2">
+        <button onclick="criarPedido()">Criar pedido</button>
+      </div>`;
+  }
+
+  if(tela==="expedicao"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Expedição e carregamento</h2>
+        <p>Somente pedidos conferidos podem seguir para expedição.</p>
+        ${estado.pedidos.map(p=>`
+          <div class="step">
+            Pedido #${p.id} — ${escapar(p.cliente)}<br>
+            Status: <strong>${escapar(p.status)}</strong>
+
+            ${p.status==="Conferido"?`
+              <button onclick="expedir(${p.id})">Liberar para carregamento</button>
+            `:""}
+
+            ${p.status==="Expedido"?`
+              <button onclick="carregarPedido(${p.id})">Confirmar carregamento</button>
+            `:""}
+          </div>
+        `).join("")}
+      </div>`;
+  }
+
+  if(tela==="rota"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Roteirização e entrega simulada</h2>
+        <p>Após o carregamento, escolha a sequência da rota e gere o mapa com os pontos numerados.</p>
+        <div class="warning">
+          Região de operação: Duque de Caxias / Magé / Piabetá (RJ).
+        </div>
+
+        ${estado.pedidos.map(p=>`
+          <div class="step">
+            <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
+            <p>Status: <strong>${escapar(p.status)}</strong></p>
+
+            ${p.status==="Carregado"||!p.status==="Em rota"?`
+              <label>Escolha a roteirização</label>
+              <select id="rota${p.id}">
+                <option>CD → Cliente</option>
+                <option>CD → Ponto de distribuição → Cliente</option>
+                <option>CD → Cliente → Retorno ao CD</option>
+              </select>
+              <button class="orange" onclick="iniciarRota(${p.id})">Gerar mapa da rota</button>
+            `:""}
+
+            ${p.status==="Em rota"||p.status==="Entregue"||p.status==="Carregado"?`
+              <h3>Mapa dos pontos da rota</h3>
+              <div id="mapa${p.id}" class="mapa-rota"></div>
+              <div id="legenda${p.id}" class="mapa-legenda"></div>
+            `:""}
+
+            ${p.status==="Em rota"?`
+              <button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>
+            `:""}
+
+            ${p.status==="Entregue"?`
+              <p class="notice">Entrega simulada concluída com sucesso!</p>
+            `:""}
+          </div>
+        `).join("")}
+      </div>`;
+
+    // Renderizar o mapa para todos os pedidos carregados ou em rota
+    setTimeout(() => {
+      estado.pedidos
+        .filter(p=>p.status==="Em rota"||p.status==="Entregue"||p.status==="Carregado")
+        .forEach(p=>desenharMapaRota(p));
+    }, 200);
+  }
+
+  if(tela==="instrutor"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Painel do instrutor (Quezia)</h2>
+        <p>Acompanhe as operações registradas neste navegador.</p>
+        <div class="grid">
+          <div class="stat">Produtos<strong>${estado.produtos.length}</strong></div>
+          <div class="stat">Pedidos concluídos<strong>${estado.pedidos.filter(p=>p.status==="Entregue").length}</strong></div>
+          <div class="stat">Atividades registradas<strong>${estado.registros.length}</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Situação dos pedidos</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Quantidade</th><th>Status</th><th>Rota</th></tr></thead>
+            <tbody>
+              ${estado.pedidos.map(p=>`
+                <tr>
+                  <td>#${p.id}</td>
+                  <td>${escapar(p.cliente)}</td>
+                  <td>${p.qtd}</td>
+                  <td>${escapar(p.status)}</td>
+                  <td>${escapar(p.rota||"Não definida")}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Histórico de atividades da turma</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Aluno</th><th>Etapa</th><th>Operação</th><th>Data</th></tr></thead>
+            <tbody>
+              ${estado.registros.length?estado.registros.map(r=>`
+                <tr>
+                  <td>${escapar(r.aluno)}</td>
+                  <td>${escapar(r.etapa)}</td>
+                  <td>${escapar(r.detalhe)}</td>
+                  <td>${escapar(r.data)}</td>
+                </tr>
+              `).join(""):`<tr><td colspan="4">Ainda não há atividades registradas.</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+        <button class="secondary" onclick="exportar()">Exportar histórico CSV</button>
+      </div>
+
+      <div class="card">
+        <h3>Preparar demonstração novamente</h3>
+        <button class="secondary" onclick="resetar()">Restaurar dados de exemplo</button>
+      </div>`;
+  }
+}
+
+function tabelaProdutos(){
+  return `
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Endereço</th></tr></thead>
+        <tbody>
+          ${estado.produtos.map(p=>`
+            <tr>
+              <td>${escapar(p.codigo)}</td>
+              <td>${escapar(p.nome)}</td>
+              <td>${p.qtd}</td>
+              <td>${escapar(p.endereco||"Sem endereço")}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function opcoesProdutos(){
+  return estado.produtos.map(p=>
+    `<option value="${p.id}">${escapar(p.nome)} — estoque ${p.qtd}</option>`
+  ).join("");
+}
+
+function cadastrarProduto(){
+  const codigo=document.getElementById("codigo").value.trim();
+  const nome=document.getElementById("nomeProduto").value.trim();
+  const qtd=Number(document.getElementById("quantidade").value);
+
+  if(!codigo||!nome||!Number.isInteger(qtd)||qtd<0){
+    alert("Preencha código, nome e quantidade válida.");
+    return;
+  }
+
+  estado.produtos.push({
+    id:estado.proximoId++,
+    codigo,
+    nome,
+    qtd,
+    endereco:""
+  });
+
+  registrar("Cadastro","Produto "+nome+" cadastrado");
+  salvar();
+  pagina("produtos");
+}
+
+function guardarEndereco(){
+  const p=produto(document.getElementById("produtoEndereco").value);
+  if(!p) return alert("Selecione um produto.");
+
+  const rua=document.getElementById("rua").value.trim();
+  const est=document.getElementById("estante").value.trim();
+  const prat=document.getElementById("prateleira").value.trim();
+
+  p.endereco=rua+"-"+est+"-"+prat;
+  registrar("Armazenagem",p.nome+" endereçado em "+p.endereco);
+  salvar();
+  pagina("armazenagem");
+}
+
+function criarPedido(){
+  const p=produto(document.getElementById("produtoPedido").value);
+  const qtd=Number(document.getElementById("qtdPedido").value);
+  const cliente=document.getElementById("cliente").value.trim();
+
+  if(!p||!cliente||qtd<1) return alert("Preencha os dados corretamente.");
+
+  const id=Math.max(1000,...estado.pedidos.map(x=>x.id))+1;
+  estado.pedidos.push({ id, client: cliente, cliente, produto:p.id, qtd, status:"Novo" });
+
+  registrar("Pedido","Pedido #"+id+" criado para "+cliente);
+  salvar();
+  pagina("pedidos");
+}
+
+function separar(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Em separação";
+  registrar("Picking","Separação iniciada no pedido #"+id);
+  salvar();
+  render();
+}
+
+function conferir(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Conferido";
+  registrar("Conferência","Pedido #"+id+" conferido");
+  salvar();
+  pagina("pedidos");
+}
+
+function expedir(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Expedido";
+  registrar("Expedição","Pedido #"+id+" expedido");
+  salvar();
+  pagina("expedicao");
+}
+
+function carregarPedido(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Carregado";
+  registrar("Carregamento","Pedido #"+id+" carregado no veículo");
+  salvar();
+  pagina("expedicao");
+}
+
+function iniciarRota(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  const campo=document.getElementById("rota"+id);
+  if(campo) p.rota=campo.value;
+  p.status="Em rota";
+
+  registrar("Roteirização","Pedido #"+id+" — "+(p.rota||"CD → Cliente"));
+  salvar();
+  pagina("rota");
+}
+
+function pontosDaRota(p){
+  const cd={ nome:"Centro de distribuição (CD Caxias)", lat:-22.7858, lng:-43.3117 };
+  const ponto={ nome:"Ponto de distribuição (Piabetá)", lat:-22.7798, lng:-43.3040 };
+  const cliente={ nome:"Cliente Final ("+(p.cliente||"Magé")+")", lat:-22.7728, lng:-43.2970 };
+  const retorno={ nome:"Retorno ao CD Caxias", lat:cd.lat, lng:cd.lng };
+
+  if(p.rota==="CD → Ponto de distribuição → Cliente"){
+    return [cd,ponto,cliente];
+  }
+  if(p.rota==="CD → Cliente → Retorno ao CD"){
+    return [cd,cliente,retorno];
+  }
+  return [cd,cliente];
+}
+
+function desenharMapaRota(p){
+  const el=document.getElementById("mapa"+p.id);
+  if(!el) return;
+
+  if(typeof L==="undefined"){
+    el.innerHTML="<p>Erro ao carregar o mapa Leaflet.</p>";
+    return;
+  }
+
+  const pontos=pontosDaRota(p);
+  const mapa=L.map(el).setView([pontos[0].lat, pontos[0].lng], 13);
+  mapasAtivos[p.id]=mapa;
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    attribution:"&copy; OpenStreetMap",
+    maxZoom:19
+  }).addTo(mapa);
+
+  const coordenadas=[];
+  pontos.forEach((pt,i)=>{
+    const coord=[pt.lat,pt.lng];
+    coordenadas.push(coord);
+    L.marker(coord).addTo(mapa).bindPopup("<strong>Ponto "+(i+1)+": "+pt.nome+"</strong>");
+  });
+
+  if(coordenadas.length>1){
+    L.polyline(coordenadas,{ color:"#f97316", weight:5, opacity:0.9 }).addTo(mapa);
+  }
+
+  mapa.fitBounds(coordenadas,{padding:[30,30]});
+
+  const legenda=document.getElementById("legenda"+p.id);
+  if(legenda){
+    legenda.innerHTML=pontos.map((pt,i)=>
+      "<span><strong>"+(i+1)+'</strong> '+pt.nome+"</span>"
+    ).join("");
+  }
+
+  setTimeout(()=>mapa.invalidateSize(),250);
+}
+
+function entregar(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Entregue";
+  registrar("Entrega","Pedido #"+id+" entregue");
+  salvar();
+  pagina("rota");
+}
+
+function exportar(){
+  const linhas=[
+    ["Aluno","Etapa","Operação","Data"],
+    ...estado.registros.map(r=>[r.aluno,r.etapa,r.detalhe,r.data])
+  ];
+  const csv=linhas.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="historico-logisim.csv";
   a.click();
-  a.remove();
   URL.revokeObjectURL(url);
 }
 
-function showPage(pageId, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById('page-' + pageId).classList.remove('hidden');
-  if(btn) {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
+function resetar(){
+  if(!confirm("Restaurar dados?")) return;
+  localStorage.removeItem(CHAVE);
+  carregar();
+  pagina("inicio");
 }
 
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const name = document.getElementById('username').value.trim();
-  activeStudentName = name || 'Aluno';
-  registrarNoLogiSim('Login', 'Acesso à plataforma');
-  document.getElementById('userName').textContent = name || 'Aluno';
-
-  if(name.toLowerCase() === 'quezia' || name.toLowerCase() === 'instrutora') {
-    document.getElementById('userRole').textContent = 'Instrutora (Quezia)';
-    document.querySelectorAll('.instructor-only').forEach(el => el.classList.remove('hidden'));
-  } else {
-    document.getElementById('userRole').textContent = 'Assistente de Logística';
-    document.querySelectorAll('.instructor-only').forEach(el => el.classList.add('hidden'));
-  }
-
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
-  atualizarPainelRegistros();
-});
-
-function logout() {
-  document.getElementById('app').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-}
-
-/* A.L. — 5 ETAPAS */
-let currentStep = 0;
-let score = 100;
-
-const stepsData = [
-  {
-    title: "1. Recebimento",
-    question: "A nota fiscal informa 50 caixas, mas na contagem física deram 48. O que fazer?",
-    options: [
-      {val: "accept", text: "Dar entrada em 50 caixas sem registrar nada."},
-      {val: "divergence", text: "Registrar a divergência de 2 caixas e notificar o responsável."},
-      {val: "reject", text: "Recusar e apagar a nota fiscal inteira."}
-    ],
-    correct: "divergence"
-  },
-  {
-    title: "2. Endereçamento e Armazenagem",
-    question: "Qual endereço padrão indicado para armazenar o SKU principal recebido?",
-    options: [
-      {val: "A-01-01", text: "Endereço A-01-01"},
-      {val: "B-99-99", text: "Endereço B-99-99 (Externo)"},
-      {val: "Z-00-00", text: "Área de descarte"}
-    ],
-    correct: "A-01-01"
-  },
-  {
-    title: "3. Separação de Pedidos (Picking)",
-    question: "O pedido exige separar 3 unidades de SKU-101 e 2 unidades de SKU-103. Qual é a quantidade total de itens a separar?",
-    options: [
-      {val: "3", text: "3 unidades"},
-      {val: "5", text: "5 unidades"},
-      {val: "10", text: "10 unidades"}
-    ],
-    correct: "5"
-  },
-  {
-    title: "4. Documentação de Expedição",
-    question: "Qual documento registra os produtos, volumes e dados para acompanhar o transporte da carga?",
-    options: [
-      {val: "pedido", text: "Pedido de compra"},
-      {val: "romaneio", text: "Romaneio de carga"},
-      {val: "inventario", text: "Inventário físico anual"}
-    ],
-    correct: "romaneio"
-  },
-  {
-    title: "5. Expedição, Capacidade e Rota",
-    question: "O veículo suporta 500 kg e a carga atual é 420 kg + 100 kg novos. O que fazer?",
-    options: [
-      {val: "respect", text: "Não exceder 500 kg; reorganizar a carga ou usar outro veículo."},
-      {val: "overload", text: "Carregar tudo com 520 kg, pois a rota é curta."},
-      {val: "ignore", text: "Ignorar o peso e despachar."}
-    ],
-    correct: "respect"
-  }
-];
-
-function renderStep() {
-  const s = stepsData[currentStep];
-  document.getElementById('stepHeading').textContent = `Etapa ${currentStep + 1} de 5 — ${s.title}`;
-  document.getElementById('progressBar').style.width = `${((currentStep + 1) / 5) * 100}%`;
-  
-  let html = `<p class="muted">${s.question}</p><div style="margin-top:10px;">`;
-  s.options.forEach((opt) => {
-    html += `<label style="display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;">
-      <input type="radio" name="stepOpt" value="${opt.val}" style="width:auto; margin:0;"> ${opt.text}
-    </label>`;
-  });
-  html += `</div>`;
-  document.getElementById('stepContent').innerHTML = html;
-  document.getElementById('stepFeedback').classList.add('hidden');
-  document.getElementById('backStepBtn').disabled = currentStep === 0;
-}
-
-function prevStep() {
-  if (currentStep > 0) {
-    currentStep--;
-    renderStep();
-  }
-}
-
-function validateStep() {
-  const selected = document.querySelector('input[name="stepOpt"]:checked');
-  const fb = document.getElementById('stepFeedback');
-  if(!selected) {
-    alert('Selecione uma opção para continuar.');
-    return;
-  }
-
-  fb.classList.remove('hidden');
-  if(selected.value === stepsData[currentStep].correct) {
-    fb.className = 'feedback success';
-    fb.textContent = '✓ Resposta correta! Avançando para a próxima etapa...';
-    registrarNoLogiSim('Etapa A.L.', `Acertou a ${stepsData[currentStep].title}`, { step: currentStep + 1, score });
-    setTimeout(() => {
-      if(currentStep < stepsData.length - 1) {
-        currentStep++;
-        renderStep();
-      } else {
-        document.getElementById('stepContent').innerHTML = `<h3>🎉 A.L. Concluída com Sucesso!</h3><p>Nota final: <strong>${score}/100</strong></p>`;
-        document.getElementById('nextStepBtn').classList.add('hidden');
-        document.getElementById('backStepBtn').classList.add('hidden');
-        document.getElementById('dashChalCount').textContent = '1';
-        registrarNoLogiSim('Conclusão A.L.', 'Finalizou as 5 etapas', { score });
-      }
-    }, 1200);
-  } else {
-    score = Math.max(0, score - 20);
-    document.getElementById('liveScore').textContent = score;
-    fb.className = 'feedback error';
-    fb.textContent = '✗ Resposta incorreta! Foram descontados 20 pontos. Tente novamente.';
-  }
-}
-
-renderStep();
-
-/* WMS PRODUTOS */
-document.getElementById('wmsForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const sku = document.getElementById('wmsSku').value;
-  const name = document.getElementById('wmsName').value;
-  const qty = document.getElementById('wmsQty').value;
-  const weight = document.getElementById('wmsWeight').value;
-
-  document.getElementById('wmsTable').innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td><td>A-03-01</td></tr>`;
-  alert('Produto cadastrado com sucesso!');
-  registrarNoLogiSim('WMS Cadastro', `Cadastrou ${name} (${sku})`, { sku, name, qty, weight });
-  this.reset();
-  document.getElementById('dashProdCount').textContent = '5';
-});
-
-/* CÂMERA / QR CODE */
-let mediaStream = null;
-function startCamera() {
-  const video = document.getElementById('cameraFeed');
-  video.classList.remove('hidden');
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
-      mediaStream = stream;
-      video.srcObject = stream;
-    })
-    .catch(() => alert('Câmera indisponível. Use a simulação rápida.'));
-}
-
-function simulateQREntry() {
-  if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
-  document.getElementById('cameraFeed').classList.add('hidden');
-  
-  const fb = document.getElementById('qrFeedback');
-  fb.classList.remove('hidden');
-  fb.className = 'feedback success';
-  fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
-  
-  const table = document.getElementById('wmsTable');
-  table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
-  document.getElementById('dashQrCount').textContent = '1';
-  registrarNoLogiSim('QR Code', 'Leitura simulada de SKU-777');
-}
-
-/* ROTEIRIZAÇÃO */
-let selectedStops = [];
-function toggleStop(el, name) {
-  if(selectedStops.includes(name)) {
-    selectedStops = selectedStops.filter(s => s !== name);
-    el.classList.remove('selected');
-  } else {
-    selectedStops.push(name);
-    el.classList.add('selected');
-  }
-  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (selectedStops.length ? selectedStops.join(' ➔ ') : '(Nenhuma parada selecionada)');
-}
-
-function saveRoute() {
-  if(selectedStops.length < 2) {
-    alert('Selecione pelo menos 2 pontos para formar a rota.');
-    return;
-  }
-  alert('Rota otimizada com sucesso!');
-  document.getElementById('dashRouteCount').textContent = '1';
-  registrarNoLogiSim('Roteirização', 'Rota salva: ' + selectedStops.join(' -> '));
-  selectedStops = [];
-  document.querySelectorAll('.route-stop').forEach(el => el.classList.remove('selected'));
-  document.getElementById('routeDisplay').textContent = 'Rota montada: (Nenhuma parada selecionada)';
-}
+carregar();
 </script>
-
 </body>
 </html>
