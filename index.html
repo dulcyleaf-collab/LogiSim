@@ -475,4 +475,142 @@ const stepsData = [
     title: "5. Expedição, Capacidade e Rota",
     question: "O veículo suporta 500 kg e a carga atual é 420 kg + 100 kg novos. O que fazer?",
     options: [
-      {val: "respect", text: "Não excede
+      {val: "respect", text: "Não exceder 500 kg; reorganizar a carga ou usar outro veículo."},
+      {val: "overload", text: "Carregar tudo com 520 kg, pois a rota é curta."},
+      {val: "ignore", text: "Ignorar o peso e despachar."}
+    ],
+    correct: "respect"
+  }
+];
+
+function renderStep() {
+  const s = stepsData[currentStep];
+  document.getElementById('stepHeading').textContent = `Etapa ${currentStep + 1} de 5 — ${s.title}`;
+  document.getElementById('progressBar').style.width = `${((currentStep + 1) / 5) * 100}%`;
+  
+  let html = `<p class="muted">${s.question}</p><div style="margin-top:10px;">`;
+  s.options.forEach((opt) => {
+    html += `<label style="display:flex; align-items:center; gap:10px; margin-bottom:8px; cursor:pointer;">
+      <input type="radio" name="stepOpt" value="${opt.val}" style="width:auto; margin:0;"> ${opt.text}
+    </label>`;
+  });
+  html += `</div>`;
+  document.getElementById('stepContent').innerHTML = html;
+  document.getElementById('stepFeedback').classList.add('hidden');
+  document.getElementById('backStepBtn').disabled = currentStep === 0;
+}
+
+function prevStep() {
+  if (currentStep > 0) {
+    currentStep--;
+    renderStep();
+  }
+}
+
+function validateStep() {
+  const selected = document.querySelector('input[name="stepOpt"]:checked');
+  const fb = document.getElementById('stepFeedback');
+  if(!selected) {
+    alert('Selecione uma opção para continuar.');
+    return;
+  }
+
+  fb.classList.remove('hidden');
+  if(selected.value === stepsData[currentStep].correct) {
+    fb.className = 'feedback success';
+    fb.textContent = '✓ Resposta correta! Avançando para a próxima etapa...';
+    registrarNoLogiSim('Etapa A.L.', `Acertou a ${stepsData[currentStep].title}`, { step: currentStep + 1, score });
+    setTimeout(() => {
+      if(currentStep < stepsData.length - 1) {
+        currentStep++;
+        renderStep();
+      } else {
+        document.getElementById('stepContent').innerHTML = `<h3>🎉 A.L. Concluída com Sucesso!</h3><p>Nota final: <strong>${score}/100</strong></p>`;
+        document.getElementById('nextStepBtn').classList.add('hidden');
+        document.getElementById('backStepBtn').classList.add('hidden');
+        document.getElementById('dashChalCount').textContent = '1';
+        registrarNoLogiSim('Conclusão A.L.', 'Finalizou as 5 etapas', { score });
+      }
+    }, 1200);
+  } else {
+    score = Math.max(0, score - 20);
+    document.getElementById('liveScore').textContent = score;
+    fb.className = 'feedback error';
+    fb.textContent = '✗ Resposta incorreta! Foram descontados 20 pontos. Tente novamente.';
+  }
+}
+
+renderStep();
+
+/* WMS PRODUTOS */
+document.getElementById('wmsForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const sku = document.getElementById('wmsSku').value;
+  const name = document.getElementById('wmsName').value;
+  const qty = document.getElementById('wmsQty').value;
+  const weight = document.getElementById('wmsWeight').value;
+
+  document.getElementById('wmsTable').innerHTML += `<tr><td>${sku}</td><td>${name}</td><td>${qty}</td><td>${weight} kg</td><td>A-03-01</td></tr>`;
+  alert('Produto cadastrado com sucesso!');
+  registrarNoLogiSim('WMS Cadastro', `Cadastrou ${name} (${sku})`, { sku, name, qty, weight });
+  this.reset();
+  document.getElementById('dashProdCount').textContent = '5';
+});
+
+/* CÂMERA / QR CODE */
+let mediaStream = null;
+function startCamera() {
+  const video = document.getElementById('cameraFeed');
+  video.classList.remove('hidden');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      mediaStream = stream;
+      video.srcObject = stream;
+    })
+    .catch(() => alert('Câmera indisponível. Use a simulação rápida.'));
+}
+
+function simulateQREntry() {
+  if(mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+  document.getElementById('cameraFeed').classList.add('hidden');
+  
+  const fb = document.getElementById('qrFeedback');
+  fb.classList.remove('hidden');
+  fb.className = 'feedback success';
+  fb.innerHTML = '<strong>QR Code Lido!</strong> Produto SKU-777 (Chapa Especial MDF) cadastrado no WMS automaticamente.';
+  
+  const table = document.getElementById('wmsTable');
+  table.innerHTML += `<tr><td>SKU-777</td><td>Chapa Especial MDF</td><td>30</td><td>45 kg</td><td>A-02-03</td></tr>`;
+  document.getElementById('dashQrCount').textContent = '1';
+  registrarNoLogiSim('QR Code', 'Leitura simulada de SKU-777');
+}
+
+/* ROTEIRIZAÇÃO */
+let selectedStops = [];
+function toggleStop(el, name) {
+  if(selectedStops.includes(name)) {
+    selectedStops = selectedStops.filter(s => s !== name);
+    el.classList.remove('selected');
+  } else {
+    selectedStops.push(name);
+    el.classList.add('selected');
+  }
+  document.getElementById('routeDisplay').textContent = 'Rota montada: ' + (selectedStops.length ? selectedStops.join(' ➔ ') : '(Nenhuma parada selecionada)');
+}
+
+function saveRoute() {
+  if(selectedStops.length < 2) {
+    alert('Selecione pelo menos 2 pontos para formar a rota.');
+    return;
+  }
+  alert('Rota otimizada com sucesso!');
+  document.getElementById('dashRouteCount').textContent = '1';
+  registrarNoLogiSim('Roteirização', 'Rota salva: ' + selectedStops.join(' -> '));
+  selectedStops = [];
+  document.querySelectorAll('.route-stop').forEach(el => el.classList.remove('selected'));
+  document.getElementById('routeDisplay').textContent = 'Rota montada: (Nenhuma parada selecionada)';
+}
+</script>
+
+</body>
+</html>
