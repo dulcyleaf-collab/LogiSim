@@ -169,14 +169,8 @@ footer{text-align:center;color:#64748b;padding:24px}
   <label for="nome">Nome do aluno ou instrutor</label>
   <input id="nome" placeholder="Digite seu nome (Ex: Dulcylea ou Quezia)" value="Dulcylea">
 
-  <label for="perfil">Perfil</label>
-  <select id="perfil">
-    <option value="aluno">Aluno</option>
-    <option value="instrutor">Instrutor (Quezia)</option>
-  </select>
-
   <button onclick="entrar()">Entrar no LogiSim</button>
-  <p class="small">💡 Dica: Digite <strong>Quezia</strong> como nome ou selecione o perfil Instrutora para desbloquear o Painel Gerencial.</p>
+  <p class="small">💡 Dica: Se digitar <strong>Quezia</strong> como nome, o sistema desbloqueia automaticamente o Painel da Instrutora.</p>
 </section>
 
 <section id="app" class="hidden">
@@ -210,7 +204,7 @@ footer{text-align:center;color:#64748b;padding:24px}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const CHAVE="logisim_demo_v4";
+const CHAVE="logisim_demo_v5";
 
 let estado={};
 let usuario={nome:"",perfil:"aluno"};
@@ -268,30 +262,37 @@ function registrar(etapa,detalhe){
 }
 
 function entrar(){
-  const nome=document.getElementById("nome").value.trim();
-  const perfilSelect=document.getElementById("perfil").value;
-
+  const nomeInput = document.getElementById("nome");
+  if(!nomeInput) return;
+  
+  const nome=nomeInput.value.trim();
   if(!nome){
     alert("Digite seu nome para continuar.");
     return;
   }
 
-  const ehInstrutora = (nome.toLowerCase().includes("quezia") || perfilSelect === "instrutor");
+  const ehInstrutora = nome.toLowerCase().includes("quezia");
 
   usuario={
     nome,
     perfil: ehInstrutora ? "instrutor" : "aluno"
   };
 
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
+  const loginSec = document.getElementById("login");
+  const appSec = document.getElementById("app");
+  
+  if(loginSec) loginSec.classList.add("hidden");
+  if(appSec) appSec.classList.remove("hidden");
 
-  document.getElementById("boasVindas").textContent=
-    "Olá, "+usuario.nome+" — "+ (usuario.perfil==="instrutor" ? "Instrutora (Quezia)" : "Assistente de Logística");
+  const boasVindas = document.getElementById("boasVindas");
+  if(boasVindas) {
+    boasVindas.textContent = "Olá, "+usuario.nome+" — "+ (usuario.perfil==="instrutor" ? "Instrutora (Quezia)" : "Assistente de Logística");
+  }
 
-  document.getElementById("menuInstrutor").classList.toggle(
-    "hidden", usuario.perfil!=="instrutor"
-  );
+  const menuInst = document.getElementById("menuInstrutor");
+  if(menuInst) {
+    menuInst.classList.toggle("hidden", usuario.perfil!=="instrutor");
+  }
 
   pagina("inicio");
 }
@@ -302,8 +303,11 @@ function sair(){
   });
   mapasAtivos={};
 
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("login").classList.remove("hidden");
+  const appSec = document.getElementById("app");
+  const loginSec = document.getElementById("login");
+
+  if(appSec) appSec.classList.add("hidden");
+  if(loginSec) loginSec.classList.remove("hidden");
 }
 
 function pagina(p){
@@ -326,6 +330,7 @@ function produto(id){
 
 function render(){
   const c=document.getElementById("conteudo");
+  if(!c) return;
 
   Object.values(mapasAtivos).forEach(m=>{
     try{m.remove()}catch(e){}
@@ -500,7 +505,7 @@ function render(){
             <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
             <p>Status: <strong>${escapar(p.status)}</strong></p>
 
-            ${p.status==="Carregado"||!p.status==="Em rota"?`
+            ${p.status==="Carregado"||p.status==="Novo"||p.status==="Conferido"||p.status==="Expedido"?`
               <label>Escolha a roteirização</label>
               <select id="rota${p.id}">
                 <option>CD → Cliente</option>
@@ -643,6 +648,4 @@ function cadastrarProduto(){
     endereco:""
   });
 
-  registrar("WMS Estoque Virtual","Produto "+nome+" cadastrado com lote "+lote+" e tag "+rfidTag);
-  salvar();
-  pagina("prod
+  registrar("WMS Es
