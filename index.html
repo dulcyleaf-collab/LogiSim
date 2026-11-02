@@ -15,6 +15,7 @@
   --bg:#eef2f7;
   --white:#fff;
   --green:#15803d;
+  --purple:#7c3aed;
 }
 *{box-sizing:border-box}
 body{
@@ -60,6 +61,7 @@ button:hover{filter:brightness(.92)}
 button.secondary{background:#e2e8f0;color:#172033}
 button.green{background:var(--green)}
 button.orange{background:var(--orange)}
+button.purple{background:var(--purple); color:white;}
 label{display:block;margin-top:8px;font-weight:bold}
 .grid{
   display:grid;
@@ -108,6 +110,14 @@ th{background:#eff6ff}
   border-radius:8px;
   margin:10px 0;
 }
+.rfid-box{
+  background:#f5f3ff;
+  border:2px dashed var(--purple);
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  margin:15px 0;
+}
 .step{
   border-left:4px solid #93c5fd;
   padding:10px 12px;
@@ -147,7 +157,7 @@ footer{text-align:center;color:#64748b;padding:24px}
 
 <body>
 <header>
-  <h1>📦 LogiSim</h1>
+  <h1>📦 LogiSim Enterprise</h1>
   <p>Laboratório Logístico Virtual | Firjan SENAI Caxias</p>
 </header>
 
@@ -174,7 +184,7 @@ footer{text-align:center;color:#64748b;padding:24px}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <div>
         <strong id="boasVindas"></strong>
-        <p class="small">Ambiente de simulação logística</p>
+        <p class="small">Ambiente de simulação logística com RFID e WMS Virtual</p>
       </div>
       <button class="secondary" style="width:auto" onclick="sair()">Sair</button>
     </div>
@@ -182,7 +192,8 @@ footer{text-align:center;color:#64748b;padding:24px}
 
   <nav id="menu">
     <button data-page="inicio" onclick="pagina('inicio')">Visão geral</button>
-    <button data-page="produtos" onclick="pagina('produtos')">Produtos e estoque</button>
+    <button data-page="produtos" onclick="pagina('produtos')">Estoque Virtual WMS</button>
+    <button data-page="rfid" onclick="pagina('rfid')">Coletor RFID 📡</button>
     <button data-page="armazenagem" onclick="pagina('armazenagem')">Endereçamento</button>
     <button data-page="pedidos" onclick="pagina('pedidos')">Pedidos e picking</button>
     <button data-page="expedicao" onclick="pagina('expedicao')">Expedição e carga</button>
@@ -199,7 +210,7 @@ footer{text-align:center;color:#64748b;padding:24px}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const CHAVE="logisim_demo_v3";
+const CHAVE="logisim_demo_v4";
 
 let estado={};
 let usuario={nome:"",perfil:"aluno"};
@@ -214,9 +225,9 @@ function carregar(){
   }
 
   estado.produtos=estado.produtos||[
-    {id:1,nome:"Caixa de MDF 15mm",codigo:"PRD001",qtd:50,endereco:"A-01-01"},
-    {id:2,nome:"Caixa de Papelão Dupla",codigo:"PRD002",qtd:30,endereco:"A-01-02"},
-    {id:3,nome:"Fita Adesiva Industrial",codigo:"PRD003",qtd:20,endereco:"B-02-01"}
+    {id:1,nome:"Caixa de MDF 15mm",codigo:"PRD001",qtd:50,endereco:"A-01-01",lote:"LOT-2026-A",rfid:"RFID-9831204"},
+    {id:2,nome:"Caixa de Papelão Dupla",codigo:"PRD002",qtd:30,endereco:"A-01-02",lote:"LOT-2026-B",rfid:"RFID-4421098"},
+    {id:3,nome:"Fita Adesiva Industrial",codigo:"PRD003",qtd:20,endereco:"B-02-01",lote:"LOT-2026-C",rfid:"RFID-7712345"}
   ];
 
   estado.pedidos=estado.pedidos||[
@@ -265,7 +276,6 @@ function entrar(){
     return;
   }
 
-  // Se digitar Quezia ou selecionar instrutor, força o perfil de instrutora
   const ehInstrutora = (nome.toLowerCase().includes("quezia") || perfilSelect === "instrutor");
 
   usuario={
@@ -323,54 +333,91 @@ function render(){
   mapasAtivos={};
 
   const etapas=[
-    "Cadastro de produtos",
+    "Cadastro no Estoque Virtual WMS",
+    "Leitura por Coletor RFID",
     "Endereçamento e armazenagem",
     "Pedido e picking",
     "Conferência",
     "Expedição e carregamento",
-    "Roteirização com mapa dos pontos",
-    "Entrega simulada"
+    "Roteirização com mapa dos pontos"
   ];
 
   if(tela==="inicio"){
     c.innerHTML=`
       <div class="grid">
-        <div class="stat">Produtos cadastrados<strong>${estado.produtos.length}</strong></div>
-        <div class="stat">Unidades em estoque<strong>${estado.produtos.reduce((s,p)=>s+Number(p.qtd),0)}</strong></div>
-        <div class="stat">Pedidos<strong>${estado.pedidos.length}</strong></div>
-        <div class="stat">Operações registradas<strong>${estado.registros.length}</strong></div>
+        <div class="stat">Produtos no WMS<strong>${estado.produtos.length}</strong></div>
+        <div class="stat">Itens com RFID Ativo<strong>${estado.produtos.filter(p=>p.rfid).length}</strong></div>
+        <div class="stat">Pedidos Ativos<strong>${estado.pedidos.length}</strong></div>
+        <div class="stat">Operações Registradas<strong>${estado.registros.length}</strong></div>
       </div>
 
       <div class="card">
-        <h2>Fluxo logístico integrado</h2>
+        <h2>Fluxo Logístico com Estoque Virtual e RFID</h2>
         ${etapas.map((e,i)=>`
           <div class="step"><strong>${i+1}. ${e}</strong></div>
         `).join("")}
-        <p>Pratique as operações de um centro de distribuição em um ambiente virtual corporativo.</p>
-        <button onclick="pagina('produtos')">Iniciar simulação</button>
+        <p>Explore as ferramentas de WMS virtual e o coletor RFID de última geração integrado ao sistema.</p>
+        <button onclick="pagina('produtos')">Acessar Estoque WMS</button>
       </div>`;
   }
 
   if(tela==="produtos"){
     c.innerHTML=`
       <div class="card">
-        <h2>Cadastro de produtos e estoque</h2>
+        <h2>Estoque Virtual WMS — Cadastro de Produtos</h2>
+        <p class="small">Gerencie o inventário virtual do armazém com controle rigoroso de lotes e identificadores.</p>
         <div class="grid">
-          <div><label>Código</label><input id="codigo" placeholder="PRD004"></div>
-          <div><label>Nome do produto</label><input id="nomeProduto" placeholder="Caixa de papel"></div>
-          <div><label>Quantidade inicial</label><input id="quantidade" type="number" min="0" value="10"></div>
-          <div><label>Categoria</label><input id="categoria" placeholder="Ex.: Embalagem"></div>
+          <div><label>Código SKU</label><input id="codigo" placeholder="PRD004"></div>
+          <div><label>Nome do produto</label><input id="nomeProduto" placeholder="Palete Especial"></div>
+          <div><label>Quantidade</label><input id="quantidade" type="number" min="0" value="50"></div>
+          <div><label>Lote</label><input id="lote" placeholder="LOT-2026-X"></div>
         </div>
-        <button onclick="cadastrarProduto()">Cadastrar produto</button>
+        <button onclick="cadastrarProduto()">Cadastrar no Estoque Virtual</button>
       </div>
-      <div class="card"><h2>Estoque atual</h2>${tabelaProdutos()}</div>`;
+      <div class="card"><h2>Inventário Atualizado no WMS</h2>${tabelaProdutos()}</div>`;
+  }
+
+  if(tela==="rfid"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Coletor RFID Virtual 📡</h2>
+        <p>Aproxime o coletor portátil para escanear automaticamente as tags RFID dos produtos no armazém por radiofrequência.</p>
+        
+        <div class="rfid-box">
+          <h3 style="color:var(--purple); margin-top:0;">🔫 Pistola Coletora RFID Ativa</h3>
+          <p class="small">Clique no botão abaixo para simular a leitura de ondas eletromagnéticas das tags próximas.</p>
+          <button class="purple" onclick="simularLeituraRFID()">Disparar Leitura Coletor RFID</button>
+        </div>
+
+        <div id="rfidResultado"></div>
+      </div>
+
+      <div class="card">
+        <h2>Itens Identificados por RFID no Armazém</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Tag RFID</th><th>SKU</th><th>Produto</th><th>Lote</th><th>Status</th></tr></thead>
+            <tbody>
+              ${estado.produtos.map(p=>`
+                <tr>
+                  <td><code>${escapar(p.rfid||"SEM-RFID")}</code></td>
+                  <td>${escapar(p.codigo)}</td>
+                  <td>${escapar(p.nome)}</td>
+                  <td>${escapar(p.lote||"N/D")}</td>
+                  <td><strong style="color:var(--green)">Detectado pelo Coletor</strong></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
   }
 
   if(tela==="armazenagem"){
     c.innerHTML=`
       <div class="card">
         <h2>Endereçamento e armazenagem</h2>
-        <p>Associe cada produto a um endereço físico.</p>
+        <p>Associe cada produto a um endereço físico no estoque virtual.</p>
         <label>Produto</label>
         <select id="produtoEndereco">${opcoesProdutos()}</select>
         <div class="grid">
@@ -387,7 +434,7 @@ function render(){
     c.innerHTML=`
       <div class="card">
         <h2>Pedidos, picking e conferência</h2>
-        <p>Separe os produtos e confira as quantidades solicitadas.</p>
+        <p>Separe os produtos usando o estoque virtual e confira as quantidades solicitadas.</p>
 
         ${estado.pedidos.length?estado.pedidos.map(p=>`
           <div class="step">
@@ -480,7 +527,6 @@ function render(){
         `).join("")}
       </div>`;
 
-    // Renderizar o mapa para todos os pedidos carregados ou em rota
     setTimeout(() => {
       estado.pedidos
         .filter(p=>p.status==="Em rota"||p.status==="Entregue"||p.status==="Carregado")
@@ -494,7 +540,7 @@ function render(){
         <h2>Painel do instrutor (Quezia)</h2>
         <p>Acompanhe as operações registradas neste navegador.</p>
         <div class="grid">
-          <div class="stat">Produtos<strong>${estado.produtos.length}</strong></div>
+          <div class="stat">Produtos no WMS<strong>${estado.produtos.length}</strong></div>
           <div class="stat">Pedidos concluídos<strong>${estado.pedidos.filter(p=>p.status==="Entregue").length}</strong></div>
           <div class="stat">Atividades registradas<strong>${estado.registros.length}</strong></div>
         </div>
@@ -551,13 +597,15 @@ function tabelaProdutos(){
   return `
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Código</th><th>Produto</th><th>Quantidade</th><th>Endereço</th></tr></thead>
+        <thead><tr><th>SKU</th><th>Produto</th><th>Quantidade</th><th>Lote</th><th>Tag RFID</th><th>Endereço</th></tr></thead>
         <tbody>
           ${estado.produtos.map(p=>`
             <tr>
               <td>${escapar(p.codigo)}</td>
               <td>${escapar(p.nome)}</td>
               <td>${p.qtd}</td>
+              <td>${escapar(p.lote||"N/D")}</td>
+              <td><code>${escapar(p.rfid||"N/D")}</code></td>
               <td>${escapar(p.endereco||"Sem endereço")}</td>
             </tr>
           `).join("")}
@@ -576,184 +624,25 @@ function cadastrarProduto(){
   const codigo=document.getElementById("codigo").value.trim();
   const nome=document.getElementById("nomeProduto").value.trim();
   const qtd=Number(document.getElementById("quantidade").value);
+  const lote=document.getElementById("lote").value.trim() || "LOT-2026-NEW";
 
   if(!codigo||!nome||!Number.isInteger(qtd)||qtd<0){
     alert("Preencha código, nome e quantidade válida.");
     return;
   }
 
+  const rfidTag = "RFID-" + Math.floor(1000000 + Math.random() * 9000000);
+
   estado.produtos.push({
     id:estado.proximoId++,
     codigo,
     nome,
     qtd,
+    lote,
+    rfid: rfidTag,
     endereco:""
   });
 
-  registrar("Cadastro","Produto "+nome+" cadastrado");
+  registrar("WMS Estoque Virtual","Produto "+nome+" cadastrado com lote "+lote+" e tag "+rfidTag);
   salvar();
-  pagina("produtos");
-}
-
-function guardarEndereco(){
-  const p=produto(document.getElementById("produtoEndereco").value);
-  if(!p) return alert("Selecione um produto.");
-
-  const rua=document.getElementById("rua").value.trim();
-  const est=document.getElementById("estante").value.trim();
-  const prat=document.getElementById("prateleira").value.trim();
-
-  p.endereco=rua+"-"+est+"-"+prat;
-  registrar("Armazenagem",p.nome+" endereçado em "+p.endereco);
-  salvar();
-  pagina("armazenagem");
-}
-
-function criarPedido(){
-  const p=produto(document.getElementById("produtoPedido").value);
-  const qtd=Number(document.getElementById("qtdPedido").value);
-  const cliente=document.getElementById("cliente").value.trim();
-
-  if(!p||!cliente||qtd<1) return alert("Preencha os dados corretamente.");
-
-  const id=Math.max(1000,...estado.pedidos.map(x=>x.id))+1;
-  estado.pedidos.push({ id, client: cliente, cliente, produto:p.id, qtd, status:"Novo" });
-
-  registrar("Pedido","Pedido #"+id+" criado para "+cliente);
-  salvar();
-  pagina("pedidos");
-}
-
-function separar(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  p.status="Em separação";
-  registrar("Picking","Separação iniciada no pedido #"+id);
-  salvar();
-  render();
-}
-
-function conferir(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  p.status="Conferido";
-  registrar("Conferência","Pedido #"+id+" conferido");
-  salvar();
-  pagina("pedidos");
-}
-
-function expedir(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  p.status="Expedido";
-  registrar("Expedição","Pedido #"+id+" expedido");
-  salvar();
-  pagina("expedicao");
-}
-
-function carregarPedido(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  p.status="Carregado";
-  registrar("Carregamento","Pedido #"+id+" carregado no veículo");
-  salvar();
-  pagina("expedicao");
-}
-
-function iniciarRota(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  const campo=document.getElementById("rota"+id);
-  if(campo) p.rota=campo.value;
-  p.status="Em rota";
-
-  registrar("Roteirização","Pedido #"+id+" — "+(p.rota||"CD → Cliente"));
-  salvar();
-  pagina("rota");
-}
-
-function pontosDaRota(p){
-  const cd={ nome:"Centro de distribuição (CD Caxias)", lat:-22.7858, lng:-43.3117 };
-  const ponto={ nome:"Ponto de distribuição (Piabetá)", lat:-22.7798, lng:-43.3040 };
-  const cliente={ nome:"Cliente Final ("+(p.cliente||"Magé")+")", lat:-22.7728, lng:-43.2970 };
-  const retorno={ nome:"Retorno ao CD Caxias", lat:cd.lat, lng:cd.lng };
-
-  if(p.rota==="CD → Ponto de distribuição → Cliente"){
-    return [cd,ponto,cliente];
-  }
-  if(p.rota==="CD → Cliente → Retorno ao CD"){
-    return [cd,cliente,retorno];
-  }
-  return [cd,cliente];
-}
-
-function desenharMapaRota(p){
-  const el=document.getElementById("mapa"+p.id);
-  if(!el) return;
-
-  if(typeof L==="undefined"){
-    el.innerHTML="<p>Erro ao carregar o mapa Leaflet.</p>";
-    return;
-  }
-
-  const pontos=pontosDaRota(p);
-  const mapa=L.map(el).setView([pontos[0].lat, pontos[0].lng], 13);
-  mapasAtivos[p.id]=mapa;
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    attribution:"&copy; OpenStreetMap",
-    maxZoom:19
-  }).addTo(mapa);
-
-  const coordenadas=[];
-  pontos.forEach((pt,i)=>{
-    const coord=[pt.lat,pt.lng];
-    coordenadas.push(coord);
-    L.marker(coord).addTo(mapa).bindPopup("<strong>Ponto "+(i+1)+": "+pt.nome+"</strong>");
-  });
-
-  if(coordenadas.length>1){
-    L.polyline(coordenadas,{ color:"#f97316", weight:5, opacity:0.9 }).addTo(mapa);
-  }
-
-  mapa.fitBounds(coordenadas,{padding:[30,30]});
-
-  const legenda=document.getElementById("legenda"+p.id);
-  if(legenda){
-    legenda.innerHTML=pontos.map((pt,i)=>
-      "<span><strong>"+(i+1)+'</strong> '+pt.nome+"</span>"
-    ).join("");
-  }
-
-  setTimeout(()=>mapa.invalidateSize(),250);
-}
-
-function entregar(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  p.status="Entregue";
-  registrar("Entrega","Pedido #"+id+" entregue");
-  salvar();
-  pagina("rota");
-}
-
-function exportar(){
-  const linhas=[
-    ["Aluno","Etapa","Operação","Data"],
-    ...estado.registros.map(r=>[r.aluno,r.etapa,r.detalhe,r.data])
-  ];
-  const csv=linhas.map(l=>l.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(";")).join("\n");
-  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="historico-logisim.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function resetar(){
-  if(!confirm("Restaurar dados?")) return;
-  localStorage.removeItem(CHAVE);
-  carregar();
-  pagina("inicio");
-}
-
-carregar();
-</script>
-</body>
-</html>
+  pagina("prod
