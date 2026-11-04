@@ -42,7 +42,7 @@ main{max-width:1150px;margin:auto;padding:18px}
 }
 h2{font-size:20px;margin-top:0}
 h3{font-size:16px}
-input,select,button{
+input,select,textarea,button{
   font:inherit;
   padding:11px;
   border-radius:7px;
@@ -170,7 +170,7 @@ footer{text-align:center;color:#64748b;padding:24px}
   <input id="nome" placeholder="Digite seu nome (Ex: Dulcylea ou Quezia)" value="Dulcylea">
 
   <button class="orange" onclick="fazerLogin()" style="width:100%; margin-top:12px; padding:14px; font-size:16px;">Entrar no LogiSim</button>
-  <p class="small" style="margin-top:12px;">💡 Digite <strong>Quezia</strong> para aceder ao Painel da Instrutora.</p>
+  <p class="small" style="margin-top:12px;">💡 Digite <strong>Quezia</strong> para aceder ao Painel da Instrutora e criar desafios A.L.</p>
 </section>
 
 <section id="app" class="hidden">
@@ -178,7 +178,7 @@ footer{text-align:center;color:#64748b;padding:24px}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <div>
         <strong id="boasVindas"></strong>
-        <p class="small">Ambiente de simulação logística com RFID e WMS Virtual</p>
+        <p class="small">Simulação de Operações Logísticas Integradas</p>
       </div>
       <button class="secondary" style="width:auto" onclick="sair()">Sair</button>
     </div>
@@ -186,13 +186,12 @@ footer{text-align:center;color:#64748b;padding:24px}
 
   <nav id="menu">
     <button data-page="inicio" onclick="pagina('inicio')">Visão geral</button>
-    <button data-page="produtos" onclick="pagina('produtos')">Estoque Virtual WMS</button>
-    <button data-page="rfid" onclick="pagina('rfid')">Coletor RFID 📡</button>
-    <button data-page="armazenagem" onclick="pagina('armazenagem')">Endereçamento</button>
-    <button data-page="pedidos" onclick="pagina('pedidos')">Pedidos e picking</button>
-    <button data-page="expedicao" onclick="pagina('expedicao')">Expedição e carga</button>
-    <button data-page="rota" onclick="pagina('rota')">Roteirização e entrega</button>
-    <button id="menuInstrutor" data-page="instrutor" onclick="pagina('instrutor')">Painel do instrutor</button>
+    <button data-page="produtos" onclick="pagina('produtos')">Estoque WMS</button>
+    <button data-page="rfid" onclick="pagina('rfid')">Leitor RFID 📡</button>
+    <button data-page="documentos" onclick="pagina('documentos')">Documentos & NFs 📄</button>
+    <button data-page="desafios" onclick="pagina('desafios')">Desafios A.L. 📝</button>
+    <button data-page="rota" onclick="pagina('rota')">Roteirização</button>
+    <button id="menuInstrutor" data-page="instrutor" onclick="pagina('instrutor')">Painel Instrutora</button>
   </nav>
 
   <div id="conteudo"></div>
@@ -204,7 +203,7 @@ footer{text-align:center;color:#64748b;padding:24px}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const CHAVE="logisim_demo_v6";
+const CHAVE="logisim_demo_v7";
 
 let estado={};
 let usuario={nome:"",perfil:"aluno"};
@@ -219,9 +218,18 @@ function carregar(){
   }
 
   estado.produtos=estado.produtos||[
-    {id:1,nome:"Caixa de MDF 15mm",codigo:"PRD001",qtd:50,endereco:"A-01-01",lote:"LOT-2026-A",rfid:"RFID-9831204"},
-    {id:2,nome:"Caixa de Papelão Dupla",codigo:"PRD002",qtd:30,endereco:"A-01-02",lote:"LOT-2026-B",rfid:"RFID-4421098"},
-    {id:3,nome:"Fita Adesiva Industrial",codigo:"PRD003",qtd:20,endereco:"B-02-01",lote:"LOT-2026-C",rfid:"RFID-7712345"}
+    {id:1,nome:"Caixa de MDF 15mm",codigo:"PRD001",qtd:50,lote:"LOT-2026-A",rfid:"RFID-9831204"},
+    {id:2,nome:"Caixa de Papelão Dupla",codigo:"PRD002",qtd:30,lote:"LOT-2026-B",rfid:"RFID-4421098"},
+    {id:3,nome:"Fita Adesiva Industrial",codigo:"PRD003",qtd:20,lote:"LOT-2026-C",rfid:"RFID-7712345"}
+  ];
+
+  estado.documentos=estado.documentos||[
+    {id:1, tipo:"Nota Fiscal", numero:"NF-44920", desc:"Recebimento de 50 caixas de MDF", data:"26/10/2026"},
+    {id:2, tipo:"Termo de Avarias", numero:"AV-102", desc:"2 caixas amassadas no transporte", data:"26/10/2026"}
+  ];
+
+  estado.desafios=estado.desafios||[
+    {id:1, titulo:"Desafio 1: Divergência no Recebimento", pergunta:"A nota fiscal informa 50 itens, mas a contagem física apontou 48. Qual o procedimento correto no WMS?", resp:""}
   ];
 
   estado.pedidos=estado.pedidos||[
@@ -241,53 +249,38 @@ function salvar(){
 
 function escapar(s){
   return String(s).replace(/[&<>"']/g,c=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
   }[c]));
 }
 
 function registrar(etapa,detalhe){
   estado.registros.unshift({
-    aluno:usuario.nome,
-    etapa,
-    detalhe,
-    data:new Date().toLocaleString("pt-BR")
+    aluno:usuario.nome, etapa, detalhe, data:new Date().toLocaleString("pt-BR")
   });
   salvar();
 }
 
 function fazerLogin(){
   const nomeVal = document.getElementById("nome").value.trim();
-  if(!nomeVal){
-    alert("Digite seu nome.");
-    return;
-  }
+  if(!nomeVal){ alert("Digite seu nome."); return; }
 
   usuario.nome = nomeVal;
   usuario.perfil = nomeVal.toLowerCase().includes("quezia") ? "instrutor" : "aluno";
 
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-
   document.getElementById("boasVindas").textContent = 
     "Olá, " + usuario.nome + " — " + (usuario.perfil === "instrutor" ? "Instrutora (Quezia)" : "Assistente de Logística");
 
   const btnInst = document.getElementById("menuInstrutor");
-  if(btnInst){
-    btnInst.classList.toggle("hidden", usuario.perfil !== "instrutor");
-  }
+  if(btnInst) btnInst.classList.toggle("hidden", usuario.perfil !== "instrutor");
 
   registrar("Login", "Acesso à plataforma");
   pagina("inicio");
 }
 
 function sair(){
-  Object.values(mapasAtivos).forEach(m=>{
-    try{m.remove()}catch(e){}
-  });
+  Object.values(mapasAtivos).forEach(m=>{try{m.remove()}catch(e){}});
   mapasAtivos={};
   document.getElementById("app").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
@@ -302,31 +295,24 @@ function pagina(p){
   render();
 }
 
-function produto(id){
-  return estado.produtos.find(p=>p.id===Number(id));
-}
-
 function render(){
   const c=document.getElementById("conteudo");
   if(!c) return;
 
-  Object.values(mapasAtivos).forEach(m=>{
-    try{m.remove()}catch(e){}
-  });
+  Object.values(mapasAtivos).forEach(m=>{try{m.remove()}catch(e){}});
   mapasAtivos={};
 
   if(tela==="inicio"){
     c.innerHTML=`
       <div class="grid">
         <div class="stat">Produtos no WMS<strong>${estado.produtos.length}</strong></div>
-        <div class="stat">Tags RFID Ativas<strong>${estado.produtos.filter(p=>p.rfid).length}</strong></div>
-        <div class="stat">Pedidos<strong>${estado.pedidos.length}</strong></div>
+        <div class="stat">Documentos & NFs<strong>${estado.documentos.length}</strong></div>
+        <div class="stat">Desafios A.L.<strong>${estado.desafios.length}</strong></div>
         <div class="stat">Operações<strong>${estado.registros.length}</strong></div>
       </div>
       <div class="card">
-        <h2>Fluxo logístico integrado</h2>
-        <p>Utilize o menu acima para transitar entre o Estoque Virtual WMS, o Coletor RFID, Endereçamento, Pedidos, Expedição e Roteirização.</p>
-        <button onclick="pagina('produtos')">Acessar Estoque WMS</button>
+        <h2>Bem-vindo ao LogiSim Enterprise</h2>
+        <p>Plataforma completa de simulação para o Centro de Distribuição do SENAI Caxias. Utilize o menu acima para navegar pelas operações de WMS, Leitor RFID, Documentação Fiscal e Desafios A.L.</p>
       </div>`;
   }
 
@@ -338,7 +324,7 @@ function render(){
           <div><label>Código SKU</label><input id="codigo" placeholder="PRD004"></div>
           <div><label>Nome do produto</label><input id="nomeProduto" placeholder="Caixa especial"></div>
           <div><label>Quantidade</label><input id="quantidade" type="number" min="0" value="25"></div>
-          <div><label>Lote</label><input id="lote" placeholder="LOT-2026-X"></div>
+          <div><label>Lote</label><input id="lote" placeholder="LOT-2026"></div>
         </div>
         <button onclick="cadastrarProduto()">Cadastrar produto no WMS</button>
       </div>
@@ -348,56 +334,71 @@ function render(){
   if(tela==="rfid"){
     c.innerHTML=`
       <div class="card">
-        <h2>Coletor RFID Virtual 📡</h2>
-        <p>Aproxime a pistola leitora para inventariar os produtos por radiofrequência instantaneamente.</p>
+        <h2>Leitor RFID e Código de Barras Inteligente 📡</h2>
+        <p>Insira ou bipe o código da etiqueta (ex: <code>PRD001</code> ou a tag <code>RFID-9831204</code>) para identificar o produto e registrar no sistema na hora.</p>
+        
         <div class="rfid-box">
-          <button class="purple" onclick="simularLeituraRFID()" style="padding:15px; font-size:16px;">🔫 Disparar Leitura Coletor RFID</button>
+          <label><strong>Digite ou bipe o código de barras / RFID:</strong></label>
+          <input id="inputLeitor" placeholder="Ex: PRD001 ou RFID-9831204">
+          <button class="purple" onclick="processarLeituraRFID()" style="margin-top:10px;">Executar Leitura Óptica / RFID</button>
         </div>
         <div id="rfidResultado"></div>
       </div>
-      <div class="card"><h2>Tags Detectadas</h2>${tabelaProdutos()}</div>`;
+      <div class="card"><h2>Base de Tags RFID Registradas</h2>${tabelaProdutos()}</div>`;
   }
 
-  if(tela==="armazenagem"){
+  if(tela==="documentos"){
     c.innerHTML=`
       <div class="card">
-        <h2>Endereçamento e armazenagem</h2>
-        <label>Produto</label>
-        <select id="produtoEndereco">${opcoesProdutos()}</select>
+        <h2>Central de Documentos, Notas Fiscais e Avarias</h2>
+        <p>Anexe e registre documentos de transporte, NFs e termos de avaria ocorridos no armazém.</p>
         <div class="grid">
-          <div><label>Rua</label><input id="rua" value="A"></div>
-          <div><label>Estante</label><input id="estante" value="01"></div>
-          <div><label>Prateleira</label><input id="prateleira" value="01"></div>
-        </div>
-        <button onclick="guardarEndereco()">Salvar endereço</button>
-      </div>
-      <div class="card"><h2>Endereços Atuais</h2>${tabelaProdutos()}</div>`;
-  }
-
-  if(tela==="pedidos"){
-    c.innerHTML=`
-      <div class="card">
-        <h2>Pedidos e picking</h2>
-        ${estado.pedidos.map(p=>`
-          <div class="step">
-            <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
-            <p>Status: <strong>${escapar(p.status)}</strong></p>
-            ${p.status==="Novo"?`<button onclick="separar(${p.id})">Iniciar picking</button>`:""}
-            ${p.status==="Em separação"?`<button class="green" onclick="conferir(${p.id})">Conferir pedido</button>`:""}
+          <div>
+            <label>Tipo de Documento</label>
+            <select id="docTipo">
+              <option value="Nota Fiscal">Nota Fiscal (NF)</option>
+              <option value="Termo de Avarias">Termo de Avarias</option>
+              <option value="Romaneio">Romaneio de Carga</option>
+            </select>
           </div>
-        `).join("")}
+          <div><label>Número do Documento</label><input id="docNum" placeholder="NF-99213"></div>
+          <div><label>Descrição / Ocorrência</label><input id="docDesc" placeholder="Ex: Recebimento de insumos"></div>
+        </div>
+        <button onclick="adicionarDocumento()" style="margin-top:10px;">Anexar Documento ao Sistema</button>
+      </div>
+      <div class="card">
+        <h2>Documentos Anexados</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Tipo</th><th>Número</th><th>Descrição</th><th>Data</th></tr></thead>
+            <tbody>
+              ${estado.documentos.map(d=>`
+                <tr>
+                  <td><strong>${escapar(d.tipo)}</strong></td>
+                  <td>${escapar(d.numero)}</td>
+                  <td>${escapar(d.desc)}</td>
+                  <td>${escapar(d.data)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
       </div>`;
   }
 
-  if(tela==="expedicao"){
+  if(tela==="desafios"){
     c.innerHTML=`
       <div class="card">
-        <h2>Expedição e carregamento</h2>
-        ${estado.pedidos.map(p=>`
+        <h2>Desafios Práticos Logísticos (A.L.)</h2>
+        <p>Resolva os desafios práticos criados pela instrutora para testar seus conhecimentos operacionais.</p>
+        
+        ${estado.desafios.map(des=>`
           <div class="step">
-            Pedido #${p.id} — Status: <strong>${escapar(p.status)}</strong>
-            ${p.status==="Conferido"?`<button onclick="expedir(${p.id})">Liberar expedição</button>`:""}
-            ${p.status==="Expedido"?`<button onclick="carregarPedido(${p.id})">Confirmar carregamento</button>`:""}
+            <strong>${escapar(des.titulo)}</strong>
+            <p>${escapar(des.pergunta)}</p>
+            <label>Sua resposta / procedimento:</label>
+            <textarea id="respDesafio${des.id}" placeholder="Escreva sua resposta técnica...">${des.resp||""}</textarea>
+            <button class="green" onclick="enviarRespostaDesafio(${des.id})">Enviar Resposta para a Instrutora</button>
           </div>
         `).join("")}
       </div>`;
@@ -406,18 +407,17 @@ function render(){
   if(tela==="rota"){
     c.innerHTML=`
       <div class="card">
-        <h2>Roteirização e entrega</h2>
+        <h2>Roteirização e Entrega</h2>
         ${estado.pedidos.map(p=>`
           <div class="step">
             <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
-            ${p.status==="Carregado"?`
-              <label>Rota</label>
-              <select id="rota${p.id}">
-                <option>CD → Cliente</option>
-                <option>CD → Ponto de distribuição → Cliente</option>
-              </select>
-              <button class="orange" onclick="iniciarRota(${p.id})">Gerar mapa da rota</button>
-            `:""}
+            <p>Status: <strong>${escapar(p.status)}</strong></p>
+            <label>Rota</label>
+            <select id="rota${p.id}">
+              <option>CD → Cliente</option>
+              <option>CD → Ponto de distribuição → Cliente</option>
+            </select>
+            <button class="orange" onclick="iniciarRota(${p.id})">Gerar mapa da rota</button>
             <div id="mapa${p.id}" class="mapa-rota"></div>
             <div id="legenda${p.id}" class="mapa-legenda"></div>
             ${p.status==="Em rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
@@ -431,8 +431,19 @@ function render(){
 
   if(tela==="instrutor"){
     c.innerHTML=`
+      <div class="card" style="border-left: 5px solid var(--orange);">
+        <h2>Painel de Gestão da Instrutora (Quezia)</h2>
+        <p>Crie novos desafios práticos (A.L.) para os alunos resolverem na plataforma.</p>
+        
+        <label>Título do Desafio A.L.</label>
+        <input id="novoDesafioTitulo" placeholder="Ex: Desafio 2: Cálculo de Cubagem">
+        <label>Pergunta ou Enunciado Prático</label>
+        <textarea id="novoDesafioPergunta" placeholder="Descreva o cenário e a pergunta operacional..."></textarea>
+        <button class="orange" onclick="criarDesafioInstrutora()">Publicar Desafio para a Turma</button>
+      </div>
+
       <div class="card">
-        <h2>Painel da Instrutora (Quezia)</h2>
+        <h2>Relatório Geral da Turma</h2>
         <p>Total de operações registradas: <strong>${estado.registros.length}</strong></p>
         <button class="secondary" onclick="exportar()">Exportar Histórico CSV</button>
       </div>`;
@@ -441,15 +452,11 @@ function render(){
 
 function tabelaProdutos(){
   return `<div class="tablewrap"><table>
-    <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Lote</th><th>RFID</th><th>Endereço</th></tr></thead>
+    <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Lote</th><th>RFID Tag</th></tr></thead>
     <tbody>${estado.produtos.map(p=>`
-      <tr><td>${escapar(p.codigo)}</td><td>${escapar(p.nome)}</td><td>${p.qtd}</td><td>${escapar(p.lote)}</td><td><code>${escapar(p.rfid)}</code></td><td>${escapar(p.endereco||"Não endereçado")}</td></tr>
+      <tr><td>${escapar(p.codigo)}</td><td>${escapar(p.nome)}</td><td>${p.qtd}</td><td>${escapar(p.lote)}</td><td><code>${escapar(p.rfid)}</code></td></tr>
     `).join("")}</tbody>
   </table></div>`;
-}
-
-function opcoesProdutos(){
-  return estado.produtos.map(p=>`<option value="${p.id}">${escapar(p.nome)} (Estoque: ${p.qtd})</option>`).join("");
 }
 
 function cadastrarProduto(){
@@ -458,31 +465,64 @@ function cadastrarProduto(){
   const qtd=Number(document.getElementById("quantidade").value);
   const lote=document.getElementById("lote").value.trim()||"LOT-2026";
   if(!codigo||!nome) return alert("Preencha os campos.");
-  estado.produtos.push({id:estado.proximoId++, codigo, nome, qtd, lote, rfid:"RFID-"+Math.floor(100000+Math.random()*900000), endereco:""});
-  registrar("WMS","Cadastrou "+nome);
+  const rfidTag="RFID-"+Math.floor(100000+Math.random()*900000);
+  estado.produtos.push({id:estado.proximoId++, codigo, nome, qtd, lote, rfid:rfidTag});
+  registrar("WMS","Cadastrou "+nome+" com RFID "+rfidTag);
   salvar();
   pagina("produtos");
 }
 
-function simularLeituraRFID(){
-  const res=document.getElementById("rfidResultado");
-  if(res) res.innerHTML=`<div class="notice">📡 Coletor RFID leu ${estado.produtos.length} tags com sucesso!</div>`;
-  registrar("RFID","Leitura em lote executada");
+function processarLeituraRFID(){
+  const val = document.getElementById("inputLeitor").value.trim().toUpperCase();
+  const res = document.getElementById("rfidResultado");
+  if(!val) return alert("Digite um código de barras ou tag RFID.");
+
+  const prod = estado.produtos.find(p => p.codigo.toUpperCase() === val || p.rfid.toUpperCase() === val);
+  if(prod){
+    res.innerHTML = `<div class="notice">✅ <strong>Produto Identificado via Leitor:</strong> ${prod.nome} | Lote: ${prod.lote} | Qtd: ${prod.qtd} un | Tag: ${prod.rfid}</div>`;
+    registrar("Leitor RFID", "Leitura bem-sucedida do produto: "+prod.nome);
+  } else {
+    res.innerHTML = `<div class="warning">⚠️ Código '${val}' não encontrado no cadastro WMS virtual.</div>`;
+  }
 }
 
-function guardarEndereco(){
-  const p=produto(document.getElementById("produtoEndereco").value);
-  if(!p) return;
-  p.endereco=document.getElementById("rua").value+"-"+document.getElementById("estante").value+"-"+document.getElementById("prateleira").value;
-  registrar("Armazenagem","Endereçou "+p.nome);
+function adicionarDocumento(){
+  const tipo = document.getElementById("docTipo").value;
+  const num = document.getElementById("docNum").value.trim();
+  const desc = document.getElementById("docDesc").value.trim();
+  if(!num || !desc) return alert("Preencha todos os campos do documento.");
+
+  estado.documentos.push({
+    id: Date.now(), tipo, numero: num, desc, data: new Date().toLocaleDateString("pt-BR")
+  });
+  registrar("Documentação", `Anexou ${tipo} (${num})`);
   salvar();
-  pagina("armazenagem");
+  pagina("documentos");
 }
 
-function separar(id){ const p=estado.pedidos.find(x=>x.id===id); p.status="Em separação"; salvar(); render(); }
-function conferir(id){ const p=estado.pedidos.find(x=>x.id===id); p.status="Conferido"; salvar(); pagina("pedidos"); }
-function expedir(id){ const p=estado.pedidos.find(x=>x.id===id); p.status="Expedido"; salvar(); pagina("expedicao"); }
-function carregarPedido(id){ const p=estado.pedidos.find(x=>x.id===id); p.status="Carregado"; salvar(); pagina("expedicao"); }
+function criarDesafioInstrutora(){
+  const titulo = document.getElementById("novoDesafioTitulo").value.trim();
+  const pergunta = document.getElementById("novoDesafioPergunta").value.trim();
+  if(!titulo || !pergunta) return alert("Preencha o título e o enunciado do desafio.");
+
+  estado.desafios.push({
+    id: Date.now(), titulo, pergunta, resp: ""
+  });
+  salvar();
+  alert("Desafio A.L. criado e publicado para os alunos com sucesso!");
+  pagina("instrutor");
+}
+
+function enviarRespostaDesafio(id){
+  const txt = document.getElementById("respDesafio"+id).value.trim();
+  if(!txt) return alert("Escreva sua resposta antes de enviar.");
+  const des = estado.desafios.find(d => d.id === id);
+  if(des) des.resp = txt;
+  registrar("Desafios A.L.", `Respondeu ao desafio: ${des.titulo}`);
+  salvar();
+  alert("Resposta enviada e registrada com sucesso!");
+}
+
 function iniciarRota(id){
   const p=estado.pedidos.find(x=>x.id===id);
   const sel=document.getElementById("rota"+id);
