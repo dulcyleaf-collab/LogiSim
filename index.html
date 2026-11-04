@@ -188,7 +188,7 @@ footer{text-align:center;color:#64748b;padding:24px}
     <button data-page="inicio" onclick="pagina('inicio')">Visão geral</button>
     <button data-page="produtos" onclick="pagina('produtos')">Estoque WMS</button>
     <button data-page="rfid" onclick="pagina('rfid')">Leitor RFID 📡</button>
-    <button data-page="documentos" onclick="pagina('documentos')">Documentos & NFs 📄</button>
+    <button data-page="documentos" onclick="pagina('documentos')">Emitir NF & Anexar 📄</button>
     <button data-page="desafios" onclick="pagina('desafios')">Desafios A.L. 📝</button>
     <button data-page="rota" onclick="pagina('rota')">Roteirização</button>
     <button id="menuInstrutor" data-page="instrutor" onclick="pagina('instrutor')">Painel Instrutora</button>
@@ -203,7 +203,7 @@ footer{text-align:center;color:#64748b;padding:24px}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const CHAVE="logisim_demo_v7";
+const CHAVE="logisim_demo_v8";
 
 let estado={};
 let usuario={nome:"",perfil:"aluno"};
@@ -224,8 +224,7 @@ function carregar(){
   ];
 
   estado.documentos=estado.documentos||[
-    {id:1, tipo:"Nota Fiscal", numero:"NF-44920", desc:"Recebimento de 50 caixas de MDF", data:"26/10/2026"},
-    {id:2, tipo:"Termo de Avarias", numero:"AV-102", desc:"2 caixas amassadas no transporte", data:"26/10/2026"}
+    {id:1, numeroNF:"NF-2026-001", emitente:"Fornecedor Caxias Ind.", cnpj:"33.441.221/0001-99", valor:"R$ 4.500,00", desc:"50 caixas de MDF para o CD", data:"26/10/2026"}
   ];
 
   estado.desafios=estado.desafios||[
@@ -306,13 +305,13 @@ function render(){
     c.innerHTML=`
       <div class="grid">
         <div class="stat">Produtos no WMS<strong>${estado.produtos.length}</strong></div>
-        <div class="stat">Documentos & NFs<strong>${estado.documentos.length}</strong></div>
+        <div class="stat">Notas Fiscais Emitidas<strong>${estado.documentos.length}</strong></div>
         <div class="stat">Desafios A.L.<strong>${estado.desafios.length}</strong></div>
         <div class="stat">Operações<strong>${estado.registros.length}</strong></div>
       </div>
       <div class="card">
         <h2>Bem-vindo ao LogiSim Enterprise</h2>
-        <p>Plataforma completa de simulação para o Centro de Distribuição do SENAI Caxias. Utilize o menu acima para navegar pelas operações de WMS, Leitor RFID, Documentação Fiscal e Desafios A.L.</p>
+        <p>Plataforma completa de simulação para o Centro de Distribuição do SENAI Caxias. Utilize o menu acima para emitir Notas Fiscais, gerenciar WMS e responder desafios práticos.</p>
       </div>`;
   }
 
@@ -349,33 +348,34 @@ function render(){
 
   if(tela==="documentos"){
     c.innerHTML=`
-      <div class="card">
-        <h2>Central de Documentos, Notas Fiscais e Avarias</h2>
-        <p>Anexe e registre documentos de transporte, NFs e termos de avaria ocorridos no armazém.</p>
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <h2>Emissão de Nota Fiscal (NF) & Anexo ao Sistema</h2>
+        <p>O aluno deve preencher os dados oficiais da Nota Fiscal de entrada/saída da carga para anexar ao processo logístico.</p>
+        
         <div class="grid">
-          <div>
-            <label>Tipo de Documento</label>
-            <select id="docTipo">
-              <option value="Nota Fiscal">Nota Fiscal (NF)</option>
-              <option value="Termo de Avarias">Termo de Avarias</option>
-              <option value="Romaneio">Romaneio de Carga</option>
-            </select>
-          </div>
-          <div><label>Número do Documento</label><input id="docNum" placeholder="NF-99213"></div>
-          <div><label>Descrição / Ocorrência</label><input id="docDesc" placeholder="Ex: Recebimento de insumos"></div>
+          <div><label>Número da NF</label><input id="nfNumero" placeholder="NF-2026-999"></div>
+          <div><label>Emitente / Fornecedor</label><input id="nfEmitente" placeholder="Ex: Indústria Caxias Ltda"></div>
+          <div><label>CNPJ do Emitente</label><input id="nfCnpj" placeholder="00.000.000/0001-00"></div>
+          <div><label>Valor Total da Carga (R$)</label><input id="nfValor" placeholder="R$ 1.500,00"></div>
         </div>
-        <button onclick="adicionarDocumento()" style="margin-top:10px;">Anexar Documento ao Sistema</button>
+        <label>Descrição dos Itens / Observação da Carga</label>
+        <textarea id="nfDesc" placeholder="Ex: 30 unidades de chapas de MDF conferidas e descarregadas no CD."></textarea>
+        
+        <button class="orange" onclick="produzirEAnexarNF()" style="margin-top:10px;">Gerar e Anexar Nota Fiscal ao Processo</button>
       </div>
+
       <div class="card">
-        <h2>Documentos Anexados</h2>
+        <h2>Notas Fiscais Anexadas e Emitidas</h2>
         <div class="tablewrap">
           <table>
-            <thead><tr><th>Tipo</th><th>Número</th><th>Descrição</th><th>Data</th></tr></thead>
+            <thead><tr><th>Número NF</th><th>Emitente</th><th>CNPJ</th><th>Valor</th><th>Descrição</th><th>Data</th></tr></thead>
             <tbody>
               ${estado.documentos.map(d=>`
                 <tr>
-                  <td><strong>${escapar(d.tipo)}</strong></td>
-                  <td>${escapar(d.numero)}</td>
+                  <td><strong>${escapar(d.numeroNF)}</strong></td>
+                  <td>${escapar(d.emitente)}</td>
+                  <td>${escapar(d.cnpj)}</td>
+                  <td>${escapar(d.valor)}</td>
                   <td>${escapar(d.desc)}</td>
                   <td>${escapar(d.data)}</td>
                 </tr>
@@ -486,17 +486,24 @@ function processarLeituraRFID(){
   }
 }
 
-function adicionarDocumento(){
-  const tipo = document.getElementById("docTipo").value;
-  const num = document.getElementById("docNum").value.trim();
-  const desc = document.getElementById("docDesc").value.trim();
-  if(!num || !desc) return alert("Preencha todos os campos do documento.");
+function produzirEAnexarNF(){
+  const numeroNF = document.getElementById("nfNumero").value.trim();
+  const emitente = document.getElementById("nfEmitente").value.trim();
+  const cnpj = document.getElementById("nfCnpj").value.trim();
+  const valor = document.getElementById("nfValor").value.trim();
+  const desc = document.getElementById("nfDesc").value.trim();
+
+  if(!numeroNF || !emitente || !cnpj || !valor || !desc){
+    alert("Preencha todos os campos da Nota Fiscal para poder anexá-la.");
+    return;
+  }
 
   estado.documentos.push({
-    id: Date.now(), tipo, numero: num, desc, data: new Date().toLocaleDateString("pt-BR")
+    id: Date.now(), numeroNF, emitente, cnpj, valor, desc, data: new Date().toLocaleDateString("pt-BR")
   });
-  registrar("Documentação", `Anexou ${tipo} (${num})`);
+  registrar("Documentação Fiscal", `Produziu e anexou a NF ${numeroNF} (${emitente})`);
   salvar();
+  alert("Nota Fiscal produzida e anexada ao processo logístico com sucesso!");
   pagina("documentos");
 }
 
