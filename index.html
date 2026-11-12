@@ -373,3 +373,192 @@ function render(){
       </div>`;
     atualizarFichaEndereco();
   }
+  if(tela==="rfid"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Leitor RFID e Código de Barras Inteligente 📡</h2>
+        <p>Insira ou bipe o código da etiqueta (ex: <code>PRD001</code> ou a tag <code>RFID-9831204</code>) para identificar o produto e registrar no sistema na hora.</p>
+
+        <div class="rfid-box">
+          <label><strong>Digite ou bipe o código de barras / RFID:</strong></label>
+          <input id="inputLeitor" placeholder="Ex: PRD001 ou RFID-9831204">
+          <button class="purple" onclick="processarLeituraRFID()" style="margin-top:10px;">Executar Leitura Óptica / RFID</button>
+        </div>
+        <div id="rfidResultado"></div>
+      </div>
+      <div class="card"><h2>Base de Tags RFID Registradas</h2>${tabelaProdutos()}</div>`;
+  }
+
+  if(tela==="documentos"){
+    c.innerHTML=`
+      <div class="card" style="border-left:5px solid var(--blue);">
+        <h2>Emissão de Nota Fiscal (NF) & Anexo ao Sistema</h2>
+        <p>O aluno deve preencher os dados oficiais da Nota Fiscal de entrada/saída da carga para anexar ao processo logístico.</p>
+
+        <div class="grid">
+          <div><label>Número da NF</label><input id="nfNumero" placeholder="NF-2026-999"></div>
+          <div><label>Emitente / Fornecedor</label><input id="nfEmitente" placeholder="Ex: Indústria Caxias Ltda"></div>
+          <div><label>CNPJ do Emitente</label><input id="nfCnpj" placeholder="00.000.000/0001-00"></div>
+          <div><label>Valor Total da Carga (R$)</label><input id="nfValor" placeholder="R$ 1.500,00"></div>
+        </div>
+        <label>Descrição dos Itens / Observação da Carga</label>
+        <textarea id="nfDesc" placeholder="Ex: 30 unidades de chapas de MDF conferidas e descarregadas no CD."></textarea>
+
+        <button class="orange" onclick="produzirEAnexarNF()" style="margin-top:10px;">Gerar e Anexar Nota Fiscal ao Processo</button>
+      </div>
+
+      <div class="card">
+        <h2>Notas Fiscais Anexadas e Emitidas</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Número NF</th><th>Emitente</th><th>CNPJ</th><th>Valor</th><th>Descrição</th><th>Data</th></tr></thead>
+            <tbody>
+              ${estado.documentos.map(d=>`
+                <tr>
+                  <td><strong>${escapar(d.numeroNF)}</strong></td>
+                  <td>${escapar(d.emitente)}</td>
+                  <td>${escapar(d.cnpj)}</td>
+                  <td>${escapar(d.valor)}</td>
+                  <td>${escapar(d.desc)}</td>
+                  <td>${escapar(d.data)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  if(tela==="desafios"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Desafios Práticos Logísticos (A.L.)</h2>
+        <p>Resolva os desafios práticos criados pela instrutora para testar seus conhecimentos operacionais.</p>
+
+        ${estado.desafios.map(des=>`
+          <div class="step">
+            <strong>${escapar(des.titulo)}</strong>
+            <p>${escapar(des.pergunta)}</p>
+            <label>Sua resposta / procedimento:</label>
+            <textarea id="respDesafio${des.id}" placeholder="Escreva sua resposta técnica...">${des.resp||""}</textarea>
+            <button class="green" onclick="enviarRespostaDesafio(${des.id})">Enviar Resposta para a Instrutora</button>
+          </div>
+        `).join("")}
+      </div>`;
+  }
+
+  if(tela==="rota"){
+    c.innerHTML=`
+      <div class="card">
+        <h2>Roteirização e Entrega</h2>
+        ${estado.pedidos.map(p=>`
+          <div class="step">
+            <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
+            <p>Status: <strong>${escapar(p.status)}</strong></p>
+            <label>Rota</label>
+            <select id="rota${p.id}">
+              <option>CD → Cliente</option>
+              <option>CD → Ponto de distribuição → Cliente</option>
+            </select>
+            <button class="orange" onclick="iniciarRota(${p.id})">Gerar mapa da rota</button>
+            <div id="mapa${p.id}" class="mapa-rota"></div>
+            <div id="legenda${p.id}" class="mapa-legenda"></div>
+            ${p.status==="Em rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
+          </div>
+        `).join("")}
+      </div>`;
+    setTimeout(()=>{
+      estado.pedidos.filter(p=>p.status==="Em rota"||p.status==="Entregue"||p.status==="Carregado").forEach(p=>desenharMapaRota(p));
+    },200);
+  }
+
+  if(tela==="instrutor"){
+    c.innerHTML=`
+      <div class="card" style="border-left: 5px solid var(--orange);">
+        <h2>Painel de Gestão da Instrutora (Quezia)</h2>
+        <p>Crie novos desafios práticos (A.L.) para os alunos resolverem na plataforma.</p>
+
+        <label>Título do Desafio A.L.</label>
+        <input id="novoDesafioTitulo" placeholder="Ex: Desafio 2: Cálculo de Cubagem">
+        <label>Pergunta ou Enunciado Prático</label>
+        <textarea id="novoDesafioPergunta" placeholder="Descreva o cenário e a pergunta operacional..."></textarea>
+        <button class="orange" onclick="criarDesafioInstrutora()">Publicar Desafio para a Turma</button>
+      </div>
+
+      <div class="card">
+        <h2>Relatório Geral da Turma</h2>
+        <p>Total de operações registradas: <strong>${estado.registros.length}</strong></p>
+        <button class="secondary" onclick="exportar()">Exportar Histórico CSV</button>
+      </div>`;
+  }
+}
+
+function tabelaProdutos(){
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Lote</th><th>RFID Tag</th></tr></thead>
+    <tbody>${estado.produtos.map(p=>`
+      <tr><td>${escapar(p.codigo)}</td><td>${escapar(p.nome)}</td><td>${p.qtd}</td><td>${escapar(p.lote)}</td><td><code>${escapar(p.rfid)}</code></td></tr>
+    `).join("")}</tbody>
+  </table></div>`;
+}
+
+function enderecoAlvo(produto){
+  // Endereços didáticos de referência para a atividade.
+  const alvos={
+    PRD001:"A-01-01-01",
+    PRD002:"B-02-02-02",
+    PRD003:"C-03-03-03"
+  };
+  if(alvos[produto.codigo]) return alvos[produto.codigo];
+  const indice=Math.max(0,estado.produtos.findIndex(p=>p.id===produto.id));
+  const ruas=["A","B","C"];
+  const n=indice%12;
+  return `${ruas[Math.floor(n/4)]}-${String((indice%4)+1).padStart(2,"0")}-${String((Math.floor(indice/3)%3)+1).padStart(2,"0")}-${String((indice%4)+1).padStart(2,"0")}`;
+}
+
+function atualizarFichaEndereco(){
+  const sel=document.getElementById("produtoEndereco");
+  const ficha=document.getElementById("fichaEndereco");
+  if(!sel||!ficha) return;
+  const produto=estado.produtos.find(p=>String(p.id)===String(sel.value));
+  if(!produto){ ficha.innerHTML='<p>Cadastre um produto no Estoque WMS para iniciar a atividade.</p>'; return; }
+  const alvo=enderecoAlvo(produto);
+  ficha.innerHTML=`<strong>Ficha de armazenagem</strong>
+    <p><strong>Produto:</strong> ${escapar(produto.nome)} (${escapar(produto.codigo)})</p>
+    <p><strong>Quantidade:</strong> ${produto.qtd} unidades</p>
+    <p><strong>Endereço solicitado:</strong> <span style="font-size:18px;color:var(--navy);font-weight:bold;">${alvo}</span></p>
+    <p class="small">Monte esse endereço nos quatro campos e confirme a armazenagem.</p>
+    ${produto.endereco?`<p class="notice">Endereço atualmente registrado: <strong>${escapar(produto.endereco)}</strong></p>`:""}`;
+}
+
+function confirmarEnderecamento(){
+  const sel=document.getElementById("produtoEndereco");
+  const produto=estado.produtos.find(p=>String(p.id)===String(sel?.value));
+  const rua=document.getElementById("endRua")?.value;
+  const modulo=document.getElementById("endModulo")?.value;
+  const nivel=document.getElementById("endNivel")?.value;
+  const posicao=document.getElementById("endPosicao")?.value;
+  const resultado=document.getElementById("resultadoEndereco");
+  if(!produto) return alert("Cadastre ou selecione um produto.");
+  if(!rua||!modulo||!nivel||!posicao) return alert("Selecione rua, módulo, nível e posição.");
+  const endereco=`${rua}-${modulo}-${nivel}-${posicao}`;
+  const correto=endereco===enderecoAlvo(produto);
+  produto.endereco=endereco;
+  estado.enderecamentos.unshift({
+    aluno:usuario.nome, produto:produto.nome, codigo:produto.codigo,
+    endereco, correto, data:new Date().toLocaleString("pt-BR")
+  });
+  registrar("Endereçamento", `Endereçou ${produto.nome} (${produto.codigo}) em ${endereco} — ${correto?"correto":"diferente do endereço solicitado"}`);
+  salvar();
+  resultado.innerHTML=correto
+    ? `<div class="notice">✅ <strong>Endereçamento correto!</strong> ${escapar(produto.nome)} foi registrado no endereço ${endereco}.</div>`
+    : `<div class="warning">⚠️ Endereço registrado: <strong>${endereco}</strong>. Confira a ficha: o endereço solicitado para este produto é <strong>${enderecoAlvo(produto)}</strong>. Você pode corrigir selecionando novamente os campos.</div>`;
+  // Atualiza a tabela e mantém o produto selecionado.
+  const valor=sel.value;
+  pagina("enderecamento");
+  const novoSel=document.getElementById("produtoEndereco");
+  if(novoSel) novoSel.value=valor;
+  atualizarFichaEndereco();
+  const novoResultado=document.getElementById("resultadoEndereco");
+  if(novoResultado) novoResultado.innerHTML=resultado.innerHTML;
+  }
