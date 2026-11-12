@@ -562,3 +562,128 @@ function confirmarEnderecamento(){
   const novoResultado=document.getElementById("resultadoEndereco");
   if(novoResultado) novoResultado.innerHTML=resultado.innerHTML;
   }
+function cadastrarProduto(){
+  const codigo=document.getElementById("codigo").value.trim();
+  const nome=document.getElementById("nomeProduto").value.trim();
+  const qtd=Number(document.getElementById("quantidade").value);
+  const lote=document.getElementById("lote").value.trim()||"LOT-2026";
+  if(!codigo||!nome) return alert("Preencha os campos.");
+  const rfidTag="RFID-"+Math.floor(100000+Math.random()*900000);
+  estado.produtos.push({id:estado.proximoId++, codigo, nome, qtd, lote, rfid:rfidTag});
+  registrar("WMS","Cadastrou "+nome+" com RFID "+rfidTag);
+  salvar();
+  pagina("produtos");
+}
+
+function processarLeituraRFID(){
+  const val = document.getElementById("inputLeitor").value.trim().toUpperCase();
+  const res = document.getElementById("rfidResultado");
+  if(!val) return alert("Digite um código de barras ou tag RFID.");
+
+  const prod = estado.produtos.find(p => p.codigo.toUpperCase() === val || p.rfid.toUpperCase() === val);
+  if(prod){
+    res.innerHTML = `<div class="notice">✅ <strong>Produto Identificado via Leitor:</strong> ${prod.nome} | Lote: ${prod.lote} | Qtd: ${prod.qtd} un | Tag: ${prod.rfid}</div>`;
+    registrar("Leitor RFID", "Leitura bem-sucedida do produto: "+prod.nome);
+  } else {
+    res.innerHTML = `<div class="warning">⚠️ Código '${val}' não encontrado no cadastro WMS virtual.</div>`;
+  }
+}
+
+function produzirEAnexarNF(){
+  const numeroNF = document.getElementById("nfNumero").value.trim();
+  const emitente = document.getElementById("nfEmitente").value.trim();
+  const cnpj = document.getElementById("nfCnpj").value.trim();
+  const valor = document.getElementById("nfValor").value.trim();
+  const desc = document.getElementById("nfDesc").value.trim();
+
+  if(!numeroNF || !emitente || !cnpj || !valor || !desc){
+    alert("Preencha todos os campos da Nota Fiscal para poder anexá-la.");
+    return;
+  }
+
+  estado.documentos.push({
+    id: Date.now(), numeroNF, emitente, cnpj, valor, desc, data: new Date().toLocaleDateString("pt-BR")
+  });
+  registrar("Documentação Fiscal", `Produziu e anexou a NF ${numeroNF} (${emitente})`);
+  salvar();
+  alert("Nota Fiscal produzida e anexada ao processo logístico com sucesso!");
+  pagina("documentos");
+}
+
+function criarDesafioInstrutora(){
+  const titulo = document.getElementById("novoDesafioTitulo").value.trim();
+  const pergunta = document.getElementById("novoDesafioPergunta").value.trim();
+  if(!titulo || !pergunta) return alert("Preencha o título e o enunciado do desafio.");
+
+  estado.desafios.push({
+    id: Date.now(), titulo, pergunta, resp: ""
+  });
+  salvar();
+  alert("Desafio A.L. criado e publicado para os alunos com sucesso!");
+  pagina("instrutor");
+}
+
+function enviarRespostaDesafio(id){
+  const txt = document.getElementById("respDesafio"+id).value.trim();
+  if(!txt) return alert("Escreva sua resposta antes de enviar.");
+  const des = estado.desafios.find(d => d.id === id);
+  if(des) des.resp = txt;
+  registrar("Desafios A.L.", `Respondeu ao desafio: ${des.titulo}`);
+  salvar();
+  alert("Resposta enviada e registrada com sucesso!");
+}
+
+function iniciarRota(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  const sel=document.getElementById("rota"+id);
+  if(sel) p.rota=sel.value;
+  p.status="Em rota";
+  salvar();
+  pagina("rota");
+}
+
+function pontosDaRota(p){
+  const cd={nome:"CD Caxias", lat:-22.7858, lng:-43.3117};
+  const ponto={nome:"Piabetá", lat:-22.7798, lng:-43.3040};
+  const cliente={nome:"Magé", lat:-22.7728, lng:-43.2970};
+  if(p.rota&&p.rota.includes("Ponto")) return [cd, ponto, cliente];
+  return [cd, cliente];
+}
+
+function desenharMapaRota(p){
+  const el=document.getElementById("mapa"+p.id);
+  if(!el || typeof L==="undefined") return;
+  const pts=pontosDaRota(p);
+  const mapa=L.map(el).setView([pts[0].lat, pts[0].lng], 13);
+  mapasAtivos[p.id]=mapa;
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(mapa);
+  const coords=pts.map(pt=>{
+    L.marker([pt.lat, pt.lng]).addTo(mapa).bindPopup(pt.nome);
+    return [pt.lat, pt.lng];
+  });
+  L.polyline(coords,{color:"#f97316", weight:5}).addTo(mapa);
+  mapa.fitBounds(coords,{padding:[20,20]});
+  const leg=document.getElementById("legenda"+p.id);
+  if(leg) leg.innerHTML=pts.map((pt,i)=>`<span><strong>${i+1}.</strong> ${pt.nome}</span>`).join("");
+  setTimeout(()=>mapa.invalidateSize(),150);
+}
+
+function entregar(id){
+  const p=estado.pedidos.find(x=>x.id===id);
+  p.status="Entregue";
+  salvar();
+  pagina("rota");
+}
+
+function exportar(){
+  const csv="\uFEFF"+["Aluno;Etapa;Operação;Data", ...estado.registros.map(r=>`"${r.aluno}";"${r.etapa}";"${r.detalhe}";"${r.data}"`)].join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));
+  a.download="historico.csv";
+  a.click();
+}
+
+carregar();
+</script>
+</body>
+</html>
