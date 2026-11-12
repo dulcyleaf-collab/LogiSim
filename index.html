@@ -187,6 +187,7 @@ footer{text-align:center;color:#64748b;padding:24px}
   <nav id="menu">
     <button data-page="inicio" onclick="pagina('inicio')">Visão geral</button>
     <button data-page="produtos" onclick="pagina('produtos')">Estoque WMS</button>
+    <button data-page="enderecamento" onclick="pagina('enderecamento')">Endereçamento 📍</button>
     <button data-page="rfid" onclick="pagina('rfid')">Leitor RFID 📡</button>
     <button data-page="documentos" onclick="pagina('documentos')">Emitir NF & Anexar 📄</button>
     <button data-page="desafios" onclick="pagina('desafios')">Desafios A.L. 📝</button>
@@ -237,6 +238,8 @@ function carregar(){
 
   estado.registros=estado.registros||[];
   estado.proximoId=estado.proximoId||4;
+  estado.enderecamentos=estado.enderecamentos||[];
+  estado.produtos.forEach(p=>{ if(typeof p.endereco==="undefined") p.endereco=""; });
   salvar();
 }
 
@@ -268,7 +271,7 @@ function fazerLogin(){
 
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  document.getElementById("boasVindas").textContent = 
+  document.getElementById("boasVindas").textContent =
     "Olá, " + usuario.nome + " — " + (usuario.perfil === "instrutor" ? "Instrutora (Quezia)" : "Assistente de Logística");
 
   const btnInst = document.getElementById("menuInstrutor");
@@ -330,252 +333,43 @@ function render(){
       <div class="card"><h2>Inventário atual</h2>${tabelaProdutos()}</div>`;
   }
 
-  if(tela==="rfid"){
+  if(tela==="enderecamento"){
+    const produtosSemEndereco=estado.produtos.filter(p=>!p.endereco);
+    const produtoInicial=produtosSemEndereco[0]||estado.produtos[0];
+    const produtoOpcoes=estado.produtos.map(p=>`<option value="${p.id}">${escapar(p.codigo)} — ${escapar(p.nome)}</option>`).join("");
     c.innerHTML=`
-      <div class="card">
-        <h2>Leitor RFID e Código de Barras Inteligente 📡</h2>
-        <p>Insira ou bipe o código da etiqueta (ex: <code>PRD001</code> ou a tag <code>RFID-9831204</code>) para identificar o produto e registrar no sistema na hora.</p>
-        
-        <div class="rfid-box">
-          <label><strong>Digite ou bipe o código de barras / RFID:</strong></label>
-          <input id="inputLeitor" placeholder="Ex: PRD001 ou RFID-9831204">
-          <button class="purple" onclick="processarLeituraRFID()" style="margin-top:10px;">Executar Leitura Óptica / RFID</button>
+      <div class="card" style="border-left:5px solid var(--orange);">
+        <h2>📍 Endereçamento de Estoque</h2>
+        <p>Atividade prática: identifique o produto e registre sua localização no armazém. O endereço é formado por <strong>Rua, Módulo, Nível e Posição</strong>.</p>
+        <div class="notice">
+          <strong>Como fazer:</strong> selecione um produto, consulte o endereço indicado na ficha da atividade, escolha cada parte do endereço nos campos abaixo e confirme a armazenagem.
         </div>
-        <div id="rfidResultado"></div>
-      </div>
-      <div class="card"><h2>Base de Tags RFID Registradas</h2>${tabelaProdutos()}</div>`;
-  }
-
-  if(tela==="documentos"){
-    c.innerHTML=`
-      <div class="card" style="border-left:5px solid var(--blue);">
-        <h2>Emissão de Nota Fiscal (NF) & Anexo ao Sistema</h2>
-        <p>O aluno deve preencher os dados oficiais da Nota Fiscal de entrada/saída da carga para anexar ao processo logístico.</p>
-        
+        <label>Produto para endereçar</label>
+        <select id="produtoEndereco" onchange="atualizarFichaEndereco()">${produtoOpcoes}</select>
+        <div id="fichaEndereco" class="step"></div>
         <div class="grid">
-          <div><label>Número da NF</label><input id="nfNumero" placeholder="NF-2026-999"></div>
-          <div><label>Emitente / Fornecedor</label><input id="nfEmitente" placeholder="Ex: Indústria Caxias Ltda"></div>
-          <div><label>CNPJ do Emitente</label><input id="nfCnpj" placeholder="00.000.000/0001-00"></div>
-          <div><label>Valor Total da Carga (R$)</label><input id="nfValor" placeholder="R$ 1.500,00"></div>
+          <div><label>Rua</label><select id="endRua"><option value="">Selecione</option><option>A</option><option>B</option><option>C</option></select></div>
+          <div><label>Módulo</label><select id="endModulo"><option value="">Selecione</option>${[1,2,3,4].map(n=>`<option value="${String(n).padStart(2,"0")}">${String(n).padStart(2,"0")}</option>`).join("")}</select></div>
+          <div><label>Nível</label><select id="endNivel"><option value="">Selecione</option>${[1,2,3].map(n=>`<option value="${String(n).padStart(2,"0")}">${String(n).padStart(2,"0")}</option>`).join("")}</select></div>
+          <div><label>Posição</label><select id="endPosicao"><option value="">Selecione</option>${[1,2,3,4].map(n=>`<option value="${String(n).padStart(2,"0")}">${String(n).padStart(2,"0")}</option>`).join("")}</select></div>
         </div>
-        <label>Descrição dos Itens / Observação da Carga</label>
-        <textarea id="nfDesc" placeholder="Ex: 30 unidades de chapas de MDF conferidas e descarregadas no CD."></textarea>
-        
-        <button class="orange" onclick="produzirEAnexarNF()" style="margin-top:10px;">Gerar e Anexar Nota Fiscal ao Processo</button>
+        <p class="small">Padrão do endereço: Rua-Módulo-Nível-Posição. Exemplo: A-01-02-03.</p>
+        <button class="orange" onclick="confirmarEnderecamento()">Confirmar endereço e armazenar</button>
+        <div id="resultadoEndereco" aria-live="polite"></div>
       </div>
-
       <div class="card">
-        <h2>Notas Fiscais Anexadas e Emitidas</h2>
+        <h2>Mapa simplificado do armazém</h2>
+        <p class="small">Consulte a organização das ruas e posições antes de registrar o endereço.</p>
+        <div class="grid">
+          ${["A","B","C"].map(rua=>`<div class="step"><strong>Rua ${rua}</strong><p>Módulos 01 a 04</p><p>Níveis 01 a 03</p><p>Posições 01 a 04</p></div>`).join("")}
+        </div>
+      </div>
+      <div class="card">
+        <h2>Produtos já endereçados</h2>
         <div class="tablewrap">
-          <table>
-            <thead><tr><th>Número NF</th><th>Emitente</th><th>CNPJ</th><th>Valor</th><th>Descrição</th><th>Data</th></tr></thead>
-            <tbody>
-              ${estado.documentos.map(d=>`
-                <tr>
-                  <td><strong>${escapar(d.numeroNF)}</strong></td>
-                  <td>${escapar(d.emitente)}</td>
-                  <td>${escapar(d.cnpj)}</td>
-                  <td>${escapar(d.valor)}</td>
-                  <td>${escapar(d.desc)}</td>
-                  <td>${escapar(d.data)}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
+          <table><thead><tr><th>SKU</th><th>Produto</th><th>Quantidade</th><th>Endereço</th></tr></thead>
+          <tbody>${estado.produtos.filter(p=>p.endereco).map(p=>`<tr><td>${escapar(p.codigo)}</td><td>${escapar(p.nome)}</td><td>${p.qtd}</td><td><strong>${escapar(p.endereco)}</strong></td></tr>`).join("")||'<tr><td colspan="4">Nenhum produto endereçado ainda.</td></tr>'}</tbody></table>
         </div>
       </div>`;
+    atualizarFichaEndereco();
   }
-
-  if(tela==="desafios"){
-    c.innerHTML=`
-      <div class="card">
-        <h2>Desafios Práticos Logísticos (A.L.)</h2>
-        <p>Resolva os desafios práticos criados pela instrutora para testar seus conhecimentos operacionais.</p>
-        
-        ${estado.desafios.map(des=>`
-          <div class="step">
-            <strong>${escapar(des.titulo)}</strong>
-            <p>${escapar(des.pergunta)}</p>
-            <label>Sua resposta / procedimento:</label>
-            <textarea id="respDesafio${des.id}" placeholder="Escreva sua resposta técnica...">${des.resp||""}</textarea>
-            <button class="green" onclick="enviarRespostaDesafio(${des.id})">Enviar Resposta para a Instrutora</button>
-          </div>
-        `).join("")}
-      </div>`;
-  }
-
-  if(tela==="rota"){
-    c.innerHTML=`
-      <div class="card">
-        <h2>Roteirização e Entrega</h2>
-        ${estado.pedidos.map(p=>`
-          <div class="step">
-            <strong>Pedido #${p.id} — ${escapar(p.cliente)}</strong>
-            <p>Status: <strong>${escapar(p.status)}</strong></p>
-            <label>Rota</label>
-            <select id="rota${p.id}">
-              <option>CD → Cliente</option>
-              <option>CD → Ponto de distribuição → Cliente</option>
-            </select>
-            <button class="orange" onclick="iniciarRota(${p.id})">Gerar mapa da rota</button>
-            <div id="mapa${p.id}" class="mapa-rota"></div>
-            <div id="legenda${p.id}" class="mapa-legenda"></div>
-            ${p.status==="Em rota"?`<button class="green" onclick="entregar(${p.id})">Confirmar entrega</button>`:""}
-          </div>
-        `).join("")}
-      </div>`;
-    setTimeout(()=>{
-      estado.pedidos.filter(p=>p.status==="Em rota"||p.status==="Entregue"||p.status==="Carregado").forEach(p=>desenharMapaRota(p));
-    },200);
-  }
-
-  if(tela==="instrutor"){
-    c.innerHTML=`
-      <div class="card" style="border-left: 5px solid var(--orange);">
-        <h2>Painel de Gestão da Instrutora (Quezia)</h2>
-        <p>Crie novos desafios práticos (A.L.) para os alunos resolverem na plataforma.</p>
-        
-        <label>Título do Desafio A.L.</label>
-        <input id="novoDesafioTitulo" placeholder="Ex: Desafio 2: Cálculo de Cubagem">
-        <label>Pergunta ou Enunciado Prático</label>
-        <textarea id="novoDesafioPergunta" placeholder="Descreva o cenário e a pergunta operacional..."></textarea>
-        <button class="orange" onclick="criarDesafioInstrutora()">Publicar Desafio para a Turma</button>
-      </div>
-
-      <div class="card">
-        <h2>Relatório Geral da Turma</h2>
-        <p>Total de operações registradas: <strong>${estado.registros.length}</strong></p>
-        <button class="secondary" onclick="exportar()">Exportar Histórico CSV</button>
-      </div>`;
-  }
-}
-
-function tabelaProdutos(){
-  return `<div class="tablewrap"><table>
-    <thead><tr><th>SKU</th><th>Produto</th><th>Qtd</th><th>Lote</th><th>RFID Tag</th></tr></thead>
-    <tbody>${estado.produtos.map(p=>`
-      <tr><td>${escapar(p.codigo)}</td><td>${escapar(p.nome)}</td><td>${p.qtd}</td><td>${escapar(p.lote)}</td><td><code>${escapar(p.rfid)}</code></td></tr>
-    `).join("")}</tbody>
-  </table></div>`;
-}
-
-function cadastrarProduto(){
-  const codigo=document.getElementById("codigo").value.trim();
-  const nome=document.getElementById("nomeProduto").value.trim();
-  const qtd=Number(document.getElementById("quantidade").value);
-  const lote=document.getElementById("lote").value.trim()||"LOT-2026";
-  if(!codigo||!nome) return alert("Preencha os campos.");
-  const rfidTag="RFID-"+Math.floor(100000+Math.random()*900000);
-  estado.produtos.push({id:estado.proximoId++, codigo, nome, qtd, lote, rfid:rfidTag});
-  registrar("WMS","Cadastrou "+nome+" com RFID "+rfidTag);
-  salvar();
-  pagina("produtos");
-}
-
-function processarLeituraRFID(){
-  const val = document.getElementById("inputLeitor").value.trim().toUpperCase();
-  const res = document.getElementById("rfidResultado");
-  if(!val) return alert("Digite um código de barras ou tag RFID.");
-
-  const prod = estado.produtos.find(p => p.codigo.toUpperCase() === val || p.rfid.toUpperCase() === val);
-  if(prod){
-    res.innerHTML = `<div class="notice">✅ <strong>Produto Identificado via Leitor:</strong> ${prod.nome} | Lote: ${prod.lote} | Qtd: ${prod.qtd} un | Tag: ${prod.rfid}</div>`;
-    registrar("Leitor RFID", "Leitura bem-sucedida do produto: "+prod.nome);
-  } else {
-    res.innerHTML = `<div class="warning">⚠️ Código '${val}' não encontrado no cadastro WMS virtual.</div>`;
-  }
-}
-
-function produzirEAnexarNF(){
-  const numeroNF = document.getElementById("nfNumero").value.trim();
-  const emitente = document.getElementById("nfEmitente").value.trim();
-  const cnpj = document.getElementById("nfCnpj").value.trim();
-  const valor = document.getElementById("nfValor").value.trim();
-  const desc = document.getElementById("nfDesc").value.trim();
-
-  if(!numeroNF || !emitente || !cnpj || !valor || !desc){
-    alert("Preencha todos os campos da Nota Fiscal para poder anexá-la.");
-    return;
-  }
-
-  estado.documentos.push({
-    id: Date.now(), numeroNF, emitente, cnpj, valor, desc, data: new Date().toLocaleDateString("pt-BR")
-  });
-  registrar("Documentação Fiscal", `Produziu e anexou a NF ${numeroNF} (${emitente})`);
-  salvar();
-  alert("Nota Fiscal produzida e anexada ao processo logístico com sucesso!");
-  pagina("documentos");
-}
-
-function criarDesafioInstrutora(){
-  const titulo = document.getElementById("novoDesafioTitulo").value.trim();
-  const pergunta = document.getElementById("novoDesafioPergunta").value.trim();
-  if(!titulo || !pergunta) return alert("Preencha o título e o enunciado do desafio.");
-
-  estado.desafios.push({
-    id: Date.now(), titulo, pergunta, resp: ""
-  });
-  salvar();
-  alert("Desafio A.L. criado e publicado para os alunos com sucesso!");
-  pagina("instrutor");
-}
-
-function enviarRespostaDesafio(id){
-  const txt = document.getElementById("respDesafio"+id).value.trim();
-  if(!txt) return alert("Escreva sua resposta antes de enviar.");
-  const des = estado.desafios.find(d => d.id === id);
-  if(des) des.resp = txt;
-  registrar("Desafios A.L.", `Respondeu ao desafio: ${des.titulo}`);
-  salvar();
-  alert("Resposta enviada e registrada com sucesso!");
-}
-
-function iniciarRota(id){
-  const p=estado.pedidos.find(x=>x.id===id);
-  const sel=document.getElementById("rota"+id);
-  if(sel) p.rota=sel.value;
-  p.status="Em rota";
-  salvar();
-  pagina("rota");
-}
-
-function pontosDaRota(p){
-  const cd={nome:"CD Caxias", lat:-22.7858, lng:-43.3117};
-  const ponto={nome:"Piabetá", lat:-22.7798, lng:-43.3040};
-  const cliente={nome:"Magé", lat:-22.7728, lng:-43.2970};
-  if(p.rota&&p.rota.includes("Ponto")) return [cd, ponto, cliente];
-  return [cd, cliente];
-}
-
-function desenharMapaRota(p){
-  const el=document.getElementById("mapa"+p.id);
-  if(!el || typeof L==="undefined") return;
-  const pts=pontosDaRota(p);
-  const mapa=L.map(el).setView([pts[0].lat, pts[0].lng], 13);
-  mapasAtivos[p.id]=mapa;
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(mapa);
-  const coords=pts.map(pt=>{
-    L.marker([pt.lat, pt.lng]).addTo(mapa).bindPopup(pt.nome);
-    return [pt.lat, pt.lng];
-  });
-  L.polyline(coords,{color:"#f97316", weight:5}).addTo(mapa);
-  mapa.fitBounds(coords,{padding:[20,20]});
-  const leg=document.getElementById("legenda"+p.id);
-  if(leg) leg.innerHTML=pts.map((pt,i)=>`<span><strong>${i+1}.</strong> ${pt.nome}</span>`).join("");
-  setTimeout(()=>mapa.invalidateSize(),150);
-}
-
-function entregar(id){ const p=estado.pedidos.find(x=>x.id===id); p.status="Entregue"; salvar(); pagina("rota"); }
-
-function exportar(){
-  const csv="\uFEFF"+["Aluno;Etapa;Operação;Data", ...estado.registros.map(r=>`"${r.aluno}";"${r.etapa}";"${r.detalhe}";"${r.data}"`)].join("\n");
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));
-  a.download="historico.csv";
-  a.click();
-}
-
-carregar();
-</script>
-</body>
-</html>
