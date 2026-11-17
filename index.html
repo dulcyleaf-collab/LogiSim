@@ -5,47 +5,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LogiSim | Centro de Distribuição Virtual</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <style>
 :root {
-  --bg:#0b1424;--panel:#111f34;--panel2:#172943;
-  --orange:#f28c28;--orange2:#ffad52;--text:#edf3fc;
-  --muted:#91a2ba;--border:#263a56;--green:#39c98a;
-  --red:#f16b6b;--blue:#5b9cf5;
+  --bg:#0b1424;
+  --panel:#111f34;
+  --panel2:#172943;
+  --orange:#f28c28;
+  --orange2:#ffad52;
+  --text:#edf3fc;
+  --muted:#91a2ba;
+  --border:#263a56;
+  --green:#39c98a;
+  --red:#f16b6b;
+  --blue:#5b9cf5;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .app{display:none;min-height:100vh}
-.sidebar{position:fixed;inset:0 auto 0 0;width:250px;background:#0e1b2e;border-right:1px solid var(--border);padding:22px 15px;overflow-y:auto;z-index:5}
+.sidebar{position:fixed;inset:0 auto 0 0;width:245px;background:#0e1b2e;border-right:1px solid var(--border);padding:20px 14px;overflow-y:auto;z-index:5}
 .brand{display:flex;align-items:center;gap:12px;padding:5px 8px 24px}
 .logo{width:42px;height:42px;border-radius:12px;background:var(--orange);display:grid;place-items:center;color:#142035;font-size:23px;font-weight:bold}
 .brand strong{font-size:20px;display:block}
 .brand small{font-size:10px;color:var(--muted);letter-spacing:1px}
 .nav-title{font-size:10px;color:#71849e;font-weight:bold;letter-spacing:1.5px;margin:18px 10px 8px}
-.nav button{width:100%;border:0;background:transparent;color:#aab9ce;text-align:left;padding:11px 12px;border-radius:9px;margin:2px 0;font-size:13px;display:flex;gap:11px;align-items:center}
+.nav button{width:100%;border:0;background:transparent;color:#aab9ce;text-align:left;padding:11px 12px;border-radius:9px;margin:2px 0;font-size:13px}
 .nav button:hover,.nav button.active{background:#203653;color:white}
 .nav button.active{border-left:3px solid var(--orange)}
-.nav .ico{width:20px;text-align:center;font-size:16px}
-.sidebar-bottom{margin-top:25px;border-top:1px solid var(--border);padding-top:15px}
-.main{margin-left:250px;min-height:100vh}
-.topbar{height:72px;padding:0 30px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#0e192b}
+.main{margin-left:245px;min-height:100vh}
+.topbar{height:70px;padding:0 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#0e192b}
 .topbar h2{font-size:17px;margin:0}
 .user{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
 .avatar{background:#304563;color:white;width:35px;height:35px;border-radius:50%;display:grid;place-items:center;font-weight:bold}
-.content{padding:28px 30px;max-width:1500px;margin:auto}
+.content{padding:26px 28px;max-width:1500px;margin:auto}
 .page{display:none}.page.active{display:block}
-.page-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:23px;flex-wrap:wrap}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px;flex-wrap:wrap}
 h1{font-size:25px;margin:0 0 7px}
-.subtitle{font-size:13px;color:var(--muted);margin:0}
 h3{font-size:15px;margin:0 0 16px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:19px}
+.subtitle{font-size:13px;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:18px}
 .stat-label{color:var(--muted);font-size:12px}
 .stat-value{font-size:27px;font-weight:bold;margin:10px 0 5px}
 .stat-foot{font-size:11px;color:var(--muted)}
-.stat-icon{float:right;font-size:21px;background:#203653;padding:9px;border-radius:10px}
-.two-col{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:15px}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .field{display:flex;flex-direction:column;gap:6px}
 .field.full{grid-column:1/-1}
@@ -61,7 +68,7 @@ textarea{min-height:80px;resize:vertical}
 .btn.small{padding:7px 10px}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:560px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:550px}
 th{text-align:left;color:#8fa4bf;font-weight:600;background:#14253d}
 th,td{padding:12px 11px;border-bottom:1px solid var(--border)}
 td{color:#d9e3f1}
@@ -75,7 +82,7 @@ td{color:#d9e3f1}
 .quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .quick button{background:#172943;border:1px solid var(--border);border-radius:11px;padding:17px;text-align:left;color:white}
 .quick button:hover{border-color:var(--orange)}
-.quick strong{display:block;margin:9px 0 5px;font-size:13px}
+.quick strong{display:block;margin:0 0 6px;font-size:13px}
 .quick span{font-size:11px;color:var(--muted)}
 .login-screen{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 10%,#1b3556 0,#0b1424 55%)}
 .login-box{width:min(440px,100%);background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:30px;box-shadow:0 20px 70px #0005}
@@ -94,12 +101,23 @@ td{color:#d9e3f1}
 .slot{background:#172943;border:1px solid var(--border);border-radius:9px;padding:14px 8px;text-align:center;font-size:12px}
 .slot strong{display:block;color:var(--orange);margin-bottom:7px}
 .slot small{color:var(--muted)}
+#map{height:420px;width:100%;border-radius:10px;z-index:1}
+.warehouse3d{background:linear-gradient(135deg,#14253d,#091321);border:1px solid var(--border);border-radius:12px;padding:25px;overflow:auto;perspective:900px;min-height:390px}
+.warehouse-floor{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));gap:22px;transform:rotateX(9deg);transform-style:preserve-3d;padding:20px;min-width:520px}
+.rack{height:145px;background:linear-gradient(90deg,#203d5b,#31577c);border:2px solid #547596;border-radius:5px;position:relative;box-shadow:0 12px 0 #0a1421,0 18px 20px #0006;display:flex;flex-direction:column;justify-content:space-evenly;padding:8px;cursor:pointer;transition:.2s}
+.rack:hover{transform:translateY(-8px);border-color:var(--orange)}
+.rack:before,.rack:after{content:"";position:absolute;top:0;bottom:0;width:5px;background:#8ba4be}
+.rack:before{left:-4px}.rack:after{right:-4px}
+.shelf{height:28px;background:#12243a;border:1px solid #6f8ba8;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#dce8f5}
+.shelf.occupied{background:#765022;border-color:var(--orange);color:#ffe1ad}
+.rack-label{text-align:center;font-size:11px;color:#d6e4f5;margin-top:8px}
+.login-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
 @media(max-width:1000px){.grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
 @media(max-width:700px){
 .sidebar{display:none;width:260px}.sidebar.open{display:block}
 .main{margin-left:0}.topbar{padding:0 16px;height:62px}
 .mobile-menu{display:block;background:none;border:0;color:white;font-size:22px}
-.content{padding:20px 14px}.grid{gap:9px}.card{padding:14px}
+.content{padding:18px 13px}.grid{gap:9px}.card{padding:14px}
 .stat-value{font-size:22px}.quick{grid-template-columns:repeat(2,1fr)}
 .form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
 .warehouse{grid-template-columns:repeat(2,1fr)}
@@ -109,264 +127,324 @@ td{color:#d9e3f1}
 <body>
 
 <div id="loginScreen" class="login-screen">
-  <div class="login-box">
-    <div class="login-brand">
-      <div class="logo">L</div>
-      <h1>LogiSim</h1>
-      <p>CENTRO DE DISTRIBUIÇÃO VIRTUAL</p>
-    </div>
-    <div class="role-switch">
-      <button id="studentRole" class="selected" onclick="chooseRole('aluno')">Aluno</button>
-      <button id="teacherRole" onclick="chooseRole('instrutor')">Instrutora</button>
-    </div>
-    <div class="field">
-      <label>Nome de identificação</label>
-      <input id="loginName" placeholder="Digite seu nome">
-    </div>
-    <div class="field">
-      <label>Código da turma</label>
-      <input id="classCode" placeholder="Ex.: APR477">
-    </div>
-    <div class="notice orange">
-      Esta versão inicial utiliza dados de demonstração salvos neste navegador. O acesso ainda não é uma autenticação segura.
-    </div>
-    <button class="btn" onclick="login()">Entrar no LogiSim</button>
+ <div class="login-box">
+  <div class="login-brand">
+   <div class="logo">L</div>
+   <h1>LogiSim</h1>
+   <p>CENTRO DE DISTRIBUIÇÃO VIRTUAL</p>
   </div>
+  <div class="role-switch">
+   <button id="studentRole" class="selected" onclick="chooseRole('aluno')">Aluno</button>
+   <button id="teacherRole" onclick="chooseRole('instrutor')">Instrutor</button>
+  </div>
+  <div class="field">
+   <label>Nome de identificação</label>
+   <input id="loginName" placeholder="Digite seu nome">
+  </div>
+  <div class="field" id="classField">
+   <label>Código da turma</label>
+   <input id="classCode" placeholder="Ex.: APR477">
+  </div>
+  <div class="notice orange">Ambiente de demonstração. Os dados são armazenados neste navegador.</div>
+  <button class="btn" onclick="login()">Entrar no LogiSim</button>
+  <p class="login-note">Acesso remoto: a plataforma pode ser aberta pela internet em computadores e celulares. A sincronização entre dispositivos requer banco de dados compartilhado.</p>
+ </div>
 </div>
 
 <div class="app" id="app">
 <aside class="sidebar" id="sidebar">
-  <div class="brand">
-    <div class="logo">L</div>
-    <div><strong>LogiSim</strong><small>LOGÍSTICA NA PRÁTICA</small></div>
-  </div>
-  <div class="nav">
-    <div class="nav-title">PRINCIPAL</div>
-    <button class="active" data-page="dashboard"><span class="ico">▦</span>Visão geral</button>
-    <button data-page="recebimento"><span class="ico">📥</span>Recebimento</button>
-    <button data-page="coletor"><span class="ico">▣</span>Coletor</button>
-    <button data-page="produtos"><span class="ico">📦</span>Produtos e estoque</button>
-    <button data-page="enderecamento"><span class="ico">⌖</span>Endereçamento</button>
-    <div class="nav-title">OPERAÇÕES</div>
-    <button data-page="pedidos"><span class="ico">📋</span>Pedidos e picking</button>
-    <button data-page="expedicao"><span class="ico">🚚</span>Expedição</button>
-    <button data-page="transporte"><span class="ico">🗺</span>Transporte e entregas</button>
-    <button data-page="atividades"><span class="ico">🎯</span>Atividades A.L.</button>
-    <div class="nav-title" id="teacherNavTitle">GESTÃO</div>
-    <button data-page="instrutora" id="teacherNav"><span class="ico">📊</span>Painel da instrutora</button>
-  </div>
-  <div class="sidebar-bottom">
-    <button class="nav-button" onclick="logout()" style="width:100%;padding:11px;background:none;border:0;color:#aab9ce;text-align:left">↪ Sair do sistema</button>
-  </div>
+ <div class="brand">
+  <div class="logo">L</div>
+  <div><strong>LogiSim</strong><small>LOGÍSTICA NA PRÁTICA</small></div>
+ </div>
+ <div class="nav">
+  <div class="nav-title">PRINCIPAL</div>
+  <button class="active" data-page="dashboard">Visão geral</button>
+  <button data-page="recebimento">Recebimento</button>
+  <button data-page="coletor">Coletor</button>
+  <button data-page="produtos">Produtos e estoque</button>
+  <button data-page="inventario">Inventário físico</button>
+  <button data-page="enderecamento">Endereçamento</button>
+  <button data-page="armazem3d">Armazém virtual 3D</button>
+  <div class="nav-title">OPERAÇÕES</div>
+  <button data-page="pedidos">Pedidos e picking</button>
+  <button data-page="expedicao">Expedição</button>
+  <button data-page="transporte">Transporte e entregas</button>
+  <button data-page="atividades">Atividades A.L.</button>
+  <div class="nav-title" id="teacherNavTitle">GESTÃO</div>
+  <button data-page="instrutora" id="teacherNav">Painel do instrutor</button>
+ </div>
+ <div style="margin-top:25px;border-top:1px solid var(--border);padding-top:15px">
+  <button onclick="logout()" style="width:100%;padding:11px;background:none;border:0;color:#aab9ce;text-align:left">Sair do sistema</button>
+ </div>
 </aside>
 
 <main class="main">
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:12px">
-      <button class="mobile-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-      <h2 id="topTitle">Visão geral</h2>
-    </div>
-    <div class="user"><span id="userName">Aluno</span><div class="avatar" id="avatar">A</div></div>
-  </header>
-  <div class="content">
+<header class="topbar">
+ <div style="display:flex;align-items:center;gap:12px">
+  <button class="mobile-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+  <h2 id="topTitle">Visão geral</h2>
+ </div>
+ <div class="user"><span id="userName">Aluno</span><div class="avatar" id="avatar">A</div></div>
+</header>
 
-    <section class="page active" id="page-dashboard">
-      <div class="page-heading">
-        <div><h1>Bem-vindo ao LogiSim!</h1><p class="subtitle">Aprenda logística executando operações de um centro de distribuição.</p></div>
-        <span class="tag good" id="roleTag">AMBIENTE DO ALUNO</span>
-      </div>
-      <div class="grid">
-        <div class="card"><span class="stat-icon">📦</span><div class="stat-label">Produtos cadastrados</div><div class="stat-value" id="statProducts">0</div><div class="stat-foot">Itens no sistema</div></div>
-        <div class="card"><span class="stat-icon">📥</span><div class="stat-label">Recebimentos</div><div class="stat-value" id="statReceipts">0</div><div class="stat-foot">Operações registradas</div></div>
-        <div class="card"><span class="stat-icon">📋</span><div class="stat-label">Pedidos</div><div class="stat-value" id="statOrders">0</div><div class="stat-foot">Pedidos cadastrados</div></div>
-        <div class="card"><span class="stat-icon">🎯</span><div class="stat-label">Atividades concluídas</div><div class="stat-value" id="statActivities">0</div><div class="stat-foot">Registros de atividades</div></div>
-      </div>
-      <div class="card" style="margin-bottom:18px">
-        <h3>Central de operações</h3>
-        <div class="quick">
-          <button onclick="go('recebimento')">📥<strong>Receber mercadorias</strong><span>Registrar entrada e conferir carga</span></button>
-          <button onclick="go('coletor')">▣<strong>Abrir coletor</strong><span>Consultar produtos por SKU</span></button>
-          <button onclick="go('enderecamento')">⌖<strong>Endereçar produtos</strong><span>Organizar o estoque no armazém</span></button>
-          <button onclick="go('pedidos')">📋<strong>Separar pedidos</strong><span>Executar picking e conferência</span></button>
-          <button onclick="go('expedicao')">🚚<strong>Expedir mercadorias</strong><span>Preparar e liberar cargas</span></button>
-          <button onclick="go('atividades')">🎯<strong>Atividades A.L.</strong><span>Praticar situações logísticas</span></button>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Últimas movimentações</h3>
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Operação</th><th>Descrição</th><th>Responsável</th></tr></thead><tbody id="recentTable"></tbody></table></div>
-      </div>
-    </section>
+<div class="content">
 
-    <section class="page" id="page-recebimento">
-      <div class="page-heading"><div><h1>Recebimento de mercadorias</h1><p class="subtitle">Registre a chegada e faça a conferência da carga.</p></div></div>
-      <div class="notice">O aluno deve comparar a quantidade informada no documento com a quantidade efetivamente recebida.</div>
-      <div class="card">
-        <h3>Registrar recebimento</h3>
-        <form id="receiptForm" class="form-grid">
-          <div class="field"><label>Número do documento simulado</label><input name="document" required placeholder="NF-SIM-001"></div>
-          <div class="field"><label>Fornecedor</label><input name="supplier" required placeholder="Nome do fornecedor"></div>
-          <div class="field"><label>Produto</label><select name="product" id="receiptProduct" required></select></div>
-          <div class="field"><label>Quantidade no documento</label><input name="expected" type="number" min="1" required></div>
-          <div class="field"><label>Quantidade recebida</label><input name="received" type="number" min="0" required></div>
-          <div class="field"><label>Condição da mercadoria</label><select name="condition"><option>Sem avarias</option><option>Com avarias</option><option>Embalagem danificada</option></select></div>
-          <div class="field full"><label>Observações e divergências</label><textarea name="notes" placeholder="Descreva o que foi encontrado..."></textarea></div>
-          <div class="field full"><button class="btn">Registrar e conferir recebimento</button></div>
-        </form>
-      </div>
-      <div class="card" style="margin-top:18px"><h3>Histórico de recebimentos</h3><div class="table-wrap"><table><thead><tr><th>Documento</th><th>Fornecedor</th><th>Produto</th><th>Documento</th><th>Recebido</th><th>Status</th></tr></thead><tbody id="receiptTable"></tbody></table></div></div>
-    </section>
-
-    <section class="page" id="page-coletor">
-      <div class="page-heading"><div><h1>Coletor logístico</h1><p class="subtitle">Identifique produtos e consulte informações do estoque.</p></div></div>
-      <div class="card">
-        <h3>Consultar código do produto</h3>
-        <div class="form-grid">
-          <div class="field full"><label>SKU ou código de barras</label><input id="scanCode" placeholder="Ex.: SKU-101"></div>
-          <div class="field full"><button class="btn" onclick="scanProduct()">Consultar produto</button></div>
-        </div>
-        <div id="scanResult" style="margin-top:16px"></div>
-        <div class="notice orange" style="margin-top:18px">Leitura pela câmera: esta versão permite digitar ou utilizar um leitor de código de barras que funcione como teclado. A leitura pela câmera será integrada em uma etapa posterior.</div>
-      </div>
-    </section>
-
-    <section class="page" id="page-produtos">
-      <div class="page-heading"><div><h1>Produtos e estoque</h1><p class="subtitle">Cadastre mercadorias e acompanhe os saldos.</p></div></div>
-      <div class="card">
-        <h3>Novo produto</h3>
-        <form id="productForm" class="form-grid">
-          <div class="field"><label>SKU / Código</label><input name="sku" required placeholder="SKU-104"></div>
-          <div class="field"><label>Nome do produto</label><input name="name" required placeholder="Nome da mercadoria"></div>
-          <div class="field"><label>Categoria</label><input name="category" placeholder="Ex.: Alimentos"></div>
-          <div class="field"><label>Quantidade inicial</label><input name="quantity" type="number" min="0" value="0" required></div>
-          <div class="field"><label>Peso por unidade (kg)</label><input name="weight" type="number" min="0" step="0.01" value="0"></div>
-          <div class="field"><label>Lote</label><input name="batch" placeholder="Lote do produto"></div>
-          <div class="field"><label>Validade</label><input name="expiry" type="date"></div>
-          <div class="field"><label>Endereço</label><select name="address" id="productAddress"></select></div>
-          <div class="field full"><button class="btn">Cadastrar produto</button></div>
-        </form>
-      </div>
-      <div class="card" style="margin-top:18px">
-        <h3>Inventário atual</h3>
-        <div class="table-wrap"><table><thead><tr><th>SKU</th><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Peso/un.</th><th>Endereço</th><th>Lote</th></tr></thead><tbody id="productTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section class="page" id="page-enderecamento">
-      <div class="page-heading"><div><h1>Endereçamento e armazenagem</h1><p class="subtitle">Escolha onde cada produto será armazenado.</p></div></div>
-      <div class="card">
-        <h3>Mapa simplificado do armazém</h3>
-        <div class="warehouse" id="warehouseMap"></div>
-      </div>
-      <div class="card" style="margin-top:18px">
-        <h3>Movimentar produto</h3>
-        <form id="addressForm" class="form-grid">
-          <div class="field"><label>Produto</label><select id="addressProduct" name="sku" required></select></div>
-          <div class="field"><label>Novo endereço</label><select name="address" id="addressDestination" required></select></div>
-          <div class="field full"><button class="btn">Confirmar armazenagem</button></div>
-        </form>
-      </div>
-    </section>
-
-    <section class="page" id="page-pedidos">
-      <div class="page-heading"><div><h1>Pedidos e picking</h1><p class="subtitle">Cadastre pedidos e separe os produtos solicitados.</p></div></div>
-      <div class="card">
-        <h3>Criar pedido</h3>
-        <form id="orderForm" class="form-grid">
-          <div class="field"><label>Número do pedido</label><input name="number" required placeholder="PED-001"></div>
-          <div class="field"><label>Cliente</label><input name="customer" required placeholder="Nome do cliente"></div>
-          <div class="field"><label>Produto</label><select name="sku" id="orderProduct" required></select></div>
-          <div class="field"><label>Quantidade solicitada</label><input name="quantity" type="number" min="1" required></div>
-          <div class="field full"><button class="btn">Criar pedido</button></div>
-        </form>
-      </div>
-      <div class="card" style="margin-top:18px">
-        <h3>Pedidos pendentes</h3>
-        <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Quantidade</th><th>Status</th><th>Ação</th></tr></thead><tbody id="orderTable"></tbody></table></div>
-      </div>
-    </section>
-
-    <section class="page" id="page-expedicao">
-      <div class="page-heading"><div><h1>Expedição e carregamento</h1><p class="subtitle">Prepare a carga e verifique a capacidade do veículo.</p></div></div>
-      <div class="card">
-        <h3>Registrar expedição</h3>
-        <form id="dispatchForm" class="form-grid">
-          <div class="field"><label>Pedido separado</label><select name="order" id="dispatchOrder" required></select></div>
-          <div class="field"><label>Veículo</label><input name="vehicle" required placeholder="Ex.: VUC-01"></div>
-          <div class="field"><label>Capacidade máxima (kg)</label><input name="capacity" type="number" min="1" required></div>
-          <div class="field"><label>Peso total da carga (kg)</label><input name="load" type="number" min="0" step="0.01" required></div>
-          <div class="field full"><label>Observações</label><textarea name="notes"></textarea></div>
-          <div class="field full"><button class="btn">Validar e registrar expedição</button></div>
-        </form>
-      </div>
-      <div class="card" style="margin-top:18px"><h3>Expedições registradas</h3><div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Veículo</th><th>Peso</th><th>Capacidade</th><th>Status</th></tr></thead><tbody id="dispatchTable"></tbody></table></div></div>
-    </section>
-
-    <section class="page" id="page-transporte">
-      <div class="page-heading"><div><h1>Transporte e entregas</h1><p class="subtitle">Registre destinos e acompanhe as entregas simuladas.</p></div></div>
-      <div class="card">
-        <h3>Planejar entrega</h3>
-        <form id="routeForm" class="form-grid">
-          <div class="field"><label>Pedido</label><select name="order" id="routeOrder" required></select></div>
-          <div class="field"><label>Motorista</label><input name="driver" required placeholder="Nome do motorista"></div>
-          <div class="field full"><label>Endereço de destino</label><input name="destination" required placeholder="Rua, número, cidade"></div>
-          <div class="field full"><button class="btn">Registrar rota</button></div>
-        </form>
-      </div>
-      <div class="card" style="margin-top:18px"><h3>Entregas</h3><div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Motorista</th><th>Destino</th><th>Status</th><th>Ação</th></tr></thead><tbody id="routeTable"></tbody></table></div></div>
-      <div class="notice orange" style="margin-top:15px">As rotas desta versão são registros de destinos. O mapa geográfico e o cálculo automático de trajetos serão integrados posteriormente.</div>
-    </section>
-
-    <section class="page" id="page-atividades">
-      <div class="page-heading"><div><h1>Atividades Logísticas (A.L.)</h1><p class="subtitle">Pratique situações do cotidiano de um centro de distribuição.</p></div></div>
-      <div class="card">
-        <h3>Desafio: divergência no recebimento</h3>
-        <p class="subtitle">A nota fiscal informa 100 unidades, mas durante a conferência você encontra apenas 92. Qual deve ser sua atitude?</p>
-        <div style="display:grid;gap:9px;margin-top:18px">
-          <button class="btn secondary" onclick="answerActivity(0)">A) Registrar 100 unidades e finalizar.</button>
-          <button class="btn secondary" onclick="answerActivity(1)">B) Registrar 92 unidades, informar a divergência e comunicar o responsável.</button>
-          <button class="btn secondary" onclick="answerActivity(2)">C) Descartar a nota fiscal e não registrar a entrada.</button>
-        </div>
-        <div id="activityFeedback" style="margin-top:15px"></div>
-      </div>
-      <div class="card" style="margin-top:18px">
-        <h3>Criar atividade (instrutora)</h3>
-        <div class="notice">A criação de atividades personalizadas e sua publicação para toda a turma serão ativadas na integração com o banco de dados.</div>
-        <button class="btn secondary" onclick="go('instrutora')">Acessar painel da instrutora</button>
-      </div>
-    </section>
-
-    <section class="page" id="page-instrutora">
-      <div class="page-heading"><div><h1>Painel da instrutora</h1><p class="subtitle">Acompanhe os registros realizados neste navegador.</p></div></div>
-      <div class="notice orange">Atenção: este painel é uma demonstração local. Para acompanhar alunos em diferentes dispositivos, será necessário conectar o banco de dados compartilhado e habilitar autenticação por perfil.</div>
-      <div class="grid">
-        <div class="card"><div class="stat-label">Produtos</div><div class="stat-value" id="teacherProducts">0</div></div>
-        <div class="card"><div class="stat-label">Recebimentos</div><div class="stat-value" id="teacherReceipts">0</div></div>
-        <div class="card"><div class="stat-label">Pedidos</div><div class="stat-value" id="teacherOrders">0</div></div>
-        <div class="card"><div class="stat-label">Movimentações</div><div class="stat-value" id="teacherMovements">0</div></div>
-      </div>
-      <div class="card">
-        <h3>Histórico geral de operações</h3>
-        <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Usuário</th><th>Operação</th><th>Detalhes</th></tr></thead><tbody id="historyTable"></tbody></table></div>
-        <div class="actions"><button class="btn secondary" onclick="exportCSV()">Exportar histórico CSV</button><button class="btn danger" onclick="clearDemo()">Limpar dados locais</button></div>
-      </div>
-    </section>
-
+<section class="page active" id="page-dashboard">
+ <div class="page-heading">
+  <div><h1>Bem-vindo ao LogiSim!</h1><p class="subtitle">Aprenda logística executando operações de um centro de distribuição.</p></div>
+  <span class="tag good" id="roleTag">AMBIENTE DO ALUNO</span>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="stat-label">Produtos cadastrados</div><div class="stat-value" id="statProducts">0</div><div class="stat-foot">Itens no sistema</div></div>
+  <div class="card"><div class="stat-label">Recebimentos</div><div class="stat-value" id="statReceipts">0</div><div class="stat-foot">Operações registradas</div></div>
+  <div class="card"><div class="stat-label">Pedidos</div><div class="stat-value" id="statOrders">0</div><div class="stat-foot">Pedidos cadastrados</div></div>
+  <div class="card"><div class="stat-label">Inventários</div><div class="stat-value" id="statInventory">0</div><div class="stat-foot">Contagens realizadas</div></div>
+ </div>
+ <div class="card" style="margin-bottom:18px">
+  <h3>Central de operações</h3>
+  <div class="quick">
+   <button onclick="go('recebimento')"><strong>Receber mercadorias</strong><span>Registrar entrada e conferir carga</span></button>
+   <button onclick="go('coletor')"><strong>Abrir coletor</strong><span>Consultar produtos por SKU</span></button>
+   <button onclick="go('inventario')"><strong>Realizar inventário</strong><span>Contar e comparar o estoque</span></button>
+   <button onclick="go('enderecamento')"><strong>Endereçar produtos</strong><span>Organizar o estoque no armazém</span></button>
+   <button onclick="go('pedidos')"><strong>Separar pedidos</strong><span>Executar picking e conferência</span></button>
+   <button onclick="go('transporte')"><strong>Planejar entregas</strong><span>Visualizar rotas no mapa</span></button>
   </div>
+ </div>
+ <div class="card">
+  <h3>Últimas movimentações</h3>
+  <div class="table-wrap"><table><thead><tr><th>Data</th><th>Operação</th><th>Descrição</th><th>Responsável</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="page-recebimento">
+ <div class="page-heading"><div><h1>Recebimento de mercadorias</h1><p class="subtitle">Registre a chegada e faça a conferência da carga.</p></div></div>
+ <div class="notice">Compare a quantidade informada no documento simulado com a quantidade efetivamente recebida.</div>
+ <div class="card">
+  <h3>Registrar recebimento</h3>
+  <form id="receiptForm" class="form-grid">
+   <div class="field"><label>Número do documento simulado</label><input name="document" required placeholder="NF-SIM-001"></div>
+   <div class="field"><label>Fornecedor</label><input name="supplier" required placeholder="Nome do fornecedor"></div>
+   <div class="field"><label>Produto</label><select name="product" id="receiptProduct" required></select></div>
+   <div class="field"><label>Quantidade no documento</label><input name="expected" type="number" min="1" required></div>
+   <div class="field"><label>Quantidade recebida</label><input name="received" type="number" min="0" required></div>
+   <div class="field"><label>Condição</label><select name="condition"><option>Sem avarias</option><option>Com avarias</option><option>Embalagem danificada</option></select></div>
+   <div class="field full"><label>Observações</label><textarea name="notes"></textarea></div>
+   <div class="field full"><button class="btn">Registrar recebimento</button></div>
+  </form>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Histórico de recebimentos</h3><div class="table-wrap"><table><thead><tr><th>Documento</th><th>Fornecedor</th><th>Produto</th><th>Documento</th><th>Recebido</th><th>Status</th></tr></thead><tbody id="receiptTable"></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-coletor">
+ <div class="page-heading"><div><h1>Coletor logístico</h1><p class="subtitle">Identifique produtos e consulte informações do estoque.</p></div></div>
+ <div class="card">
+  <h3>Consultar código do produto</h3>
+  <div class="field"><label>SKU ou código de barras</label><input id="scanCode" placeholder="Ex.: SKU-101"></div>
+  <div class="actions"><button class="btn" onclick="scanProduct()">Consultar produto</button></div>
+  <div id="scanResult" style="margin-top:16px"></div>
+  <div class="notice orange" style="margin-top:18px">É possível digitar o código ou utilizar um leitor de código de barras que funcione como teclado. A leitura pela câmera não está habilitada nesta versão.</div>
+ </div>
+</section>
+
+<section class="page" id="page-produtos">
+ <div class="page-heading"><div><h1>Produtos e estoque</h1><p class="subtitle">Cadastre mercadorias e acompanhe os saldos.</p></div></div>
+ <div class="card">
+  <h3>Novo produto</h3>
+  <form id="productForm" class="form-grid">
+   <div class="field"><label>SKU / Código</label><input name="sku" required placeholder="SKU-104"></div>
+   <div class="field"><label>Nome do produto</label><input name="name" required></div>
+   <div class="field"><label>Categoria</label><input name="category"></div>
+   <div class="field"><label>Quantidade inicial</label><input name="quantity" type="number" min="0" value="0" required></div>
+   <div class="field"><label>Peso por unidade (kg)</label><input name="weight" type="number" min="0" step="0.01" value="0"></div>
+   <div class="field"><label>Lote</label><input name="batch"></div>
+   <div class="field"><label>Validade</label><input name="expiry" type="date"></div>
+   <div class="field"><label>Endereço</label><select name="address" id="productAddress"></select></div>
+   <div class="field full"><button class="btn">Cadastrar produto</button></div>
+  </form>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Estoque atual</h3>
+  <div class="table-wrap"><table><thead><tr><th>SKU</th><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Peso/un.</th><th>Endereço</th><th>Lote</th></tr></thead><tbody id="productTable"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="page-inventario">
+ <div class="page-heading"><div><h1>Inventário físico</h1><p class="subtitle">Compare o saldo do sistema com a quantidade encontrada no armazém.</p></div></div>
+ <div class="notice">O inventário permite identificar diferenças entre o estoque registrado e a contagem física. Registre a quantidade encontrada e explique possíveis divergências.</div>
+ <div class="card">
+  <h3>Registrar contagem</h3>
+  <form id="inventoryForm" class="form-grid">
+   <div class="field full"><label>Produto</label><select id="inventoryProduct" name="sku" required></select></div>
+   <div class="field"><label>Quantidade no sistema</label><input id="inventorySystem" name="system" type="number" readonly></div>
+   <div class="field"><label>Quantidade contada fisicamente</label><input id="inventoryCount" name="count" type="number" min="0" required></div>
+   <div class="field full"><label>Observação</label><textarea name="notes" placeholder="Informe o motivo da divergência, se houver."></textarea></div>
+   <div class="field full"><button class="btn">Registrar inventário</button></div>
+  </form>
+  <div id="inventoryPreview" style="margin-top:15px"></div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Histórico de inventários</h3>
+  <div class="table-wrap"><table><thead><tr><th>Data</th><th>Produto</th><th>Sistema</th><th>Contagem física</th><th>Diferença</th><th>Resultado</th></tr></thead><tbody id="inventoryTable"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="page-enderecamento">
+ <div class="page-heading"><div><h1>Endereçamento e armazenagem</h1><p class="subtitle">Escolha onde cada produto será armazenado.</p></div></div>
+ <div class="card">
+  <h3>Mapa simplificado do armazém</h3>
+  <div class="warehouse" id="warehouseMap"></div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Movimentar produto</h3>
+  <form id="addressForm" class="form-grid">
+   <div class="field"><label>Produto</label><select id="addressProduct" name="sku" required></select></div>
+   <div class="field"><label>Novo endereço</label><select name="address" id="addressDestination" required></select></div>
+   <div class="field full"><button class="btn">Confirmar armazenagem</button></div>
+  </form>
+ </div>
+</section>
+
+<section class="page" id="page-armazem3d">
+ <div class="page-heading"><div><h1>Armazém virtual 3D</h1><p class="subtitle">Visualize corredores, estruturas de armazenagem e posições do estoque.</p></div></div>
+ <div class="notice">Selecione uma estrutura para consultar os produtos armazenados. O ambiente é uma representação didática do centro de distribuição.</div>
+ <div class="card">
+  <h3>Layout tridimensional do armazém</h3>
+  <div class="warehouse3d">
+   <div class="warehouse-floor" id="warehouse3d"></div>
+  </div>
+  <div class="actions">
+   <span class="tag good">Posição ocupada</span>
+   <span class="tag">Posição livre</span>
+  </div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Detalhes da posição</h3>
+  <div id="rackDetails" class="notice">Selecione uma estrutura no layout para consultar seus produtos e quantidades.</div>
+ </div>
+</section>
+
+<section class="page" id="page-pedidos">
+ <div class="page-heading"><div><h1>Pedidos e picking</h1><p class="subtitle">Cadastre pedidos e separe os produtos solicitados.</p></div></div>
+ <div class="card">
+  <h3>Criar pedido</h3>
+  <form id="orderForm" class="form-grid">
+   <div class="field"><label>Número do pedido</label><input name="number" required placeholder="PED-001"></div>
+   <div class="field"><label>Cliente</label><input name="customer" required></div>
+   <div class="field"><label>Produto</label><select name="sku" id="orderProduct" required></select></div>
+   <div class="field"><label>Quantidade solicitada</label><input name="quantity" type="number" min="1" required></div>
+   <div class="field full"><button class="btn">Criar pedido</button></div>
+  </form>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Pedidos cadastrados</h3>
+  <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Quantidade</th><th>Status</th><th>Ação</th></tr></thead><tbody id="orderTable"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="page-expedicao">
+ <div class="page-heading"><div><h1>Expedição e carregamento</h1><p class="subtitle">Prepare a carga e verifique a capacidade do veículo.</p></div></div>
+ <div class="card">
+  <h3>Registrar expedição</h3>
+  <form id="dispatchForm" class="form-grid">
+   <div class="field"><label>Pedido separado</label><select name="order" id="dispatchOrder" required></select></div>
+   <div class="field"><label>Veículo</label><input name="vehicle" required placeholder="VUC-01"></div>
+   <div class="field"><label>Capacidade máxima (kg)</label><input name="capacity" type="number" min="1" required></div>
+   <div class="field"><label>Peso total da carga (kg)</label><input name="load" type="number" min="0" step="0.01" required></div>
+   <div class="field full"><label>Observações</label><textarea name="notes"></textarea></div>
+   <div class="field full"><button class="btn">Validar e registrar expedição</button></div>
+  </form>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Expedições registradas</h3><div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Veículo</th><th>Peso</th><th>Capacidade</th><th>Status</th></tr></thead><tbody id="dispatchTable"></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-transporte">
+ <div class="page-heading"><div><h1>Transporte e entregas</h1><p class="subtitle">Planeje destinos e visualize o trajeto no mapa.</p></div></div>
+ <div class="card">
+  <h3>Planejar entrega</h3>
+  <form id="routeForm" class="form-grid">
+   <div class="field"><label>Pedido</label><select name="order" id="routeOrder" required></select></div>
+   <div class="field"><label>Motorista</label><input name="driver" required></div>
+   <div class="field full"><label>Endereço de origem</label><input name="origin" id="routeOrigin" value="SENAI Duque de Caxias, RJ" required></div>
+   <div class="field full"><label>Endereço de destino</label><input name="destination" id="routeDestination" required placeholder="Rua, número, cidade, estado"></div>
+   <div class="field full"><button class="btn">Registrar entrega e visualizar rota</button></div>
+  </form>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Mapa de transporte</h3>
+  <div id="map"></div>
+  <div id="mapMessage" class="notice" style="margin-top:12px">Informe a origem e o destino para visualizar a rota.</div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Entregas registradas</h3>
+  <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Motorista</th><th>Destino</th><th>Status</th><th>Ação</th></tr></thead><tbody id="routeTable"></tbody></table></div>
+ </div>
+</section>
+
+<section class="page" id="page-atividades">
+ <div class="page-heading"><div><h1>Atividades Logísticas (A.L.)</h1><p class="subtitle">Pratique situações do cotidiano de um centro de distribuição.</p></div></div>
+ <div class="card">
+  <h3>Desafio: divergência no recebimento</h3>
+  <p class="subtitle">A nota fiscal informa 100 unidades, mas durante a conferência você encontra apenas 92. Qual deve ser sua atitude?</p>
+  <div style="display:grid;gap:9px;margin-top:18px">
+   <button class="btn secondary" onclick="answerActivity(0)">A) Registrar 100 unidades e finalizar.</button>
+   <button class="btn secondary" onclick="answerActivity(1)">B) Registrar 92 unidades, informar a divergência e comunicar o responsável.</button>
+   <button class="btn secondary" onclick="answerActivity(2)">C) Descartar a nota fiscal e não registrar a entrada.</button>
+  </div>
+  <div id="activityFeedback" style="margin-top:15px"></div>
+ </div>
+ <div class="card" style="margin-top:18px">
+  <h3>Resultados das atividades</h3>
+  <div id="activityHistory" class="table-wrap"></div>
+ </div>
+</section>
+
+<section class="page" id="page-instrutora">
+ <div class="page-heading"><div><h1>Painel do instrutor</h1><p class="subtitle">Acompanhe os registros realizados neste navegador.</p></div></div>
+ <div class="notice orange">Painel demonstrativo local. Os registros não são compartilhados automaticamente entre dispositivos ou turmas.</div>
+ <div class="grid">
+  <div class="card"><div class="stat-label">Produtos</div><div class="stat-value" id="teacherProducts">0</div></div>
+  <div class="card"><div class="stat-label">Recebimentos</div><div class="stat-value" id="teacherReceipts">0</div></div>
+  <div class="card"><div class="stat-label">Pedidos</div><div class="stat-value" id="teacherOrders">0</div></div>
+  <div class="card"><div class="stat-label">Movimentações</div><div class="stat-value" id="teacherMovements">0</div></div>
+ </div>
+ <div class="card">
+  <h3>Histórico geral de operações</h3>
+  <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Usuário</th><th>Operação</th><th>Detalhes</th></tr></thead><tbody id="historyTable"></tbody></table></div>
+  <div class="actions"><button class="btn secondary" onclick="exportCSV()">Exportar histórico CSV</button><button class="btn danger" onclick="clearDemo()">Limpar dados locais</button></div>
+ </div>
+</section>
+
+</div>
 </main>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const KEY="logisim_v2_data";
+const KEY="logisim_v3_data";
+
 const ADDRESSES=[
- {code:"A-01-01",capacity:50},{code:"A-01-02",capacity:50},
- {code:"A-02-01",capacity:40},{code:"A-02-02",capacity:40},
- {code:"B-01-01",capacity:30},{code:"B-01-02",capacity:30},
- {code:"B-02-01",capacity:30},{code:"B-02-02",capacity:30},
- {code:"C-01-01",capacity:40},{code:"C-01-02",capacity:40},
- {code:"C-02-01",capacity:40},{code:"C-02-02",capacity:40}
+ {code:"A-01-01",capacity:150},
+ {code:"A-01-02",capacity:150},
+ {code:"A-02-01",capacity:150},
+ {code:"A-02-02",capacity:150},
+ {code:"B-01-01",capacity:150},
+ {code:"B-01-02",capacity:150},
+ {code:"B-02-01",capacity:150},
+ {code:"B-02-02",capacity:150},
+ {code:"C-01-01",capacity:150},
+ {code:"C-01-02",capacity:150},
+ {code:"C-02-01",capacity:150},
+ {code:"C-02-02",capacity:150}
 ];
-let role="aluno",currentUser="";
+
+let role="aluno";
+let currentUser="";
+let currentClass="";
+let map=null;
+let routeLayer=null;
+let markers=[];
 let db=loadData();
 
 function loadData(){
@@ -376,201 +454,586 @@ function loadData(){
  }catch(e){}
  return {
   products:[
-   {sku:"SKU-101",name:"Água mineral 500 ml",category:"Bebidas",quantity:100,weight:0.3,batch:"L001",expiry:"",address:"A-01-01"},
-   {sku:"SKU-102",name:"Material de limpeza",category:"Limpeza",quantity:45,weight:1.5,batch:"L002",expiry:"",address:"B-01-02"},
-   {sku:"SKU-103",name:"Alimentos não perecíveis",category:"Alimentos",quantity:60,weight:0.8,batch:"L003",expiry:"",address:"C-02-01"}
+   {sku:"SKU-101",name:"Água mineral 500 ml",category:"Bebidas",quantity:40,weight:0.3,batch:"L001",expiry:"",address:"A-01-01"},
+   {sku:"SKU-102",name:"Material de limpeza",category:"Limpeza",quantity:25,weight:1.5,batch:"L002",expiry:"",address:"B-01-02"},
+   {sku:"SKU-103",name:"Alimentos não perecíveis",category:"Alimentos",quantity:30,weight:0.8,batch:"L003",expiry:"",address:"C-02-01"}
   ],
-  receipts:[],orders:[],dispatches:[],routes:[],history:[],activities:[]
+  receipts:[],
+  orders:[],
+  dispatches:[],
+  routes:[],
+  inventory:[],
+  history:[],
+  activities:[]
  };
 }
+
 function save(){
  localStorage.setItem(KEY,JSON.stringify(db));
  renderAll();
 }
+
 function log(type,details){
- db.history.unshift({date:new Date().toLocaleString("pt-BR"),user:currentUser,type,details});
+ db.history.unshift({
+  date:new Date().toLocaleString("pt-BR"),
+  user:currentUser,
+  type,
+  details
+ });
 }
+
 function toast(msg){
- const el=document.createElement("div");el.className="toast";el.textContent=msg;
- document.body.appendChild(el);setTimeout(()=>el.remove(),3000);
+ const el=document.createElement("div");
+ el.className="toast";
+ el.textContent=msg;
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),3000);
 }
+
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
 function chooseRole(r){
  role=r;
  document.getElementById("studentRole").classList.toggle("selected",r==="aluno");
  document.getElementById("teacherRole").classList.toggle("selected",r==="instrutor");
- document.getElementById("classCode").style.display=r==="aluno"?"block":"none";
+ document.getElementById("classField").style.display=r==="aluno"?"block":"none";
 }
+
 function login(){
  const name=document.getElementById("loginName").value.trim();
  const code=document.getElementById("classCode").value.trim();
+
  if(!name){toast("Digite seu nome.");return}
  if(role==="aluno"&&!code){toast("Digite o código da turma.");return}
+
  currentUser=name;
+ currentClass=code;
+
  document.getElementById("loginScreen").style.display="none";
  document.getElementById("app").style.display="block";
  document.getElementById("userName").textContent=name;
  document.getElementById("avatar").textContent=name[0].toUpperCase();
- document.getElementById("roleTag").textContent=role==="aluno"?"AMBIENTE DO ALUNO":"AMBIENTE DA INSTRUTORA";
- document.getElementById("teacherNav").style.display=role==="instrutor"?"flex":"none";
+ document.getElementById("roleTag").textContent=role==="aluno"?"AMBIENTE DO ALUNO":"AMBIENTE DO INSTRUTOR";
+ document.getElementById("teacherNav").style.display=role==="instrutor"?"block":"none";
  document.getElementById("teacherNavTitle").style.display=role==="instrutor"?"block":"none";
+
  go("dashboard");
  renderAll();
 }
+
 function logout(){
  currentUser="";
  document.getElementById("app").style.display="none";
  document.getElementById("loginScreen").style.display="grid";
 }
+
 function go(page){
- if(page==="instrutora"&&role!=="instrutor"){toast("Área disponível para a instrutora.");return}
+ if(page==="instrutora"&&role!=="instrutor"){
+  toast("Área disponível para o instrutor.");
+  return;
+ }
+
  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
  document.getElementById("page-"+page).classList.add("active");
- document.querySelectorAll(".nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+
+ document.querySelectorAll(".nav button[data-page]").forEach(b=>{
+  b.classList.toggle("active",b.dataset.page===page);
+ });
+
  const btn=document.querySelector('[data-page="'+page+'"]');
  document.getElementById("topTitle").textContent=btn?btn.textContent.trim():"Visão geral";
  document.getElementById("sidebar").classList.remove("open");
+
+ if(page==="transporte"){
+  setTimeout(()=>{
+   initMap();
+   if(db.routes.length){
+    const last=db.routes[0];
+    if(last.coordinates)drawRoute(last.coordinates);
+   }
+  },200);
+ }
 }
-document.querySelectorAll(".nav button[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+
+document.querySelectorAll(".nav button[data-page]").forEach(b=>{
+ b.addEventListener("click",()=>go(b.dataset.page));
+});
+
+function emptyRow(n){
+ return `<tr><td class="empty" colspan="${n}">Nenhum registro encontrado.</td></tr>`;
+}
+
+function statusTag(s){
+ let cls=["Conferido","Separado","Liberado","Entregue"].includes(s)?"good":
+ ["Divergência","Excedeu capacidade","Falta","Sobra"].includes(s)?"bad":"warn";
+ return `<span class="tag ${cls}">${esc(s)}</span>`;
+}
 
 function productOptions(){
- const opts=db.products.map(p=>`<option value="${esc(p.sku)}">${esc(p.sku)} — ${esc(p.name)}</option>`).join("");
- ["receiptProduct","addressProduct","orderProduct"].forEach(id=>{
+ const opts=db.products.map(p=>
+  `<option value="${esc(p.sku)}">${esc(p.sku)} — ${esc(p.name)}</option>`
+ ).join("");
+
+ ["receiptProduct","addressProduct","orderProduct","inventoryProduct"].forEach(id=>{
   document.getElementById(id).innerHTML=opts||'<option value="">Cadastre um produto primeiro</option>';
  });
- const addresses=ADDRESSES.map(a=>`<option value="${a.code}">${a.code} (capacidade: ${a.capacity})</option>`).join("");
- ["productAddress","addressDestination"].forEach(id=>document.getElementById(id).innerHTML='<option value="">Selecione</option>'+addresses);
- document.getElementById("dispatchOrder").innerHTML=db.orders.filter(o=>o.status==="Separado").map(o=>`<option value="${esc(o.number)}">${esc(o.number)} — ${esc(o.customer)}</option>`).join("")||'<option value="">Nenhum pedido separado</option>';
- document.getElementById("routeOrder").innerHTML=db.orders.map(o=>`<option value="${esc(o.number)}">${esc(o.number)} — ${esc(o.customer)}</option>`).join("")||'<option value="">Nenhum pedido cadastrado</option>';
+
+ const addresses=ADDRESSES.map(a=>
+  `<option value="${a.code}">${a.code} (capacidade: ${a.capacity})</option>`
+ ).join("");
+
+ ["productAddress","addressDestination"].forEach(id=>{
+  document.getElementById(id).innerHTML='<option value="">Selecione</option>'+addresses;
+ });
+
+ document.getElementById("dispatchOrder").innerHTML=
+  db.orders.filter(o=>o.status==="Separado").map(o=>
+   `<option value="${esc(o.number)}">${esc(o.number)} — ${esc(o.customer)}</option>`
+  ).join("")||'<option value="">Nenhum pedido separado</option>';
+
+ document.getElementById("routeOrder").innerHTML=
+  db.orders.filter(o=>o.status==="Expedido").map(o=>
+   `<option value="${esc(o.number)}">${esc(o.number)} — ${esc(o.customer)}</option>`
+  ).join("")||'<option value="">Nenhum pedido expedido</option>';
 }
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
+
 function renderAll(){
  productOptions();
+
  document.getElementById("statProducts").textContent=db.products.length;
  document.getElementById("statReceipts").textContent=db.receipts.length;
  document.getElementById("statOrders").textContent=db.orders.length;
- document.getElementById("statActivities").textContent=db.activities.length;
+ document.getElementById("statInventory").textContent=db.inventory.length;
+
  document.getElementById("teacherProducts").textContent=db.products.length;
  document.getElementById("teacherReceipts").textContent=db.receipts.length;
  document.getElementById("teacherOrders").textContent=db.orders.length;
  document.getElementById("teacherMovements").textContent=db.history.length;
 
- document.getElementById("productTable").innerHTML=db.products.map(p=>`<tr><td>${esc(p.sku)}</td><td>${esc(p.name)}</td><td>${esc(p.category)}</td><td>${p.quantity}</td><td>${p.weight} kg</td><td>${esc(p.address||"Não endereçado")}</td><td>${esc(p.batch)}</td></tr>`).join("")||emptyRow(7);
- document.getElementById("receiptTable").innerHTML=db.receipts.map(r=>`<tr><td>${esc(r.document)}</td><td>${esc(r.supplier)}</td><td>${esc(r.product)}</td><td>${r.expected}</td><td>${r.received}</td><td>${statusTag(r.status)}</td></tr>`).join("")||emptyRow(6);
- document.getElementById("orderTable").innerHTML=db.orders.map((o,i)=>`<tr><td>${esc(o.number)}</td><td>${esc(o.customer)}</td><td>${esc(o.product)}</td><td>${o.quantity}</td><td>${statusTag(o.status)}</td><td>${o.status==="Pendente"?`<button class="btn small" onclick="pickOrder(${i})">Separar</button>`:"—"}</td></tr>`).join("")||emptyRow(6);
- document.getElementById("dispatchTable").innerHTML=db.dispatches.map(d=>`<tr><td>${esc(d.order)}</td><td>${esc(d.vehicle)}</td><td>${d.load} kg</td><td>${d.capacity} kg</td><td>${statusTag(d.status)}</td></tr>`).join("")||emptyRow(5);
- document.getElementById("routeTable").innerHTML=db.routes.map((r,i)=>`<tr><td>${esc(r.order)}</td><td>${esc(r.driver)}</td><td>${esc(r.destination)}</td><td>${statusTag(r.status)}</td><td>${r.status!=="Entregue"?`<button class="btn small success" onclick="deliver(${i})">Concluir entrega</button>`:"—"}</td></tr>`).join("")||emptyRow(5);
- document.getElementById("historyTable").innerHTML=db.history.map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.user)}</td><td>${esc(h.type)}</td><td>${esc(h.details)}</td></tr>`).join("")||emptyRow(4);
- document.getElementById("recentTable").innerHTML=db.history.slice(0,6).map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.type)}</td><td>${esc(h.details)}</td><td>${esc(h.user)}</td></tr>`).join("")||emptyRow(4);
+ document.getElementById("productTable").innerHTML=db.products.map(p=>
+  `<tr><td>${esc(p.sku)}</td><td>${esc(p.name)}</td><td>${esc(p.category)}</td><td>${p.quantity}</td><td>${p.weight} kg</td><td>${esc(p.address||"Não endereçado")}</td><td>${esc(p.batch)}</td></tr>`
+ ).join("")||emptyRow(7);
+
+ document.getElementById("receiptTable").innerHTML=db.receipts.map(r=>
+  `<tr><td>${esc(r.document)}</td><td>${esc(r.supplier)}</td><td>${esc(r.product)}</td><td>${r.expected}</td><td>${r.received}</td><td>${statusTag(r.status)}</td></tr>`
+ ).join("")||emptyRow(6);
+
+ document.getElementById("inventoryTable").innerHTML=db.inventory.map(i=>
+  `<tr><td>${esc(i.date)}</td><td>${esc(i.product)}</td><td>${i.system}</td><td>${i.count}</td><td>${i.difference>0?"+" : ""}${i.difference}</td><td>${statusTag(i.status)}</td></tr>`
+ ).join("")||emptyRow(6);
+
+ document.getElementById("orderTable").innerHTML=db.orders.map((o,i)=>
+  `<tr><td>${esc(o.number)}</td><td>${esc(o.customer)}</td><td>${esc(o.product)}</td><td>${o.quantity}</td><td>${statusTag(o.status)}</td><td>${o.status==="Pendente"?`<button class="btn small" onclick="pickOrder(${i})">Separar</button>`:"—"}</td></tr>`
+ ).join("")||emptyRow(6);
+
+ document.getElementById("dispatchTable").innerHTML=db.dispatches.map(d=>
+  `<tr><td>${esc(d.order)}</td><td>${esc(d.vehicle)}</td><td>${d.load} kg</td><td>${d.capacity} kg</td><td>${statusTag(d.status)}</td></tr>`
+ ).join("")||emptyRow(5);
+
+ document.getElementById("routeTable").innerHTML=db.routes.map((r,i)=>
+  `<tr><td>${esc(r.order)}</td><td>${esc(r.driver)}</td><td>${esc(r.destination)}</td><td>${statusTag(r.status)}</td><td>${r.status!=="Entregue"?`<button class="btn small success" onclick="deliver(${i})">Concluir entrega</button>`:"—"}</td></tr>`
+ ).join("")||emptyRow(5);
+
+ document.getElementById("historyTable").innerHTML=db.history.map(h=>
+  `<tr><td>${esc(h.date)}</td><td>${esc(h.user)}</td><td>${esc(h.type)}</td><td>${esc(h.details)}</td></tr>`
+ ).join("")||emptyRow(4);
+
+ document.getElementById("recentTable").innerHTML=db.history.slice(0,6).map(h=>
+  `<tr><td>${esc(h.date)}</td><td>${esc(h.type)}</td><td>${esc(h.details)}</td><td>${esc(h.user)}</td></tr>`
+ ).join("")||emptyRow(4);
+
  document.getElementById("warehouseMap").innerHTML=ADDRESSES.map(a=>{
-  const p=db.products.filter(x=>x.address===a.code);
-  const qty=p.reduce((s,x)=>s+Number(x.quantity),0);
-  return `<div class="slot"><strong>${a.code}</strong>${p.length?esc(p.map(x=>x.name).join(", ")):"Posição livre"}<br><small>${qty} / ${a.capacity} unidades</small></div>`;
+  const products=db.products.filter(p=>p.address===a.code);
+  const qty=products.reduce((s,p)=>s+Number(p.quantity),0);
+  return `<div class="slot"><strong>${a.code}</strong>${products.length?esc(products.map(p=>p.name).join(", ")):"Posição livre"}<br><small>${qty} / ${a.capacity} unidades</small></div>`;
+ }).join("");
+
+ render3D();
+
+ document.getElementById("activityHistory").innerHTML=
+  `<table><thead><tr><th>Data</th><th>Atividade</th><th>Resultado</th></tr></thead><tbody>`+
+  (db.activities.map(a=>`<tr><td>${esc(a.date)}</td><td>${esc(a.question)}</td><td>${statusTag(a.correct?"Correto":"Incorreto")}</td></tr>`).join("")||emptyRow(3))+
+  `</tbody></table>`;
+
+ const p=db.products.find(x=>x.sku===document.getElementById("inventoryProduct").value);
+ document.getElementById("inventorySystem").value=p?p.quantity:"";
+}
+
+function render3D(){
+ const container=document.getElementById("warehouse3d");
+ container.innerHTML=ADDRESSES.map((a,index)=>{
+  const products=db.products.filter(p=>p.address===a.code);
+  const occupied=products.length>0;
+  return `<div>
+   <div class="rack" onclick="showRack('${a.code}')">
+    <div class="shelf ${occupied?"occupied":""}">${occupied?esc(products[0].sku):"Livre"}</div>
+    <div class="shelf ${occupied?"occupied":""}">${occupied?esc(products[0].name.substring(0,17)):"Prateleira livre"}</div>
+    <div class="shelf">${a.code}</div>
+   </div>
+   <div class="rack-label">Corredor ${a.code.substring(0,1)} | ${a.code}</div>
+  </div>`;
  }).join("");
 }
-function emptyRow(n){return `<tr><td class="empty" colspan="${n}">Nenhum registro encontrado.</td></tr>`}
-function statusTag(s){
- let cls=s==="Conferido"||s==="Separado"||s==="Liberado"||s==="Entregue"?"good":s==="Divergência"||s==="Excedeu capacidade"?"bad":"warn";
- return `<span class="tag ${cls}">${esc(s)}</span>`;
+
+function showRack(code){
+ const products=db.products.filter(p=>p.address===code);
+ document.getElementById("rackDetails").innerHTML=
+  `<strong>Posição ${code}</strong><br>`+
+  (products.length?products.map(p=>
+   `${esc(p.name)} — ${p.quantity} unidades`
+  ).join("<br>"):"Esta posição está livre.");
 }
+
 document.getElementById("productForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
- if(db.products.some(p=>p.sku.toLowerCase()===f.sku.trim().toLowerCase())){toast("Este SKU já está cadastrado.");return}
- db.products.push({sku:f.sku.trim(),name:f.name.trim(),category:f.category,quantity:Number(f.quantity),weight:Number(f.weight||0),batch:f.batch,expiry:f.expiry,address:f.address});
- log("Cadastro de produto",f.sku+" — "+f.name);e.target.reset();save();toast("Produto cadastrado.");
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+
+ if(db.products.some(p=>p.sku.toLowerCase()===f.sku.trim().toLowerCase())){
+  toast("Este SKU já está cadastrado.");
+  return;
+ }
+
+ const address=ADDRESSES.find(a=>a.code===f.address);
+ if(address){
+  const used=db.products.filter(p=>p.address===f.address).reduce((s,p)=>s+Number(p.quantity),0);
+  if(used+Number(f.quantity)>address.capacity){
+   toast("A quantidade ultrapassa a capacidade da posição.");
+   return;
+  }
+ }
+
+ db.products.push({
+  sku:f.sku.trim(),
+  name:f.name.trim(),
+  category:f.category,
+  quantity:Number(f.quantity),
+  weight:Number(f.weight||0),
+  batch:f.batch,
+  expiry:f.expiry,
+  address:f.address
+ });
+
+ log("Cadastro de produto",f.sku+" — "+f.name);
+ e.target.reset();
+ save();
+ toast("Produto cadastrado.");
 });
+
 document.getElementById("receiptForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
  const p=db.products.find(x=>x.sku===f.product);
  if(!p){toast("Produto não encontrado.");return}
- const expected=Number(f.expected),received=Number(f.received);
+
+ const expected=Number(f.expected);
+ const received=Number(f.received);
  const status=expected===received&&f.condition==="Sem avarias"?"Conferido":"Divergência";
+
  db.receipts.unshift({...f,expected,received,status});
- if(status==="Conferido"){p.quantity+=received}
+
+ if(status==="Conferido"){
+  p.quantity+=received;
+ }
+
  log("Recebimento",`${f.document}: ${received} de ${expected} unidades de ${p.name}. ${status}.`);
- e.target.reset();save();toast(status==="Conferido"?"Recebimento conferido e estoque atualizado.":"Divergência registrada. Estoque não atualizado.");
+ e.target.reset();
+ save();
+ toast(status==="Conferido"?"Recebimento conferido.":"Divergência registrada. Estoque não atualizado.");
 });
+
 function scanProduct(){
  const code=document.getElementById("scanCode").value.trim().toLowerCase();
  const p=db.products.find(x=>x.sku.toLowerCase()===code);
  const box=document.getElementById("scanResult");
- if(!p){box.innerHTML='<span class="tag bad">Produto não localizado</span>';return}
+
+ if(!p){
+  box.innerHTML='<span class="tag bad">Produto não localizado</span>';
+  return;
+ }
+
  box.innerHTML=`<div class="notice"><strong>${esc(p.name)}</strong><br>SKU: ${esc(p.sku)}<br>Categoria: ${esc(p.category)}<br>Quantidade: ${p.quantity}<br>Peso unitário: ${p.weight} kg<br>Lote: ${esc(p.batch)}<br>Endereço: ${esc(p.address||"Não endereçado")}</div>`;
- log("Consulta no coletor",p.sku+" — "+p.name);save();
+ log("Consulta no coletor",p.sku+" — "+p.name);
+ save();
 }
+
+document.getElementById("inventoryProduct").addEventListener("change",()=>{
+ const p=db.products.find(x=>x.sku===document.getElementById("inventoryProduct").value);
+ document.getElementById("inventorySystem").value=p?p.quantity:"";
+ document.getElementById("inventoryPreview").innerHTML="";
+});
+
+document.getElementById("inventoryCount").addEventListener("input",()=>{
+ const system=Number(document.getElementById("inventorySystem").value);
+ const count=Number(document.getElementById("inventoryCount").value);
+ if(document.getElementById("inventoryCount").value==="")return;
+ const diff=count-system;
+ document.getElementById("inventoryPreview").innerHTML=
+  `<div class="notice">Diferença identificada: <strong>${diff>0?"+":""}${diff}</strong> unidades. ${diff===0?"O saldo físico corresponde ao sistema.":diff>0?"Existe sobra física.":"Existe falta física."}</div>`;
+});
+
+document.getElementById("inventoryForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+ const p=db.products.find(x=>x.sku===f.sku);
+ if(!p){toast("Produto não encontrado.");return}
+
+ const system=Number(f.system);
+ const count=Number(f.count);
+ const difference=count-system;
+ const status=difference===0?"Conferido":difference>0?"Sobra":"Falta";
+
+ db.inventory.unshift({
+  date:new Date().toLocaleString("pt-BR"),
+  sku:p.sku,
+  product:p.name,
+  system,
+  count,
+  difference,
+  status,
+  notes:f.notes,
+  user:currentUser
+ });
+
+ log("Inventário físico",`${p.name}: sistema ${system}, contagem ${count}, diferença ${difference}.`);
+ e.target.reset();
+ document.getElementById("inventorySystem").value="";
+ document.getElementById("inventoryPreview").innerHTML="";
+ save();
+ toast("Contagem de inventário registrada.");
+});
+
 document.getElementById("addressForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
  const p=db.products.find(x=>x.sku===f.sku);
  const a=ADDRESSES.find(x=>x.code===f.address);
  if(!p||!a)return;
+
  const used=db.products.filter(x=>x.address===a.code&&x.sku!==p.sku).reduce((s,x)=>s+Number(x.quantity),0);
- if(used+p.quantity>a.capacity){toast("Capacidade da posição insuficiente. Escolha outro endereço.");return}
- const old=p.address;p.address=f.address;
- log("Endereçamento",`${p.name}: ${old||"sem endereço"} → ${f.address}`);
- e.target.reset();save();toast("Endereço atualizado.");
+ if(used+p.quantity>a.capacity){
+  toast("Capacidade da posição insuficiente.");
+  return;
+ }
+
+ const old=p.address;
+ p.address=f.address;
+ log("Endereçamento",`${p.name}: ${old||"sem endereço"} para ${f.address}`);
+ e.target.reset();
+ save();
+ toast("Endereço atualizado.");
 });
+
 document.getElementById("orderForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
- if(db.orders.some(o=>o.number===f.number)){toast("Número de pedido já cadastrado.");return}
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+ if(db.orders.some(o=>o.number===f.number)){
+  toast("Número de pedido já cadastrado.");
+  return;
+ }
  const p=db.products.find(x=>x.sku===f.sku);
  if(!p)return;
- db.orders.unshift({number:f.number,customer:f.customer,sku:f.sku,product:p.name,quantity:Number(f.quantity),status:"Pendente"});
+
+ db.orders.unshift({
+  number:f.number,
+  customer:f.customer,
+  sku:f.sku,
+  product:p.name,
+  quantity:Number(f.quantity),
+  status:"Pendente"
+ });
+
  log("Criação de pedido",`${f.number} — ${f.quantity} unidades de ${p.name}`);
- e.target.reset();save();toast("Pedido cadastrado.");
+ e.target.reset();
+ save();
+ toast("Pedido cadastrado.");
 });
+
 function pickOrder(i){
- const o=db.orders[i];const p=db.products.find(x=>x.sku===o.sku);
- if(!p||p.quantity<o.quantity){toast("Estoque insuficiente para separar este pedido.");return}
- if(!p.address){toast("Produto sem endereço de armazenagem.");return}
- p.quantity-=o.quantity;o.status="Separado";
+ const o=db.orders[i];
+ const p=db.products.find(x=>x.sku===o.sku);
+ if(!p||p.quantity<o.quantity){
+  toast("Estoque insuficiente para separar este pedido.");
+  return;
+ }
+ if(!p.address){
+  toast("Produto sem endereço de armazenagem.");
+  return;
+ }
+
+ p.quantity-=o.quantity;
+ o.status="Separado";
  log("Picking",`${o.number}: ${o.quantity} unidades de ${p.name} separadas em ${p.address}`);
- save();toast("Pedido separado. Estoque atualizado.");
+ save();
+ toast("Pedido separado e estoque atualizado.");
 }
+
 document.getElementById("dispatchForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
  const o=db.orders.find(x=>x.number===f.order);
- if(!o||o.status!=="Separado"){toast("Selecione um pedido separado.");return}
- const capacity=Number(f.capacity),load=Number(f.load);
+ if(!o||o.status!=="Separado"){
+  toast("Selecione um pedido separado.");
+  return;
+ }
+
+ const capacity=Number(f.capacity);
+ const load=Number(f.load);
  const status=load<=capacity?"Liberado":"Excedeu capacidade";
+
  db.dispatches.unshift({...f,capacity,load,status});
  if(status==="Liberado")o.status="Expedido";
+
  log("Expedição",`${o.number} — ${f.vehicle}: ${load}/${capacity} kg. ${status}`);
- e.target.reset();save();toast(status==="Liberado"?"Expedição liberada.":"Carga acima da capacidade do veículo.");
+ e.target.reset();
+ save();
+ toast(status==="Liberado"?"Expedição liberada.":"Carga acima da capacidade.");
 });
-document.getElementById("routeForm").addEventListener("submit",e=>{
- e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
- const o=db.orders.find(x=>x.number===f.order);
- if(!o||o.status!=="Expedido"){toast("O pedido precisa estar expedido antes de planejar a entrega.");return}
- db.routes.unshift({...f,status:"Em transporte"});
- log("Roteirização",`${o.number} — destino: ${f.destination}`);
- e.target.reset();save();toast("Entrega registrada.");
-});
-function deliver(i){
- const r=db.routes[i];r.status="Entregue";
- const o=db.orders.find(x=>x.number===r.order);if(o)o.status="Entregue";
- log("Entrega concluída",`${r.order} — ${r.destination}`);
- save();toast("Entrega simulada concluída.");
+
+function initMap(){
+ if(map)return;
+ if(!window.L){
+  document.getElementById("mapMessage").textContent="Não foi possível carregar o mapa. Verifique sua conexão.";
+  return;
+ }
+ map=L.map("map").setView([-22.7858,-43.3117],12);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+  attribution:"© OpenStreetMap"
+ }).addTo(map);
 }
+
+async function geocode(address){
+ const response=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(address));
+ const results=await response.json();
+ if(!results.length)throw new Error("Endereço não localizado: "+address);
+ return [Number(results[0].lat),Number(results[0].lon)];
+}
+
+async function drawRoute(addresses){
+ initMap();
+ if(!map)return;
+
+ try{
+  const coords=[];
+  for(const address of addresses){
+   coords.push(await geocode(address));
+  }
+
+  const start=coords[0];
+  const end=coords[1];
+
+  const url=`https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+  const response=await fetch(url);
+  const result=await response.json();
+
+  if(!result.routes||!result.routes.length)throw new Error("Trajeto não encontrado.");
+
+  if(routeLayer)map.removeLayer(routeLayer);
+  markers.forEach(m=>map.removeLayer(m));
+  markers=[];
+
+  const route=result.routes[0];
+  routeLayer=L.geoJSON(route.geometry,{
+   style:{color:"#f28c28",weight:5,opacity:.9}
+  }).addTo(map);
+
+  markers.push(L.marker(start).addTo(map).bindPopup("Origem"));
+  markers.push(L.marker(end).addTo(map).bindPopup("Destino"));
+
+  map.fitBounds(routeLayer.getBounds(),{padding:[30,30]});
+
+  document.getElementById("mapMessage").innerHTML=
+   `Trajeto demonstrativo calculado. Distância aproximada: <strong>${(route.distance/1000).toFixed(1)} km</strong>. Tempo estimado: <strong>${Math.round(route.duration/60)} minutos</strong>.`;
+  return coords;
+ }catch(error){
+  document.getElementById("mapMessage").textContent=error.message;
+  throw error;
+ }
+}
+
+document.getElementById("routeForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const f=Object.fromEntries(new FormData(e.target));
+ const o=db.orders.find(x=>x.number===f.order);
+
+ if(!o||o.status!=="Expedido"){
+  toast("O pedido precisa estar expedido.");
+  return;
+ }
+
+ try{
+  const coords=await drawRoute([f.origin,f.destination]);
+
+  db.routes.unshift({
+   ...f,
+   status:"Em transporte",
+   coordinates:coords
+  });
+
+  log("Roteirização",`${o.number} — destino: ${f.destination}`);
+  save();
+  e.target.reset();
+  document.getElementById("routeOrigin").value="SENAI Duque de Caxias, RJ";
+  toast("Entrega registrada e rota calculada.");
+ }catch(error){
+  toast("Não foi possível calcular a rota. Confira os endereços.");
+ }
+});
+
+function deliver(i){
+ const r=db.routes[i];
+ r.status="Entregue";
+ const o=db.orders.find(x=>x.number===r.order);
+ if(o)o.status="Entregue";
+ log("Entrega concluída",`${r.order} — ${r.destination}`);
+ save();
+ toast("Entrega simulada concluída.");
+}
+
 function answerActivity(n){
  const correct=n===1;
- db.activities.push({question:"Divergência no recebimento",answer:n,correct,user:currentUser,date:new Date().toLocaleString("pt-BR")});
+ db.activities.push({
+  question:"Divergência no recebimento",
+  answer:n,
+  correct,
+  user:currentUser,
+  date:new Date().toLocaleString("pt-BR")
+ });
+
  log("Atividade A.L.",correct?"Resposta correta":"Resposta incorreta");
+
  document.getElementById("activityFeedback").innerHTML=correct?
- '<div class="notice" style="border-color:#287b59">✓ Correto! A divergência precisa ser registrada e comunicada. O estoque não deve receber uma quantidade que não foi efetivamente conferida.</div>':
- '<div class="notice orange">Não é a melhor decisão. A conferência deve refletir a quantidade física encontrada, com registro da divergência e comunicação ao responsável.</div>';
+  '<div class="notice" style="border-color:#287b59">Correto! A divergência precisa ser registrada e comunicada. O estoque deve refletir a quantidade efetivamente conferida.</div>':
+  '<div class="notice orange">A melhor decisão é registrar a quantidade física encontrada, informar a divergência e comunicar o responsável.</div>';
+
  save();
 }
+
 function exportCSV(){
- const rows=[["Data","Usuário","Operação","Detalhes"],...db.history.map(h=>[h.date,h.user,h.type,h.details])];
+ const rows=[
+  ["Data","Usuário","Operação","Detalhes"],
+  ...db.history.map(h=>[h.date,h.user,h.type,h.details])
+ ];
  const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\n");
  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="logisim_historico.csv";a.click();URL.revokeObjectURL(a.href);
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="logisim_historico.csv";
+ a.click();
+ URL.revokeObjectURL(a.href);
 }
+
 function clearDemo(){
  if(!confirm("Deseja apagar todos os dados deste navegador? Esta ação não pode ser desfeita."))return;
- localStorage.removeItem(KEY);db=loadData();save();toast("Dados locais reiniciados.");
+ localStorage.removeItem(KEY);
+ db=loadData();
+ save();
+ toast("Dados locais reiniciados.");
 }
+
 renderAll();
 </script>
 </body>
