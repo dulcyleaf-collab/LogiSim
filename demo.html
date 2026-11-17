@@ -1,63 +1,320 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LogiSim | Atividades Logísticas</title>
+<title>LogiSim | Centro de Treinamento</title>
 <style>
-:root{--navy:#07182f;--navy2:#0d2342;--panel:#112b4d;--orange:#ff8a24;--orange2:#ffad55;--text:#edf4fc;--muted:#9db0c7;--line:#294564;--green:#35c58a;--red:#ff6673;--yellow:#f4c15d}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#061326,#0b203b 55%,#102b49);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}.top{height:75px;background:#091b31;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(22px,calc((100% - 1180px)/2))}.brand{display:flex;align-items:center;gap:11px}.mark{width:40px;height:40px;border-radius:12px;background:var(--orange);color:#13253b;display:grid;place-items:center;font-size:22px;font-weight:900}.brand b{font-size:19px}.brand small{display:block;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-top:3px}.back{color:var(--orange2);text-decoration:none;font-size:12px}.wrap{max-width:1180px;margin:auto;padding:34px 22px}.eyebrow{font-size:10px;color:var(--orange);font-weight:800;letter-spacing:2px}.heading{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:25px}.heading h1{font-size:28px;margin:8px 0}.heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}.tag{background:#ff8a2420;color:var(--orange2);border:1px solid #ff8a2450;padding:8px 12px;border-radius:20px;font-size:10px;white-space:nowrap}.intro{background:linear-gradient(120deg,#173657,#102744);border:1px solid var(--line);border-radius:15px;padding:19px 21px;margin-bottom:20px;display:flex;gap:15px;align-items:center}.intro-icon{font-size:25px;color:var(--orange)}.intro b{font-size:13px}.intro p{font-size:11px;color:var(--muted);margin:5px 0 0;line-height:1.5}.scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:20px}.scenario{border:1px solid var(--line);border-radius:13px;background:#102947;padding:16px;text-align:left;color:var(--text);cursor:pointer;transition:.2s}.scenario:hover,.scenario.active{border-color:var(--orange);background:#173657}.scenario .num{color:var(--orange);font-size:10px;font-weight:800;letter-spacing:1px}.scenario h3{font-size:13px;margin:9px 0 5px}.scenario p{font-size:10px;color:var(--muted);line-height:1.5;margin:0}.work{background:linear-gradient(145deg,#112b4b,#0d2340);border:1px solid var(--line);border-radius:15px;padding:22px;min-height:300px}.work-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}.work h2{font-size:17px;margin:0 0 6px}.work-head p{font-size:11px;color:var(--muted);margin:0;line-height:1.5}.status{font-size:9px;background:#ff8a2420;color:var(--orange2);padding:6px 9px;border-radius:20px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field label{display:block;font-size:10px;color:#a9bdd2;margin-bottom:7px}.field input,.field select{width:100%;background:#081c33;border:1px solid #31506e;color:white;padding:12px;border-radius:8px;outline:none}.field input:focus,.field select:focus{border-color:var(--orange)}.full{grid-column:1/-1}.btn{border:0;border-radius:9px;background:var(--orange);color:#18263a;padding:12px 17px;font-weight:800;font-size:11px;cursor:pointer}.btn:hover{background:var(--orange2)}.btn.secondary{background:#203e60;color:#e8f1fb;border:1px solid #365879}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.feedback{padding:13px 15px;border-radius:9px;margin-top:17px;font-size:11px;line-height:1.6;background:#35c58a18;border:1px solid #35c58a55;color:#8be5bc}.feedback.bad{background:#ff667318;border-color:#ff667355;color:#ff9ca4}.feedback.warn{background:#ff8a2418;border-color:#ff8a2455;color:#ffd09d}.hidden{display:none}.history{margin-top:20px;background:#0b203a;border:1px solid var(--line);border-radius:13px;padding:17px}.history h3{font-size:12px;margin:0 0 12px}.history-item{padding:10px 0;border-bottom:1px solid #203c5b;font-size:10px;color:#dce8f5;line-height:1.5}.history-item:last-child{border:0}.history-item small{color:var(--muted);display:block;margin-top:3px}.footer{text-align:center;color:#7188a3;font-size:10px;padding:25px}.badge{font-size:9px;color:var(--orange2);background:#ff8a2420;padding:4px 7px;border-radius:6px}
-@media(max-width:800px){.scenarios{grid-template-columns:repeat(2,1fr)}}@media(max-width:540px){.top{padding:0 15px}.wrap{padding:24px 14px}.heading{display:block}.tag{display:inline-block;margin-top:15px}.scenarios{grid-template-columns:1fr 1fr}.fields{grid-template-columns:1fr}.full{grid-column:auto}.work{padding:16px}.heading h1{font-size:23px}}
+:root{
+ --bg:#0b1424;--panel:#111f34;--panel2:#172943;
+ --orange:#f28c28;--text:#edf3fc;--muted:#91a2ba;
+ --border:#263a56;--green:#39c98a;--red:#f16b6b;--blue:#5b9cf5;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{height:70px;background:#0e192b;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:bold;font-size:19px}
+.logo{width:39px;height:39px;background:var(--orange);color:#172237;border-radius:11px;display:grid;place-items:center;font-size:22px}
+header a{color:var(--muted);text-decoration:none;font-size:12px}
+main{max-width:1100px;margin:auto;padding:30px 22px}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:24px}
+h1{font-size:26px;margin:0 0 7px}
+h2{font-size:17px;margin:0 0 16px}
+p{line-height:1.6}
+.subtitle{color:var(--muted);font-size:13px;margin:0}
+.tag{font-size:10px;padding:6px 10px;border-radius:20px;background:#203653;color:#b9d5ff}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:20px}
+.mission{display:flex;flex-direction:column;gap:10px}
+.mission-icon{font-size:26px}
+.mission h3{margin:0;font-size:15px}
+.mission p{font-size:12px;color:var(--muted);margin:0;flex:1}
+.btn{border:0;background:var(--orange);color:#172237;padding:11px 15px;border-radius:8px;font-weight:bold;font-size:12px}
+.btn:hover{filter:brightness(1.1)}
+.btn.secondary{background:#263c59;color:white}
+.btn.success{background:#164d3d;color:#8ff0c1}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.field{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+label{font-size:12px;color:#b5c4d8}
+input,select{background:#0c192b;border:1px solid var(--border);padding:11px;color:white;border-radius:8px;width:100%}
+.progress{height:7px;background:#263a56;border-radius:10px;overflow:hidden;margin:13px 0}
+.progress div{height:100%;background:var(--orange);width:0;transition:.3s}
+.mission-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.task{background:#172943;padding:16px;border-radius:10px;margin:15px 0;font-size:13px;line-height:1.7}
+.result{padding:14px;border-radius:9px;margin-top:15px;font-size:13px;line-height:1.6}
+.correct{background:#164b3a;border:1px solid #287b59;color:#a5f1cd}
+.wrong{background:#542b36;border:1px solid #82434f;color:#ffc0c0}
+.neutral{background:#203653;border:1px solid #385575;color:#d4e5fa}
+.option{display:block;width:100%;text-align:left;background:#172943;color:#eaf1fa;border:1px solid var(--border);padding:13px;border-radius:8px;margin:8px 0;font-size:12px}
+.option:hover{border-color:var(--orange)}
+.option.selected{border-color:var(--orange);background:#352a1b}
+.table{width:100%;border-collapse:collapse;font-size:12px;min-width:470px}
+.table th,.table td{padding:11px;border-bottom:1px solid var(--border);text-align:left}
+.table th{color:var(--muted)}
+.table-wrap{overflow-x:auto}
+.hidden{display:none!important}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.stat{background:#172943;padding:14px;border-radius:9px}
+.stat strong{display:block;font-size:23px;margin-bottom:5px}
+.stat span{font-size:11px;color:var(--muted)}
+.steps{display:flex;gap:6px;margin:17px 0}
+.steps span{height:5px;flex:1;border-radius:5px;background:#293d58}
+.steps span.done{background:var(--orange)}
+.warehouse{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.slot{padding:13px 5px;background:#172943;border:1px solid var(--border);border-radius:8px;text-align:center;font-size:11px}
+.slot strong{display:block;color:var(--orange);margin-bottom:6px}
+.notice{padding:13px;background:#352a1b;border:1px solid #795126;border-radius:9px;font-size:12px;color:#ffdda9;line-height:1.6;margin:14px 0}
+@media(max-width:650px){
+ main{padding:22px 13px}header{padding:0 14px}
+ .grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}
+ .warehouse{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
-<header class="top">
- <div class="brand"><div class="mark">L</div><div><b>LogiSim</b><small>ATIVIDADES LOGÍSTICAS</small></div></div>
- <a class="back" href="./index.html">← Voltar à plataforma</a>
+<header>
+ <div class="brand"><div class="logo">L</div>LogiSim <span style="color:var(--muted);font-size:11px;font-weight:normal">| CENTRO DE TREINAMENTO</span></div>
+ <a href="./index.html">← Voltar à plataforma</a>
 </header>
-<main class="wrap">
- <div class="heading"><div><div class="eyebrow">MÓDULO A.L. · SIMULAÇÃO OPERACIONAL</div><h1>Central de atividades logísticas</h1><p>Analise situações do cotidiano de um centro de distribuição, tome decisões e observe as consequências de cada operação.</p></div><span class="tag">AMBIENTE DE SIMULAÇÃO</span></div>
- <div class="intro"><div class="intro-icon">◈</div><div><b>Como funciona?</b><p>Escolha uma atividade, analise as informações disponíveis e execute a decisão operacional. O sistema apresentará o resultado e registrará seu desempenho nesta sessão.</p></div></div>
- <div class="eyebrow" style="margin:0 0 12px">SELECIONE UMA ATIVIDADE</div>
- <div class="scenarios" id="scenarios">
-  <button class="scenario active" onclick="choose(0)"><span class="num">ATIVIDADE 01</span><h3>Divergência no recebimento</h3><p>Confira a nota fiscal e a quantidade física recebida.</p></button>
-  <button class="scenario" onclick="choose(1)"><span class="num">ATIVIDADE 02</span><h3>Estoque sem endereço</h3><p>Escolha uma posição adequada para armazenar os itens.</p></button>
-  <button class="scenario" onclick="choose(2)"><span class="num">ATIVIDADE 03</span><h3>Pedido urgente de picking</h3><p>Localize o produto e separe a quantidade solicitada.</p></button>
-  <button class="scenario" onclick="choose(3)"><span class="num">ATIVIDADE 04</span><h3>Interdição de corredor</h3><p>Identifique uma alternativa para continuar a operação.</p></button>
-  <button class="scenario" onclick="choose(4)"><span class="num">ATIVIDADE 05</span><h3>Capacidade de carregamento</h3><p>Verifique se a carga respeita o limite do veículo.</p></button>
-  <button class="scenario" onclick="choose(5)"><span class="num">ATIVIDADE 06</span><h3>Alteração de rota</h3><p>Reorganize as entregas diante de um imprevisto.</p></button>
+
+<main>
+<section id="home">
+ <div class="heading">
+  <div><h1>Laboratório de Operações</h1><p class="subtitle">Aprenda fazendo. Tome decisões e pratique a rotina logística.</p></div>
+  <span class="tag">AMBIENTE DE SIMULAÇÃO</span>
  </div>
- <section class="work">
-  <div class="work-head"><div><h2 id="taskTitle">Divergência no recebimento</h2><p id="taskDesc">A nota fiscal informa uma quantidade diferente da mercadoria encontrada na conferência física.</p></div><span class="status" id="taskStatus">AGUARDANDO DECISÃO</span></div>
-  <div id="taskFields"></div>
-  <div id="result"></div>
- </section>
- <section class="history"><h3>HISTÓRICO DA SESSÃO <span class="badge" id="count">0 atividades</span></h3><div id="historyList" style="color:var(--muted);font-size:10px">As atividades concluídas aparecerão aqui.</div></section>
+ <div class="notice">Você será responsável por operações de um centro de distribuição. Cada missão apresenta uma situação prática. Suas decisões serão avaliadas e registradas nesta sessão.</div>
+ <div class="grid">
+  <div class="card mission">
+   <div class="mission-icon">📥</div><h3>Missão 01 — Recebimento</h3>
+   <p>Confira uma carga, compare o documento com a quantidade física e registre divergências.</p>
+   <button class="btn" onclick="start(0)">Iniciar missão</button>
+  </div>
+  <div class="card mission">
+   <div class="mission-icon">▣</div><h3>Missão 02 — Coletor e identificação</h3>
+   <p>Identifique um produto pelo SKU e consulte seus dados operacionais.</p>
+   <button class="btn" onclick="start(1)">Iniciar missão</button>
+  </div>
+  <div class="card mission">
+   <div class="mission-icon">⌖</div><h3>Missão 03 — Armazenagem</h3>
+   <p>Escolha um endereço para guardar a mercadoria respeitando a capacidade.</p>
+   <button class="btn" onclick="start(2)">Iniciar missão</button>
+  </div>
+  <div class="card mission">
+   <div class="mission-icon">📋</div><h3>Missão 04 — Picking</h3>
+   <p>Separe um pedido considerando a disponibilidade e o endereço do produto.</p>
+   <button class="btn" onclick="start(3)">Iniciar missão</button>
+  </div>
+  <div class="card mission">
+   <div class="mission-icon">🚚</div><h3>Missão 05 — Expedição</h3>
+   <p>Escolha um veículo e verifique se a carga respeita seu limite de peso.</p>
+   <button class="btn" onclick="start(4)">Iniciar missão</button>
+  </div>
+  <div class="card mission">
+   <div class="mission-icon">🗺</div><h3>Missão 06 — Transporte</h3>
+   <p>Organize entregas, escolha a sequência e resolva uma ocorrência de transporte.</p>
+   <button class="btn" onclick="start(5)">Iniciar missão</button>
+  </div>
+ </div>
+ <div class="card" style="margin-top:17px">
+  <h2>Meu desempenho</h2>
+  <div class="stats">
+   <div class="stat"><strong id="totalDone">0</strong><span>Missões concluídas</span></div>
+   <div class="stat"><strong id="totalScore">0</strong><span>Pontos conquistados</span></div>
+   <div class="stat"><strong id="totalPercent">0%</strong><span>Aproveitamento</span></div>
+  </div>
+  <div class="table-wrap"><table class="table"><thead><tr><th>Missão</th><th>Resultado</th><th>Pontuação</th></tr></thead><tbody id="history"><tr><td colspan="3">Nenhuma missão concluída nesta sessão.</td></tr></tbody></table></div>
+  <div class="actions"><button class="btn secondary" onclick="resetHistory()">Reiniciar demonstração</button></div>
+ </div>
+</section>
+
+<section id="work" class="hidden">
+ <div class="heading">
+  <div><h1 id="missionTitle">Missão</h1><p class="subtitle" id="missionDescription"></p></div>
+  <button class="btn secondary" onclick="backHome()">Sair da missão</button>
+ </div>
+ <div class="mission-top"><span class="tag" id="stepLabel">ETAPA 1</span><span class="subtitle" id="scoreLabel">Pontuação: 0/100</span></div>
+ <div class="progress"><div id="progressBar"></div></div>
+ <div class="steps" id="stepBars"></div>
+ <div class="card" id="taskArea"></div>
+ <div id="feedback"></div>
+ <div class="actions" id="taskActions"></div>
+</section>
+
+<section id="finish" class="hidden">
+ <div class="card" style="text-align:center;padding:35px 20px">
+  <div style="font-size:44px">🏁</div>
+  <h1>Missão concluída!</h1>
+  <p class="subtitle" id="finishText"></p>
+  <div class="stats">
+   <div class="stat"><strong id="finishScore">0</strong><span>Pontos</span></div>
+   <div class="stat"><strong id="finishPercent">0%</strong><span>Aproveitamento</span></div>
+   <div class="stat"><strong id="finishCorrect">0/0</strong><span>Etapas corretas</span></div>
+  </div>
+  <div id="finishFeedback" class="result neutral"></div>
+  <div class="actions" style="justify-content:center">
+   <button class="btn" onclick="backHome()">Voltar ao laboratório</button>
+  </div>
+ </div>
+</section>
 </main>
-<div class="footer">LogiSim · Ambiente educacional de simulação de operações logísticas</div>
+
 <script>
-const tasks=[
-{title:'Divergência no recebimento',desc:'A nota fiscal informa 200 caixas, mas a conferência física identificou apenas 180. O que fazer?',fields:`<div class="fields"><div class="field"><label>Quantidade na nota fiscal</label><input id="invoice" type="number" value="200" readonly></div><div class="field"><label>Quantidade física recebida</label><input id="physical" type="number" value="180"></div><div class="field full"><label>Qual decisão você tomaria?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="correct">Registrar 180 unidades e abrir ocorrência de divergência</option><option value="invoice">Registrar 200 unidades conforme a nota fiscal</option><option value="cancel">Cancelar todo o recebimento sem registrar a ocorrência</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(0)">Confirmar decisão</button></div>`},
-{title:'Estoque sem endereço',desc:'Uma remessa de 60 unidades precisa ser armazenada. A posição disponível possui capacidade máxima de 40 unidades.',fields:`<div class="fields"><div class="field"><label>Quantidade recebida</label><input value="60 unidades" readonly></div><div class="field"><label>Capacidade da posição A-01-01</label><input value="40 unidades" readonly></div><div class="field full"><label>Como você realizará a armazenagem?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="split">Dividir a mercadoria entre duas posições compatíveis</option><option value="all">Armazenar as 60 unidades na posição A-01-01</option><option value="leave">Deixar todo o material sem endereço</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(1)">Confirmar decisão</button></div>`},
-{title:'Pedido urgente de picking',desc:'Um pedido urgente solicita 20 caixas de água mineral. O endereço A-01-01 possui saldo de 30 caixas.',fields:`<div class="fields"><div class="field"><label>Produto solicitado</label><input value="Água mineral · SKU-101" readonly></div><div class="field"><label>Quantidade solicitada</label><input value="20 caixas" readonly></div><div class="field"><label>Endereço correto</label><input value="A-01-01" readonly></div><div class="field"><label>Saldo disponível</label><input value="30 caixas" readonly></div><div class="field full"><label>Qual será sua ação?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="right">Separar 20 caixas no endereço A-01-01</option><option value="wrong">Separar no endereço B-02-01 sem conferir o SKU</option><option value="more">Retirar as 30 caixas, mesmo com pedido de 20</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(2)">Confirmar separação</button></div>`},
-{title:'Interdição de corredor',desc:'O corredor A está interditado para manutenção. Um pedido precisa ser separado e existe uma rota alternativa sinalizada.',fields:`<div class="fields"><div class="field"><label>Situação</label><input value="Corredor A interditado" readonly></div><div class="field"><label>Alternativa disponível</label><input value="Corredor B sinalizado" readonly></div><div class="field full"><label>Como proceder?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="alternative">Utilizar o corredor B e respeitar a sinalização</option><option value="blocked">Continuar utilizando o corredor A</option><option value="stop">Cancelar todas as operações do armazém</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(3)">Confirmar decisão</button></div>`},
-{title:'Capacidade de carregamento',desc:'O veículo disponível suporta até 3.500 kg. A carga preparada para expedição pesa 3.800 kg.',fields:`<div class="fields"><div class="field"><label>Peso da carga</label><input value="3.800 kg" readonly></div><div class="field"><label>Capacidade do veículo</label><input value="3.500 kg" readonly></div><div class="field full"><label>Qual decisão é adequada?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="adjust">Redistribuir a carga ou selecionar um veículo de maior capacidade</option><option value="over">Liberar o veículo mesmo acima do limite</option><option value="ignore">Ignorar a informação de capacidade</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(4)">Validar carregamento</button></div>`},
-{title:'Alteração de rota',desc:'O veículo está a caminho de três entregas. Um congestionamento bloqueou o trajeto previsto para a primeira parada.',fields:`<div class="fields"><div class="field"><label>Rota original</label><input value="CD → Entrega 1 → Entrega 2 → Entrega 3" readonly></div><div class="field"><label>Ocorrência</label><input value="Congestionamento no trajeto da entrega 1" readonly></div><div class="field full"><label>Como reorganizar a operação?</label><select id="decision"><option value="">Selecione uma decisão</option><option value="replan">Verificar rota alternativa e reorganizar a sequência das entregas</option><option value="continue">Manter o trajeto original sem avaliar o congestionamento</option><option value="return">Retornar ao centro de distribuição imediatamente</option></select></div></div><div class="actions"><button class="btn" onclick="evaluate(5)">Confirmar planejamento</button></div>`}
+const missions=[
+ {
+  title:"Recebimento de mercadorias",
+  desc:"Você trabalha na área de recebimento de um centro de distribuição.",
+  steps:[
+   {question:"O documento informa 100 caixas de água mineral. Na conferência física, você encontra 92 caixas. Quantas unidades deve registrar como recebidas?",type:"number",answer:92,explain:"O registro deve representar a quantidade física efetivamente recebida. As 8 unidades faltantes precisam ser registradas como divergência."},
+   {question:"Qual deve ser a situação do recebimento?",type:"choice",options:["Conferido sem ressalvas","Com divergência de quantidade","Recebimento cancelado automaticamente"],answer:1,explain:"A quantidade física não corresponde à quantidade documental. É necessário registrar a divergência e comunicar o responsável."},
+   {question:"O que deve acontecer com as 92 caixas recebidas?",type:"choice",options:["Registrar a entrada de 100 caixas","Registrar 92 caixas e documentar a ocorrência","Não registrar nenhuma unidade"],answer:1,explain:"A entrada deve corresponder à quantidade efetivamente recebida, com a ocorrência devidamente documentada."}
+  ]
+ },
+ {
+  title:"Coletor e identificação",
+  desc:"Você precisa identificar um produto utilizando seu código de estoque.",
+  steps:[
+   {question:"O coletor apresenta o código SKU-101. Qual informação identifica corretamente o produto?",type:"choice",options:["Água mineral 500 ml","Material de limpeza","Alimentos não perecíveis"],answer:0,explain:"O SKU é um identificador único do produto no sistema."},
+   {question:"O produto está cadastrado com 100 unidades. Durante a consulta, você encontra 100 unidades no sistema. O que isso significa?",type:"choice",options:["O saldo cadastrado é 100 unidades","O produto não existe","O sistema deve excluir o produto"],answer:0,explain:"O coletor permite consultar os dados registrados no sistema, mas a quantidade física ainda precisa ser conferida."},
+   {question:"Qual é a finalidade principal do coletor na operação?",type:"choice",options:["Substituir toda a conferência física","Identificar produtos e registrar consultas e movimentações","Calcular salários dos funcionários"],answer:1,explain:"O coletor facilita a identificação, rastreabilidade e registro das operações logísticas."}
+  ]
+ },
+ {
+  title:"Endereçamento e armazenagem",
+  desc:"Você recebeu uma mercadoria e precisa escolher uma posição no armazém.",
+  steps:[
+   {question:"A posição A-01-01 possui capacidade para 50 unidades. Já existem 30 unidades armazenadas. Quantas unidades ainda cabem?",type:"number",answer:20,explain:"Capacidade disponível = 50 - 30 = 20 unidades."},
+   {question:"Você precisa armazenar mais 25 unidades nessa posição. O que deve fazer?",type:"choice",options:["Armazenar mesmo ultrapassando o limite","Escolher outro endereço com capacidade disponível","Ignorar a capacidade"],answer:1,explain:"O endereço não possui capacidade suficiente. É necessário selecionar uma posição compatível."},
+   {question:"Qual é a finalidade do endereçamento logístico?",type:"choice",options:["Localizar e organizar produtos dentro do armazém","Aumentar o preço das mercadorias","Substituir a nota fiscal"],answer:0,explain:"O endereçamento facilita localização, controle, armazenagem e separação dos produtos."}
+  ]
+ },
+ {
+  title:"Separação de pedidos — Picking",
+  desc:"Um pedido de cliente precisa ser separado e conferido.",
+  steps:[
+   {question:"O pedido solicita 20 unidades. O estoque possui 35 unidades disponíveis. Quantas unidades permanecerão após a separação?",type:"number",answer:15,explain:"35 - 20 = 15 unidades restantes no estoque."},
+   {question:"O produto está sem endereço cadastrado. Qual é a melhor atitude?",type:"choice",options:["Separar sem identificar a localização","Localizar o produto e regularizar seu endereço antes da separação","Cancelar todos os pedidos"],answer:1,explain:"A localização é fundamental para a rastreabilidade e execução correta do picking."},
+   {question:"Após separar as 20 unidades, qual etapa deve ocorrer?",type:"choice",options:["Conferência do pedido separado","Descarte do pedido","Novo recebimento da mercadoria"],answer:0,explain:"A conferência verifica se os produtos e as quantidades separados correspondem ao pedido."}
+  ]
+ },
+ {
+  title:"Expedição e carregamento",
+  desc:"Você precisa liberar uma carga respeitando a capacidade do veículo.",
+  steps:[
+   {question:"O veículo suporta 1.000 kg. A carga possui 850 kg. Quantos quilogramas ainda podem ser carregados?",type:"number",answer:150,explain:"1.000 - 850 = 150 kg de capacidade restante."},
+   {question:"Uma nova carga de 200 kg será adicionada. O que deve acontecer?",type:"choice",options:["Liberar o veículo normalmente","Reavaliar a carga, pois o limite será ultrapassado","Ignorar o peso da nova mercadoria"],answer:1,explain:"850 + 200 = 1.050 kg. A carga ultrapassa a capacidade de 1.000 kg."},
+   {question:"Qual documento pode acompanhar a relação de volumes e mercadorias de uma carga?",type:"choice",options:["Romaneio de carga","Folha de ponto","Ficha de matrícula"],answer:0,explain:"O romaneio apresenta informações sobre os volumes e mercadorias que compõem a carga."}
+  ]
+ },
+ {
+  title:"Transporte e roteirização",
+  desc:"Você é responsável por organizar entregas e lidar com ocorrências.",
+  steps:[
+   {question:"O veículo precisa realizar três entregas. Qual informação é importante considerar para planejar a rota?",type:"choice",options:["Localização dos destinos e sequência das entregas","Apenas o nome do motorista","A cor da embalagem"],answer:0,explain:"O planejamento considera localização, distâncias, restrições, prazos e condições de trânsito."},
+   {question:"Uma via está interditada durante o transporte. Qual deve ser sua atitude?",type:"choice",options:["Manter a rota mesmo com a interdição","Replanejar o trajeto e registrar a ocorrência","Encerrar todas as entregas sem informar ninguém"],answer:1,explain:"A roteirização deve ser adaptada às condições reais e a ocorrência deve ser registrada."},
+   {question:"O cliente recebeu corretamente a mercadoria. Qual deve ser o registro final?",type:"choice",options:["Entrega concluída","Pedido pendente","Mercadoria em recebimento"],answer:0,explain:"O registro da entrega encerra a etapa de transporte e permite atualizar o status do pedido."}
+  ]
+ }
 ];
-const answers=[
-{correct:'correct',good:'Boa decisão! Você identificou a divergência, registrou a quantidade física correta e abriu uma ocorrência para tratar a diferença.',bad:'A decisão não é adequada. A quantidade física precisa ser registrada corretamente, e a diferença em relação à nota fiscal deve gerar uma ocorrência.'},
-{correct:'split',good:'Correto! A divisão da mercadoria entre posições compatíveis respeita a capacidade de armazenagem e mantém o estoque organizado.',bad:'Atenção! A capacidade do endereço deve ser respeitada. O sistema não deve permitir armazenar mais unidades do que a posição comporta.'},
-{correct:'right',good:'Muito bem! Você conferiu o SKU, identificou o endereço correto e separou exatamente a quantidade solicitada.',bad:'A separação precisa seguir o código do produto, o endereço correto e a quantidade indicada no pedido.'},
-{correct:'alternative',good:'Decisão correta! Você respeitou a interdição e escolheu uma rota alternativa segura para manter a operação.',bad:'A interdição deve ser respeitada. A equipe precisa utilizar uma alternativa sinalizada e segura.'},
-{correct:'adjust',good:'Correto! O limite de peso deve ser respeitado. Redistribuir a carga ou selecionar outro veículo evita sobrecarga.',bad:'A carga ultrapassa a capacidade máxima do veículo. O carregamento não pode ser liberado nessas condições.'},
-{correct:'replan',good:'Ótima decisão! Reavaliar o trajeto e reorganizar as entregas ajuda a reduzir atrasos e manter o planejamento atualizado.',bad:'A rota precisa ser reavaliada diante do congestionamento. Ignorar o imprevisto pode aumentar o tempo de entrega.'}
-];
-let current=0,history=[];
-function choose(i){current=i;document.querySelectorAll('.scenario').forEach((b,n)=>b.classList.toggle('active',n===i));renderTask();document.getElementById('result').innerHTML='';}
-function renderTask(){let t=tasks[current];document.getElementById('taskTitle').textContent=t.title;document.getElementById('taskDesc').textContent=t.desc;document.getElementById('taskFields').innerHTML=t.fields;document.getElementById('taskStatus').textContent='AGUARDANDO DECISÃO';}
-function evaluate(i){let decision=document.getElementById('decision')?.value;if(!decision){document.getElementById('result').innerHTML='<div class="feedback bad">Selecione uma decisão antes de continuar.</div>';return}let a=answers[i],ok=decision===a.correct,msg=ok?a.good:a.bad;let entry={title:tasks[i].title,ok,msg,date:new Date().toLocaleTimeString('pt-BR')};history.unshift(entry);document.getElementById('taskStatus').textContent=ok?'ATIVIDADE APROVADA':'DECISÃO A REVISAR';document.getElementById('result').innerHTML=`<div class="feedback ${ok?'':'bad'}"><b>${ok?'✓ Decisão adequada':'! Revise sua decisão'}</b><br>${msg}<br><br><b>${ok?'Atividade concluída.':'Atividade registrada para revisão.'}</b></div><div class="actions"><button class="btn secondary" onclick="choose(${(i+1)%6})">Próxima atividade →</button><button class="btn" onclick="renderTask();document.getElementById('result').innerHTML=''">Tentar novamente</button></div>`;renderHistory();}
-function renderHistory(){document.getElementById('count').textContent=history.length+' atividade(s)';document.getElementById('historyList').innerHTML=history.map(h=>`<div class="history-item"><span style="color:${h.ok?'#5ee0aa':'#ff8993'}">${h.ok?'✓ APROVADA':'! REVISAR'}</span> · ${h.title}<small>${h.date} — ${h.msg}</small></div>`).join('')}
-renderTask();
+
+let activeMission=null,step=0,points=0,correct=0,attempted=false;
+let history=JSON.parse(sessionStorage.getItem("logisim_demo_history")||"[]");
+function persist(){sessionStorage.setItem("logisim_demo_history",JSON.stringify(history))}
+function start(index){
+ activeMission=missions[index];step=0;points=0;correct=0;attempted=false;
+ document.getElementById("home").classList.add("hidden");
+ document.getElementById("finish").classList.add("hidden");
+ document.getElementById("work").classList.remove("hidden");
+ document.getElementById("missionTitle").textContent=activeMission.title;
+ document.getElementById("missionDescription").textContent=activeMission.desc;
+ renderStep();
+}
+function renderStep(){
+ const total=activeMission.steps.length;
+ const s=activeMission.steps[step];
+ attempted=false;
+ document.getElementById("stepLabel").textContent=`ETAPA ${step+1} DE ${total}`;
+ document.getElementById("scoreLabel").textContent=`Pontuação: ${points}/${total*100}`;
+ document.getElementById("progressBar").style.width=(step/total*100)+"%";
+ document.getElementById("stepBars").innerHTML=activeMission.steps.map((x,i)=>`<span class="${i<step?"done":""}"></span>`).join("");
+ let content=`<h2>${s.question}</h2>`;
+ if(s.type==="number"){
+  content+=`<div class="field"><label>Sua resposta</label><input type="number" id="answer" placeholder="Digite sua resposta"></div>`;
+ }else{
+  content+=s.options.map((o,i)=>`<button class="option" onclick="selectAnswer(${i},this)">${String.fromCharCode(65+i)}) ${o}</button>`).join("");
+ }
+ document.getElementById("taskArea").innerHTML=content;
+ document.getElementById("feedback").innerHTML="";
+ document.getElementById("taskActions").innerHTML=s.type==="number"?'<button class="btn" onclick="checkNumber()">Verificar resposta</button>':'';
+}
+function selectAnswer(index,el){
+ if(attempted)return;
+ const s=activeMission.steps[step];
+ attempted=true;
+ document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+ el.classList.add("selected");
+ evaluate(index===s.answer,s.explain);
+}
+function checkNumber(){
+ if(attempted)return;
+ const value=document.getElementById("answer").value;
+ if(value===""){alert("Digite uma resposta.");return}
+ attempted=true;
+ const s=activeMission.steps[step];
+ evaluate(Number(value)===Number(s.answer),s.explain);
+}
+function evaluate(ok,explanation){
+ if(ok){points+=100;correct++}
+ const box=document.getElementById("feedback");
+ box.innerHTML=`<div class="result ${ok?"correct":"wrong"}"><strong>${ok?"✓ Resposta correta!":"✗ Resposta incorreta."}</strong><br>${explanation}</div>`;
+ document.getElementById("scoreLabel").textContent=`Pontuação: ${points}/${activeMission.steps.length*100}`;
+ document.getElementById("taskActions").innerHTML='<button class="btn" onclick="nextStep()">Próxima etapa →</button>';
+}
+function nextStep(){
+ step++;
+ if(step>=activeMission.steps.length){finishMission();return}
+ renderStep();
+}
+function finishMission(){
+ document.getElementById("work").classList.add("hidden");
+ document.getElementById("finish").classList.remove("hidden");
+ const total=activeMission.steps.length;
+ const percent=Math.round(correct/total*100);
+ document.getElementById("finishScore").textContent=points;
+ document.getElementById("finishPercent").textContent=percent+"%";
+ document.getElementById("finishCorrect").textContent=correct+"/"+total;
+ document.getElementById("finishText").textContent=activeMission.title;
+ document.getElementById("finishFeedback").textContent=
+ percent===100?"Excelente! Você demonstrou domínio das etapas desta operação.":
+ percent>=60?"Bom trabalho! Revise as etapas em que encontrou dificuldades.":
+ "Continue praticando. Revise os conceitos e tente novamente.";
+ history.unshift({title:activeMission.title,points,percent,correct,total,date:new Date().toLocaleString("pt-BR")});
+ persist();renderHistory();
+}
+function backHome(){
+ document.getElementById("work").classList.add("hidden");
+ document.getElementById("finish").classList.add("hidden");
+ document.getElementById("home").classList.remove("hidden");
+ renderHistory();
+}
+function renderHistory(){
+ const total=history.length;
+ const score=history.reduce((s,h)=>s+h.points,0);
+ const possible=history.reduce((s,h)=>s+h.total*100,0);
+ document.getElementById("totalDone").textContent=total;
+ document.getElementById("totalScore").textContent=score;
+ document.getElementById("totalPercent").textContent=(possible?Math.round(score/possible*100):0)+"%";
+ document.getElementById("history").innerHTML=history.map(h=>`<tr><td>${h.title}<br><span style="color:var(--muted);font-size:10px">${h.date}</span></td><td>${h.percent}%</td><td>${h.points}/${h.total*100}</td></tr>`).join("")||'<tr><td colspan="3">Nenhuma missão concluída nesta sessão.</td></tr>';
+}
+function resetHistory(){
+ if(!confirm("Deseja apagar o histórico desta demonstração?"))return;
+ history=[];persist();renderHistory();
+}
+renderHistory();
 </script>
 </body>
 </html>
